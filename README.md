@@ -369,7 +369,7 @@ bash startup.sh -m standalone
 
 #### 十六、关于我们
 
-    开源代码，仅供学习和研究使用，商用和商务合作请联系我们；
+    开源代码，仅供学习和研究使用，如需商务合作请联系我们；
 
  ` <div>
       <img src="/quan.png" alt="logo" >
