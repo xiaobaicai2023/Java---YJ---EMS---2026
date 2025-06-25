@@ -23,8 +23,8 @@
 
 <div align="center">
     <p height="60px">
-    <a href='https://gitee.com/guangdong122/yun/stargazers'><img src='https://gitee.com/guangdong122/yun/badge/star.svg?theme=dark' alt='star'></img></a>
-    <a href='https://gitee.com/guangdong122/yun/members'><img src='https://gitee.com/guangdong122/yun/badge/fork.svg?theme=dark' alt='fork'></img></a>
+   <a href='https://gitee.com/guangdong122/energy-management/stargazers'><img src='https://gitee.com/guangdong122/energy-management/badge/star.svg?theme=dark' alt='star'></img></a>
+    <a href='https://gitee.com/guangdong122/energy-management/members'><img src='https://gitee.com/guangdong122/energy-management/badge/fork.svg?theme=dark' alt='fork'></img></a>
     </p>
 </div>
 
