@@ -11,7 +11,7 @@ CREATE TABLE `sys_log_execute`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号ID',
   `ent_id` int(11) NULL DEFAULT NULL COMMENT '企业ID',
   `dept_id` int(11) NULL DEFAULT NULL COMMENT '部门ID',
-  `title` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '任务标题',
+  `title` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '任务名称',
   `method` varchar(256) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '执行方法',
   `operate_type` int(11) NULL DEFAULT NULL COMMENT '操作类别（0其它 1后台用户 2手机端用户）',
   `operate_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '执行人员',
