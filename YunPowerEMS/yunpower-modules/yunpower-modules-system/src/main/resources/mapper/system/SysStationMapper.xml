@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysStationMapper">
+
+    <resultMap type="com.yunpower.system.api.domain.SysStation" id="SysStationResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="stationName"    column="station_name"    />
+        <result property="stationSn"    column="station_sn"    />
+        <result property="groupOrStation"    column="group_or_station"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="pvType"    column="pv_type"    />
+        <result property="logicCode"    column="logic_code"    />
+        <result property="buildSiteTime"    column="build_site_time"    />
+        <result property="voltageLevel"    column="voltage_level"    />
+        <result property="capacityKva"    column="capacity_kva"    />
+        <result property="deviceLimit"    column="device_limit"    />
+        <result property="varLimit"    column="var_limit"    />
+        <result property="sationVolume"    column="sation_volume"    />
+        <result property="azimuth"    column="azimuth"    />
+        <result property="dipAngle"    column="dip_angle"    />
+        <result property="useSiteTime"    column="use_site_time"    />
+        <result property="coordinate"    column="coordinate"    />
+        <result property="country"    		column="country"    />
+        <result property="province"    		column="province"    />
+        <result property="city"    			column="city"    />
+        <result property="county"    		column="county"    />
+        <result property="stationAddress"    column="station_address"    />
+        <result property="picUrl"    column="pic_url"    />
+        <result property="description"    column="description"    />
+        <result property="linkName"    column="link_name"    />
+        <result property="linkPhone"    column="link_phone"    />
+        <result property="openAlarm"    column="open_alarm"    />
+        <result property="schemeId"    column="scheme_id"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysStationVo">
+        select s.id, s.ent_id, s.dept_id, s.parent_id, s.group_id, s.station_name, s.station_sn, s.group_or_station, s.station_type, s.pv_type, s.logic_code, s.build_site_time, s.voltage_level, s.capacity_kva, s.device_limit, s.var_limit, s.sation_volume, s.azimuth, s.dip_angle, s.use_site_time, s.coordinate, s.country, s.province, s.city, s.county, s.station_address, s.pic_url, s.description, s.link_name, s.link_phone, s.open_alarm, s.scheme_id, s.order_num, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, s.stop_flag, s.delete_flag
+        from sys_station s
+    </sql>
+
+    <select id="selectSysStationList" parameterType="SysStation" resultMap="SysStationResult">
+        <include refid="selectSysStationVo"/>
+        where s.delete_flag = 0
+        <if test="entId != null "> and s.ent_id = #{entId}</if>
+        <if test="parentId != null "> and s.parent_id = #{parentId}</if>
+        <if test="deptId != null "> and s.dept_id = #{deptId}</if>
+        <if test="groupId != null "> and s.group_id = #{groupId}</if>
+        <if test="stationName != null  and stationName != ''"> and s.station_name like concat('%', #{stationName}, '%')</if>
+        <if test="stationSn != null  and stationSn != ''"> and s.station_sn = #{stationSn}</if>
+        <if test="groupOrStation != null "> and s.group_or_station = #{groupOrStation}</if>
+        <if test="stationType != null "> and s.station_type = #{stationType}</if>
+        <if test="pvType != null "> and s.pv_type = #{pvType}</if>
+        <if test="logicCode != null  and logicCode != ''"> and s.logic_code = #{logicCode}</if>
+        <if test="stopFlag != null "> and s.stop_flag = #{stopFlag}</if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+        order by s.parent_id, s.order_num
+    </select>
+
+    <!-- 获取站点列表，不限制数据权限 -->
+    <select id="selectStationListAll" parameterType="SysStation" resultMap="SysStationResult">
+        <include refid="selectSysStationVo"/>
+        <where>
+            <if test="entId != null "> and s.ent_id = #{entId}</if>
+        </where>
+    </select>
+
+    <!-- 根据ID查询所有子站点 -->
+    <select id="selectChildrenStationById" parameterType="Long" resultMap="SysStationResult">
+		select * from sys_station where find_in_set(#{id}, logic_code)
+	</select>
+
+    <!-- 根据ID查询所有子站点（正常状态） -->
+    <select id="selectNormalChildrenStationById" parameterType="Long" resultType="int">
+		select count(*) from sys_station where stop_flag = 0 and delete_flag = 0 and find_in_set(#{deptId}, logic_code)
+	</select>
+
+    <!-- 查询站点是否存在子节点 -->
+    <select id="hasChildrenById" parameterType="Long" resultType="int">
+		select count(1) from sys_station where delete_flag = 0 and parent_id = #{id} limit 1
+	</select>
+
+    <!-- 查询站点是否存在用户 -->
+    <select id="checkStationExistUser" parameterType="Long" resultType="int">
+		select count(1) from sys_user
+		where delete_flag = 0 and dept_id = (select dept_id from sys_station where id = #{id})
+	</select>
+
+    <!-- 修改子元素关系 -->
+    <update id="updateStationChildren" parameterType="java.util.List">
+        update sys_station set logic_code =
+        <foreach collection="stations" item="item" index="index" separator=" " open="case id" close="end">
+            when #{item.id} then #{item.logic_code}
+        </foreach>
+        where id in
+        <foreach collection="stations" item="item" index="index" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <!-- 根据编号查询站点信息 -->
+    <select id="selectSysStationById" parameterType="Long" resultMap="SysStationResult">
+        <include refid="selectSysStationVo"/>
+        where s.id = #{id}
+    </select>
+
+    <select id="selectSysStationBySn" parameterType="String" resultMap="SysStationResult">
+        <include refid="selectSysStationVo"/>
+        where s.station_sn = #{stationSn}
+    </select>
+
+    <select id="selectSysStationByDeptId" parameterType="Long" resultMap="SysStationResult">
+        <include refid="selectSysStationVo"/>
+        where s.dept_id = #{deptId}
+    </select>
+
+    <insert id="insertSysStation" parameterType="SysStation" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_station
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null ">dept_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="stationName != null">station_name,</if>
+            <if test="stationSn != null">station_sn,</if>
+            <if test="groupOrStation != null">group_or_station,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="pvType != null">pv_type,</if>
+            <if test="logicCode != null">logic_code,</if>
+            <if test="buildSiteTime != null">build_site_time,</if>
+            <if test="voltageLevel != null">voltage_level,</if>
+            <if test="capacityKva != null">capacity_kva,</if>
+            <if test="deviceLimit != null">device_limit,</if>
+            <if test="varLimit != null">var_limit,</if>
+            <if test="sationVolume != null">sation_volume,</if>
+            <if test="azimuth != null">azimuth,</if>
+            <if test="dipAngle != null">dip_angle,</if>
+            <if test="useSiteTime != null">use_site_time,</if>
+            <if test="coordinate != null">coordinate,</if>
+            <if test="country != null">country,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="county != null">county,</if>
+            <if test="stationAddress != null">station_address,</if>
+            <if test="picUrl != null">pic_url,</if>
+            <if test="description != null">description,</if>
+            <if test="linkName != null">link_name,</if>
+            <if test="linkPhone != null">link_phone,</if>
+            <if test="openAlarm != null">open_alarm,</if>
+            <if test="schemeId != null">scheme_id,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null ">#{deptId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="stationName != null">#{stationName},</if>
+            <if test="stationSn != null">#{stationSn},</if>
+            <if test="groupOrStation != null">#{groupOrStation},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="pvType != null">#{pvType},</if>
+            <if test="logicCode != null">#{logicCode},</if>
+            <if test="buildSiteTime != null">#{buildSiteTime},</if>
+            <if test="voltageLevel != null">#{voltageLevel},</if>
+            <if test="capacityKva != null">#{capacityKva},</if>
+            <if test="deviceLimit != null">#{deviceLimit},</if>
+            <if test="varLimit != null">#{varLimit},</if>
+            <if test="sationVolume != null">#{sationVolume},</if>
+            <if test="azimuth != null">#{azimuth},</if>
+            <if test="dipAngle != null">#{dipAngle},</if>
+            <if test="useSiteTime != null">#{useSiteTime},</if>
+            <if test="coordinate != null">#{coordinate},</if>
+            <if test="country != null">#{country},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="county != null">#{county},</if>
+            <if test="stationAddress != null">#{stationAddress},</if>
+            <if test="picUrl != null">#{picUrl},</if>
+            <if test="description != null">#{description},</if>
+            <if test="linkName != null">#{linkName},</if>
+            <if test="linkPhone != null">#{linkPhone},</if>
+            <if test="openAlarm != null">#{openAlarm},</if>
+            <if test="schemeId != null">#{schemeId},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysStation" parameterType="SysStation">
+        update sys_station s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null ">dept_id = #{deptId},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="stationName != null">station_name = #{stationName},</if>
+            <if test="stationSn != null">station_sn = #{stationSn},</if>
+            <if test="groupOrStation != null">group_or_station = #{groupOrStation},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="pvType != null">pv_type = #{pvType},</if>
+            <if test="logicCode != null">logic_code = #{logicCode},</if>
+            <if test="buildSiteTime != null">build_site_time = #{buildSiteTime},</if>
+            <if test="voltageLevel != null">voltage_level = #{voltageLevel},</if>
+            <if test="capacityKva != null">capacity_kva = #{capacityKva},</if>
+            <if test="deviceLimit != null">device_limit = #{deviceLimit},</if>
+            <if test="varLimit != null">var_limit = #{varLimit},</if>
+            <if test="sationVolume != null">sation_volume = #{sationVolume},</if>
+            <if test="azimuth != null">azimuth = #{azimuth},</if>
+            <if test="dipAngle != null">dip_angle = #{dipAngle},</if>
+            <if test="useSiteTime != null">use_site_time = #{useSiteTime},</if>
+            <if test="coordinate != null">coordinate = #{coordinate},</if>
+            <if test="country != null">country = #{country},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="county != null">county = #{county},</if>
+            <if test="stationAddress != null">station_address = #{stationAddress},</if>
+            <if test="picUrl != null">pic_url = #{picUrl},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="linkName != null">link_name = #{linkName},</if>
+            <if test="linkPhone != null">link_phone = #{linkPhone},</if>
+            <if test="openAlarm != null">open_alarm = #{openAlarm},</if>
+            <if test="schemeId != null">scheme_id = #{schemeId},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteSysStationById" parameterType="Long">
+        delete from sys_station where id = #{id}
+    </delete>
+
+    <delete id="deleteSysStationByIds" parameterType="String">
+        delete from sys_station where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

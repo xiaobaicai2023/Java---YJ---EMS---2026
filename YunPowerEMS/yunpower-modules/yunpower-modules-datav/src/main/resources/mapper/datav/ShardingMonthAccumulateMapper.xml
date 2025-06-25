@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.datav.mapper.ShardingMonthAccumulateMapper">
+    
+    <resultMap type="com.yunpower.datav.domain.ShardingMonthAccumulate" id="ShardingMonthAccumulateResult">
+        <result property="id"    column="id"    />
+        <result property="variableName"    column="variable_name"    />
+        <result property="saveTime"    column="save_time"    />
+        <result property="dataValue"    column="data_value"    />
+        <result property="recordYear"    column="record_year"    />
+        <result property="recordMonth"    column="record_month"    />
+        <result property="recordDay"    column="record_day"    />
+        <result property="recordWeek"    column="record_week"    />
+        <result property="recordHour"    column="record_hour"    />
+        <result property="accuData"    column="accu_data"    />
+        <result property="seasonalTypeName"    column="seasonal_type_name"    />
+        <result property="chargePrice"    column="charge_price"    />
+        <result property="isComplete"    column="is_complete"    />
+    </resultMap>
+
+    <sql id="selectShardingMonthAccumulateVo">
+        select id, variable_name, save_time, ROUND(data_value, 0) AS data_value, record_year, record_month, record_day, record_week, record_hour, ROUND(accu_data, 1) AS accu_data, seasonal_type_name, charge_price, is_complete
+        from sharding_month_accumulate
+    </sql>
+
+    <sql id="selectCondition">
+        where variable_name = #{variableName}
+        <if test="saveTime != null "> and save_time = #{saveTime}</if>
+        <if test="params.beginTime != null and params.beginTime != ''"> and save_time &gt;= #{params.beginTime}</if>
+        <if test="params.endTime != null and params.endTime != ''"> and save_time &lt;= #{params.endTime}</if>
+        <if test="recordYear != null "> and record_year = #{recordYear}</if>
+        <if test="recordMonth != null "> and record_month = #{recordMonth}</if>
+        <if test="recordDay != null "> and record_day = #{recordDay}</if>
+        <if test="recordWeek != null "> and record_week = #{recordWeek}</if>
+        <if test="recordHour != null "> and record_hour = #{recordHour}</if>
+        <if test="seasonalTypeName != null  and seasonalTypeName != ''"> and seasonal_type_name = #{seasonalTypeName}</if>
+    </sql>
+
+    <select id="selectShardingMonthAccumulateList" parameterType="ShardingMonthAccumulate" resultMap="ShardingMonthAccumulateResult">
+        <include refid="selectShardingMonthAccumulateVo"/>
+        <include refid="selectCondition"></include>
+    </select>
+    
+    <select id="selectShardingMonthAccumulateById" parameterType="Long" resultMap="ShardingMonthAccumulateResult">
+        <include refid="selectShardingMonthAccumulateVo"/>
+        where id = #{id}
+    </select>
+
+    <!-- 获取某一个时点的数据，必传条件：recordYear，recordMonth，recordDay，recordHour -->
+    <select id="selectShardingMonthAccumulate" parameterType="ShardingMonthAccumulate" resultMap="ShardingMonthAccumulateResult">
+        <include refid="selectShardingMonthAccumulateVo"/>
+        <include refid="selectCondition"></include>
+    </select>
+
+    <!-- 数据用于：尖峰平谷，按【时】分组 -->
+    <select id="selectAccumulateGroupByHour" parameterType="ShardingMonthAccumulate" resultMap="ShardingMonthAccumulateResult">
+        SELECT record_hour, seasonal_type_name, ROUND(SUM(accu_data), 1) AS accu_data, ROUND(SUM(accu_data * charge_price), 2) AS charge_price
+        FROM sharding_month_accumulate
+        <include refid="selectCondition"></include>
+        GROUP BY record_hour, seasonal_type_name
+        ORDER BY record_hour ASC
+    </select>
+
+    <!-- 数据用于：尖峰平谷，按【日】分组 -->
+    <select id="selectAccumulateGroupByDay" parameterType="ShardingMonthAccumulate" resultMap="ShardingMonthAccumulateResult">
+        SELECT record_year, record_month, record_day, seasonal_type_name, ROUND(SUM(accu_data), 1) AS accu_data, ROUND(SUM(accu_data * charge_price), 2) AS charge_price
+        FROM sharding_month_accumulate
+        <include refid="selectCondition"></include>
+        GROUP BY record_year, record_month, record_day, seasonal_type_name
+        ORDER BY record_year, record_month, record_day ASC
+    </select>
+
+    <!-- 数据用于：尖峰平谷，按【周】分组 -->
+    <select id="selectAccumulateGroupByWeek" parameterType="ShardingMonthAccumulate" resultMap="ShardingMonthAccumulateResult">
+        SELECT record_year, record_week, seasonal_type_name, ROUND(SUM(accu_data), 1) AS accu_data, ROUND(SUM(accu_data * charge_price), 2) AS charge_price
+        FROM sharding_month_accumulate
+        <include refid="selectCondition"></include>
+        GROUP BY record_year, record_week, seasonal_type_name
+        ORDER BY record_year, record_week ASC
+    </select>
+
+    <!-- 数据用于：尖峰平谷，按【月】分组 -->
+    <select id="selectAccumulateGroupByMonth" parameterType="ShardingMonthAccumulate" resultMap="ShardingMonthAccumulateResult">
+        SELECT record_year, record_month, seasonal_type_name, ROUND(SUM(accu_data), 1) AS accu_data, ROUND(SUM(accu_data * charge_price), 2) AS charge_price
+        FROM sharding_month_accumulate
+        <include refid="selectCondition"></include>
+        GROUP BY record_year, record_month, seasonal_type_name
+        ORDER BY record_year, record_month ASC
+    </select>
+
+    <!-- 数据用于：尖峰平谷，按【年】分组 -->
+    <select id="selectAccumulateGroupByYear" parameterType="ShardingMonthAccumulate" resultMap="ShardingMonthAccumulateResult">
+        SELECT record_year, seasonal_type_name, ROUND(SUM(accu_data), 1) AS accu_data, ROUND(SUM(accu_data * charge_price), 2) AS charge_price
+        FROM sharding_month_accumulate
+        <include refid="selectCondition"></include>
+        GROUP BY record_year, seasonal_type_name
+        ORDER BY record_year ASC
+    </select>
+
+    <!-- 数据用于：尖峰平谷，按【类型】分组 -->
+    <select id="selectAccumulateGroupBySeasonalName" parameterType="ShardingMonthAccumulate" resultMap="ShardingMonthAccumulateResult">
+        SELECT seasonal_type_name, ROUND(SUM(accu_data), 1) AS accu_data, ROUND(SUM(accu_data * charge_price), 2) AS charge_price
+        FROM sharding_month_accumulate
+        <include refid="selectCondition"></include>
+        GROUP BY seasonal_type_name
+    </select>
+
+    <!-- 获取某个时间段的和 -->
+    <select id="sumAccumulate" parameterType="ShardingMonthAccumulate" resultType="Float">
+        SELECT ROUND(SUM(accu_data), 1) AS accu_data
+        FROM sharding_month_accumulate
+        <include refid="selectCondition"></include>
+    </select>
+
+    <!-- 重新更新峰谷数据 -->
+    <update id="updateShardingMonthAccumulateSeasonal">
+        update sharding_month_accumulate set seasonal_type_name = #{seasonalTypeName}, charge_price = #{chargePrice}
+        where record_year = #{recordYear}
+            and record_month in
+            <foreach item="month" collection="months" open="(" separator="," close=")">
+                #{month}
+            </foreach>
+            and record_hour in
+            <foreach item="hour" collection="hours" open="(" separator="," close=")">
+                #{hour}
+            </foreach>
+            and variable_name in
+            <foreach item="var" collection="varList" open="(" separator="," close=")">
+                #{var}
+            </foreach>
+    </update>
+
+    <insert id="insertShardingMonthAccumulate" parameterType="ShardingMonthAccumulate" useGeneratedKeys="true" keyProperty="id">
+        insert into sharding_month_accumulate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">variable_name,</if>
+            <if test="saveTime != null">save_time,</if>
+            <if test="dataValue != null">data_value,</if>
+            <if test="recordYear != null">record_year,</if>
+            <if test="recordMonth != null">record_month,</if>
+            <if test="recordDay != null">record_day,</if>
+            <if test="recordWeek != null">record_week,</if>
+            <if test="recordHour != null">record_hour,</if>
+            <if test="accuData != null">accu_data,</if>
+            <if test="seasonalTypeName != null">seasonal_type_name,</if>
+            <if test="chargePrice != null">charge_price,</if>
+            <if test="isComplete != null">is_complete,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">#{variableName},</if>
+            <if test="saveTime != null">#{saveTime},</if>
+            <if test="dataValue != null">#{dataValue},</if>
+            <if test="recordYear != null">#{recordYear},</if>
+            <if test="recordMonth != null">#{recordMonth},</if>
+            <if test="recordDay != null">#{recordDay},</if>
+            <if test="recordWeek != null">#{recordWeek},</if>
+            <if test="recordHour != null">#{recordHour},</if>
+            <if test="accuData != null">#{accuData},</if>
+            <if test="seasonalTypeName != null">#{seasonalTypeName},</if>
+            <if test="chargePrice != null">#{chargePrice},</if>
+            <if test="isComplete != null">#{isComplete},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShardingMonthAccumulate" parameterType="ShardingMonthAccumulate">
+        update sharding_month_accumulate
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="variableName != null">variable_name = #{variableName},</if>
+            <if test="saveTime != null">save_time = #{saveTime},</if>
+            <if test="dataValue != null">data_value = #{dataValue},</if>
+            <if test="recordYear != null">record_year = #{recordYear},</if>
+            <if test="recordMonth != null">record_month = #{recordMonth},</if>
+            <if test="recordDay != null">record_day = #{recordDay},</if>
+            <if test="recordWeek != null">record_week = #{recordWeek},</if>
+            <if test="recordHour != null">record_hour = #{recordHour},</if>
+            <if test="accuData != null">accu_data = #{accuData},</if>
+            <if test="seasonalTypeName != null">seasonal_type_name = #{seasonalTypeName},</if>
+            <if test="chargePrice != null">charge_price = #{chargePrice},</if>
+            <if test="isComplete != null">is_complete = #{isComplete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShardingMonthAccumulateById" parameterType="Long">
+        delete from sharding_month_accumulate where id = #{id}
+    </delete>
+
+    <delete id="deleteShardingMonthAccumulateByIds" parameterType="String">
+        delete from sharding_month_accumulate where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

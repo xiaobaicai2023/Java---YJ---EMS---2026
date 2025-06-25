@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.MonitorDeviceMapper">
+
+    <resultMap type="com.yunpower.system.domain.MonitorDevice" id="MonitorDeviceResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="electricType"    column="electric_type"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelSn"    column="channel_sn"    />
+        <result property="comDeviceId"    column="com_device_id"    />
+        <result property="comDeviceSn"    column="com_device_sn"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="sbdz"    column="sbdz"    />
+        <result property="meterNumber"    column="meter_number"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="isPass"    column="is_pass"    />
+        <result property="proFactory"    column="pro_factory"    />
+        <result property="proType"    column="pro_type"    />
+        <result property="proVer"    column="pro_ver"    />
+        <result property="buyPrice"    column="buy_price"    />
+        <result property="proSn"    column="pro_sn"    />
+        <result property="proModel"    column="pro_model"    />
+        <result property="agStandard"    column="ag_standard"    />
+        <result property="ratedVol"    column="rated_vol"    />
+        <result property="ratedEle"    column="rated_ele"    />
+        <result property="ratedPower"    column="rated_power"    />
+        <result property="eleLoadRate"    column="ele_load_rate"    />
+        <result property="isAnalysisEnergy"    column="is_analysis_energy"    />
+        <result property="monitorId"    column="monitor_id"    />
+        <result property="electricAttribute"    column="electric_attribute"    />
+        <result property="temperatureAttribute"    column="temperature_attribute"    />
+        <result property="ortherAttribute"    column="orther_attribute"    />
+        <result property="isReading"    column="is_reading"    />
+        <result property="ratedVolume"    column="rated_volume"    />
+        <result property="azimuth"    column="azimuth"    />
+        <result property="dipAngle"    column="dip_angle"    />
+        <result property="manufactureDate"    column="manufacture_date"    />
+        <result property="useLife"    column="use_life"    />
+        <result property="attenuationRate"    column="attenuation_rate"    />
+        <result property="readingVar"    column="reading_var"    />
+        <result property="dtuCmd"    column="dtu_cmd"    />
+        <result property="bindUserId"    column="bind_user_id"    />
+        <result property="chargingType"    column="charging_type"    />
+        <result property="ruleId"    column="rule_id"    />
+        <result property="checkoutType"    column="checkout_type"    />
+        <result property="associatedDevices"    column="associated_devices" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.AssociatedDevicesTypeHandler" />
+        <result property="onlineTime"    column="online_time"    />
+        <result property="offlineTime"    column="offline_time"    />
+        <result property="timeout"    column="timeout"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="activeUpdateTime"    column="active_update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectMonitorDeviceVo">
+        select id, ent_id, dept_id, station_type, electric_type, channel_id, channel_sn, com_device_id, com_device_sn, device_name, device_sn, sbdz, meter_number, group_id, is_pass, pro_factory, pro_type, pro_ver, buy_price, pro_sn, pro_model, ag_standard, rated_vol, rated_ele, rated_power, ele_load_rate, is_analysis_energy, monitor_id, electric_attribute, temperature_attribute, orther_attribute, is_reading, rated_volume, azimuth, dip_angle, manufacture_date, use_life, attenuation_rate, reading_var, dtu_cmd, bind_user_id, charging_type, rule_id, checkout_type, associated_devices, online_time, offline_time,timeout, is_active, active_update_time, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from monitor_device
+    </sql>
+
+    <select id="selectMonitorDeviceList" parameterType="MonitorDevice" resultMap="MonitorDeviceResult">
+        <include refid="selectMonitorDeviceVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="electricType != null "> and electric_type = #{electricType}</if>
+        <if test="channelId != null "> and channel_id = #{channelId}</if>
+        <if test="channelSn != null  and channelSn != ''"> and channel_sn = #{channelSn}</if>
+        <if test="comDeviceId != null "> and com_device_id = #{comDeviceId}</if>
+        <if test="comDeviceSn != null  and comDeviceSn != ''"> and com_device_sn = #{comDeviceSn}</if>
+        <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+        <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+        <if test="sbdz != null "> and group_id = #{sbdz}</if>
+        <if test="meterNumber != null "> and meter_number = #{meterNumber}</if>
+        <if test="groupId != null "> and group_id = #{groupId}</if>
+        <if test="isPass != null "> and is_pass = #{isPass}</if>
+        <if test="proFactory != null "> and pro_factory = #{proFactory}</if>
+        <if test="proType != null "> and pro_type = #{proType}</if>
+        <if test="proVer != null  and proVer != ''"> and pro_ver = #{proVer}</if>
+        <if test="buyPrice != null "> and buy_price = #{buyPrice}</if>
+        <if test="proSn != null  and proSn != ''"> and pro_sn = #{proSn}</if>
+        <if test="proModel != null  and proModel != ''"> and pro_model = #{proModel}</if>
+        <if test="agStandard != null  and agStandard != ''"> and ag_standard = #{agStandard}</if>
+        <if test="ratedVol != null "> and rated_vol = #{ratedVol}</if>
+        <if test="ratedEle != null "> and rated_ele = #{ratedEle}</if>
+        <if test="ratedPower != null "> and rated_power = #{ratedPower}</if>
+        <if test="eleLoadRate != null "> and ele_load_rate = #{eleLoadRate}</if>
+        <if test="isAnalysisEnergy != null "> and is_analysis_energy = #{isAnalysisEnergy}</if>
+        <if test="monitorId != null "> and monitor_id = #{monitorId}</if>
+        <if test="electricAttribute != null  and electricAttribute != ''"> and electric_attribute = #{electricAttribute}</if>
+        <if test="temperatureAttribute != null  and temperatureAttribute != ''"> and temperature_attribute = #{temperatureAttribute}</if>
+        <if test="ortherAttribute != null  and ortherAttribute != ''"> and orther_attribute = #{ortherAttribute}</if>
+        <if test="isReading != null "> and is_reading = #{isReading}</if>
+        <if test="ratedVolume != null "> and rated_volume = #{ratedVolume}</if>
+        <if test="azimuth != null "> and azimuth = #{azimuth}</if>
+        <if test="dipAngle != null "> and dip_angle = #{dipAngle}</if>
+        <if test="manufactureDate != null "> and manufacture_date = #{manufactureDate}</if>
+        <if test="useLife != null "> and use_life = #{useLife}</if>
+        <if test="attenuationRate != null "> and attenuation_rate = #{attenuationRate}</if>
+        <if test="readingVar != null "> and reading_var = #{readingVar}</if>
+        <if test="dtuCmd != null "> and dtu_cmd = #{dtuCmd}</if>
+        <if test="bindUserId != null "> and bind_user_id = #{bindUserId}</if>
+        <if test="chargingType != null "> and charging_type = #{chargingType}</if>
+        <if test="ruleId != null "> and rule_id = #{ruleId}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="params.groupIds != null and params.groupIds != ''">
+            and group_id in
+            <foreach item="item" collection="params.groupIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectMonitorDeviceById" parameterType="Long" resultMap="MonitorDeviceResult">
+        <include refid="selectMonitorDeviceVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectMonitorDeviceBySn" parameterType="String" resultMap="MonitorDeviceResult">
+        <include refid="selectMonitorDeviceVo"/>
+        where device_sn = #{deviceSn}
+    </select>
+
+    <select id="selectLastMonitorDevice" parameterType="MonitorDevice" resultMap="MonitorDeviceResult">
+        <include refid="selectMonitorDeviceVo"/>
+        where dept_id = #{deptId} and station_type = #{stationType}
+        order by id desc
+        limit 1
+    </select>
+
+    <insert id="insertMonitorDevice" parameterType="MonitorDevice" useGeneratedKeys="true" keyProperty="id">
+        insert into monitor_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="electricType != null">electric_type,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelSn != null">channel_sn,</if>
+            <if test="comDeviceId != null">com_device_id,</if>
+            <if test="comDeviceSn != null">com_device_sn,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="deviceSn != null">device_sn,</if>
+            <if test="sbdz != null">sbdz,</if>
+            <if test="meterNumber != null">meter_number,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="isPass != null">is_pass,</if>
+            <if test="proFactory != null">pro_factory,</if>
+            <if test="proType != null">pro_type,</if>
+            <if test="proVer != null">pro_ver,</if>
+            <if test="buyPrice != null">buy_price,</if>
+            <if test="proSn != null">pro_sn,</if>
+            <if test="proModel != null">pro_model,</if>
+            <if test="agStandard != null">ag_standard,</if>
+            <if test="ratedVol != null">rated_vol,</if>
+            <if test="ratedEle != null">rated_ele,</if>
+            <if test="ratedPower != null">rated_power,</if>
+            <if test="eleLoadRate != null">ele_load_rate,</if>
+            <if test="isAnalysisEnergy != null">is_analysis_energy,</if>
+            <if test="monitorId != null">monitor_id,</if>
+            <if test="electricAttribute != null">electric_attribute,</if>
+            <if test="temperatureAttribute != null">temperature_attribute,</if>
+            <if test="ortherAttribute != null">orther_attribute,</if>
+            <if test="isReading != null">is_reading,</if>
+            <if test="ratedVolume != null">rated_volume,</if>
+            <if test="azimuth != null">azimuth,</if>
+            <if test="dipAngle != null">dip_angle,</if>
+            <if test="manufactureDate != null">manufacture_date,</if>
+            <if test="useLife != null">use_life,</if>
+            <if test="attenuationRate != null">attenuation_rate,</if>
+            <if test="readingVar != null">reading_var,</if>
+            <if test="dtuCmd != null">dtu_cmd,</if>
+            <if test="bindUserId != null">bind_user_id,</if>
+            <if test="chargingType != null">charging_type,</if>
+            <if test="ruleId != null">rule_id,</if>
+            <if test="checkoutType != null">checkout_type,</if>
+            <if test="associatedDevices != null">associated_devices,</if>
+            <if test="onlineTime != null">online_time,</if>
+            <if test="offlineTime != null">offline_time,</if>
+            <if test="isActive != null">is_active,</if>
+	        <if test="timeout != null">timeout,</if>
+            <if test="activeUpdateTime != null">active_update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="electricType != null">#{electricType},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelSn != null">#{channelSn},</if>
+            <if test="comDeviceId != null">#{comDeviceId},</if>
+            <if test="comDeviceSn != null">#{comDeviceSn},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="deviceSn != null">#{deviceSn},</if>
+            <if test="sbdz != null">#{sbdz},</if>
+            <if test="meterNumber != null">#{meterNumber},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="isPass != null">#{isPass},</if>
+            <if test="proFactory != null">#{proFactory},</if>
+            <if test="proType != null">#{proType},</if>
+            <if test="proVer != null">#{proVer},</if>
+            <if test="buyPrice != null">#{buyPrice},</if>
+            <if test="proSn != null">#{proSn},</if>
+            <if test="proModel != null">#{proModel},</if>
+            <if test="agStandard != null">#{agStandard},</if>
+            <if test="ratedVol != null">#{ratedVol},</if>
+            <if test="ratedEle != null">#{ratedEle},</if>
+            <if test="ratedPower != null">#{ratedPower},</if>
+            <if test="eleLoadRate != null">#{eleLoadRate},</if>
+            <if test="isAnalysisEnergy != null">#{isAnalysisEnergy},</if>
+            <if test="monitorId != null">#{monitorId},</if>
+            <if test="electricAttribute != null">#{electricAttribute},</if>
+            <if test="temperatureAttribute != null">#{temperatureAttribute},</if>
+            <if test="ortherAttribute != null">#{ortherAttribute},</if>
+            <if test="isReading != null">#{isReading},</if>
+            <if test="ratedVolume != null">#{ratedVolume},</if>
+            <if test="azimuth != null">#{azimuth},</if>
+            <if test="dipAngle != null">#{dipAngle},</if>
+            <if test="manufactureDate != null">#{manufactureDate},</if>
+            <if test="useLife != null">#{useLife},</if>
+            <if test="attenuationRate != null">#{attenuationRate},</if>
+            <if test="readingVar != null">#{readingVar},</if>
+            <if test="dtuCmd != null">#{dtuCmd},</if>
+            <if test="bindUserId != null">#{bindUserId},</if>
+            <if test="chargingType != null">#{chargingType},</if>
+            <if test="ruleId != null">#{ruleId},</if>
+            <if test="checkoutType != null">#{checkoutType},</if>
+            <if test="associatedDevices != null">#{associatedDevices, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.AssociatedDevicesTypeHandler},</if>
+            <if test="onlineTime != null">#{onlineTime},</if>
+            <if test="offlineTime != null">#{offlineTime},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="timeout != null">#{timeout},</if>
+            <if test="activeUpdateTime != null">#{activeUpdateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMonitorDevice" parameterType="MonitorDevice">
+        update monitor_device s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="electricType != null">electric_type = #{electricType},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelSn != null">channel_sn = #{channelSn},</if>
+            <if test="comDeviceId != null">com_device_id = #{comDeviceId},</if>
+            <if test="comDeviceSn != null">com_device_sn = #{comDeviceSn},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="deviceSn != null">device_sn = #{deviceSn},</if>
+            <if test="sbdz != null">sbdz = #{sbdz},</if>
+            <if test="meterNumber != null">meter_number = #{meterNumber},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="isPass != null">is_pass = #{isPass},</if>
+            <if test="proFactory != null">pro_factory = #{proFactory},</if>
+            <if test="proType != null">pro_type = #{proType},</if>
+            <if test="proVer != null">pro_ver = #{proVer},</if>
+            <if test="buyPrice != null">buy_price = #{buyPrice},</if>
+            <if test="proSn != null">pro_sn = #{proSn},</if>
+            <if test="proModel != null">pro_model = #{proModel},</if>
+            <if test="agStandard != null">ag_standard = #{agStandard},</if>
+            <if test="ratedVol != null">rated_vol = #{ratedVol},</if>
+            <if test="ratedEle != null">rated_ele = #{ratedEle},</if>
+            <if test="ratedPower != null">rated_power = #{ratedPower},</if>
+            <if test="eleLoadRate != null">ele_load_rate = #{eleLoadRate},</if>
+            <if test="isAnalysisEnergy != null">is_analysis_energy = #{isAnalysisEnergy},</if>
+            <if test="monitorId != null">monitor_id = #{monitorId},</if>
+            <if test="electricAttribute != null">electric_attribute = #{electricAttribute},</if>
+            <if test="temperatureAttribute != null">temperature_attribute = #{temperatureAttribute},</if>
+            <if test="ortherAttribute != null">orther_attribute = #{ortherAttribute},</if>
+            <if test="isReading != null">is_reading = #{isReading},</if>
+            <if test="ratedVolume != null">rated_volume = #{ratedVolume},</if>
+            <if test="azimuth != null">azimuth = #{azimuth},</if>
+            <if test="dipAngle != null">dip_angle = #{dipAngle},</if>
+            <if test="manufactureDate != null">manufacture_date = #{manufactureDate},</if>
+            <if test="useLife != null">use_life = #{useLife},</if>
+            <if test="attenuationRate != null">attenuation_rate = #{attenuationRate},</if>
+            <if test="readingVar != null">reading_var = #{readingVar},</if>
+            <if test="dtuCmd != null">dtu_cmd = #{dtuCmd},</if>
+            <if test="bindUserId != null">bind_user_id = #{bindUserId},</if>
+            <if test="chargingType != null">charging_type = #{chargingType},</if>
+            <if test="ruleId != null">rule_id = #{ruleId},</if>
+            <if test="checkoutType != null">checkout_type = #{checkoutType},</if>
+            <if test="associatedDevices != null">associated_devices = #{associatedDevices, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.AssociatedDevicesTypeHandler},</if>
+            <if test="onlineTime != null">online_time = #{onlineTime},</if>
+            <if test="offlineTime != null">offline_time = #{offlineTime},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="timeout != null">timeout = #{timeout},</if>
+            <if test="activeUpdateTime != null">active_update_time = #{activeUpdateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <!-- 查询该[设备]下是否有[变量] -->
+    <select id="hasChildrenById" parameterType="Long" resultType="int">
+        select count(1) from monitor_device_var where delete_flag = 0 and device_id = #{id} limit 1
+    </select>
+
+    <delete id="deleteMonitorDeviceById" parameterType="Long">
+        delete from monitor_device where id = #{id}
+    </delete>
+
+    <delete id="deleteMonitorDeviceByIds" parameterType="String">
+        delete from monitor_device where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 删除上传之外的设备 - 物理删除 -->
+    <delete id="deleteMonitorDeviceBySns" parameterType="String">
+        delete from monitor_device
+        where ent_id = #{entId} and dept_id = #{deptId} and station_type = #{stationType}
+        and device_sn not in
+        <foreach item="sn" collection="params.deviceSns" open="(" separator="," close=")">
+            #{sn}
+        </foreach>
+    </delete>
+
+    <!-- 删除上传之外的设备 - 逻辑删除 -->
+    <delete id="deleteMonitorDeviceBySnsLogic" parameterType="String">
+        update monitor_device set delete_flag = 1
+        where ent_id = #{entId} and dept_id = #{deptId} and station_type = #{stationType}
+        and device_sn not in
+        <foreach item="sn" collection="params.deviceSns" open="(" separator="," close=")">
+            #{sn}
+        </foreach>
+    </delete>
+
+    <!-- 根据部门ID查询所有离线的通讯设备 -->
+    <select id="statusAllByDeptId" parameterType="Long" resultType="int">
+        select count(1) from monitor_device where dept_id = #{deptId} and is_active = 0 and stop_flag = 0 and delete_flag = 0
+    </select>
+
+    <!-- 根据部门ID查询所有通讯设备 -->
+    <select id="selectDeviceCountByDeptId" parameterType="Long" resultType="int">
+        select count(1) from monitor_device where dept_id = #{deptId} and stop_flag = 0 and delete_flag = 0
+    </select>
+</mapper>

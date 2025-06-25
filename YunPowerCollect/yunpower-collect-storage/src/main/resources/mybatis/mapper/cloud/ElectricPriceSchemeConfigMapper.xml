@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.ElectricPriceSchemeConfigMapper">
+
+    <resultMap type="ElectricPriceSchemeConfig" id="ElectricPriceSchemeConfigResult">
+        <result property="id"               column="id"    />
+        <result property="schemeId"         column="scheme_id"    />
+        <result property="effectYear"       column="effect_year"    />
+        <result property="effectMonth"      column="effect_month"    />
+        <result property="priceType"        column="price_type"    />
+        <result property="uniformPrice"     column="uniform_price"    />
+        <result property="jianPrice"        column="jian_price"    />
+        <result property="fengPrice"        column="feng_price"    />
+        <result property="pingPrice"        column="ping_price"    />
+        <result property="guPrice"          column="gu_price"    />
+        <result property="shenPrice"        column="shen_price"    />
+        <result property="wholePrice"       column="whole_price"    />
+        <result property="seasonalRange"    column="seasonal_range" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.collect.storage.domain.handler.SeasonalRangeTypeHandler" />
+    </resultMap>
+
+    <sql id="selectElectricPriceSchemeConfigVo">
+        select id, scheme_id, effect_year, effect_month, price_type, uniform_price, jian_price, feng_price, ping_price, gu_price, shen_price, whole_price, seasonal_range
+        from electric_price_scheme_config
+    </sql>
+
+    <select id="selectElectricPriceSchemeConfigList" parameterType="Integer" resultMap="ElectricPriceSchemeConfigResult">
+        <include refid="selectElectricPriceSchemeConfigVo"/>
+        where effect_year >= #{affterYear}
+    </select>
+</mapper>

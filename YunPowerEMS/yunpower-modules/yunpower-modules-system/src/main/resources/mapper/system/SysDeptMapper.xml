@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysDeptMapper">
+
+	<resultMap type="com.yunpower.system.api.domain.SysDept" id="SysDeptResult">
+		<id     property="id"     column="id"     />
+		<result property="entId"    column="ent_id"    />
+		<result property="parentId"    column="parent_id"    />
+		<result property="originType"    column="origin_type"    />
+		<result property="correId"    column="corre_id"    />
+		<result property="ancestors"    column="ancestors"    />
+		<result property="isCanSelect"    column="is_can_select"    />
+		<result property="deptName"    column="dept_name"    />
+		<result property="deptSn"    column="dept_sn"    />
+		<result property="leader"    column="leader"    />
+		<result property="mobile"    column="mobile"    />
+		<result property="email"    column="email"    />
+		<result property="orderNum"    column="order_num"    />
+		<result property="remark"    column="remark"    />
+		<result property="createBy"    column="create_by"    />
+		<result property="createTime"    column="create_time"    />
+		<result property="updateBy"    column="update_by"    />
+		<result property="updateTime"    column="update_time"    />
+		<result property="stopFlag"    column="stop_flag"    />
+		<result property="deleteFlag"    column="delete_flag"    />
+	</resultMap>
+	
+	<sql id="selectDeptVo">
+        select d.id, d.ent_id, d.parent_id, d.origin_type, d.corre_id, d.ancestors, d.is_can_select, d.dept_name, d.dept_sn, d.order_num, d.leader, d.mobile, d.email, d.stop_flag, d.delete_flag, d.create_by, d.create_time
+        from sys_dept d
+    </sql>
+
+	<!-- 查询部门管理数据（数据权限） -->
+	<select id="selectDeptList" parameterType="SysDept" resultMap="SysDeptResult">
+        <include refid="selectDeptVo"/>
+        where d.delete_flag = 0
+		<if test="id != null and id != 0"> and d.id = #{id}</if>
+		<if test="entId != null "> and d.ent_id = #{entId}</if>
+		<if test="parentId != null "> and d.parent_id = #{parentId}</if>
+		<if test="originType != null "> and d.origin_type = #{originType}</if>
+		<if test="correId != null "> and d.corre_id = #{correId}</if>
+		<if test="ancestors != null  and ancestors != ''"> and d.ancestors = #{ancestors}</if>
+		<if test="deptName != null  and deptName != ''"> and d.dept_name like concat('%', #{deptName}, '%')</if>
+		<if test="deptSn != null  and deptSn != ''"> and d.dept_sn = #{deptSn}</if>
+		<if test="stopFlag != null "> and d.stop_flag = #{stopFlag}</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+		order by d.parent_id, d.order_num
+    </select>
+
+	<!-- 获取用户授权范围内的第一个部门ID -->
+	<select id="getUserFirstAuthDeptId" parameterType="SysDept" resultType="Long">
+		SELECT d.id
+		FROM sys_dept d
+		WHERE d.stop_flag = 0 AND d.delete_flag = 0 AND d.is_can_select = 1
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+		LIMIT 1
+	</select>
+
+	<!-- 根据部门编码获取部门信息 -->
+	<select id="selectDeptByDeptSn" parameterType="String" resultMap="SysDeptResult">
+		<include refid="selectDeptVo"/>
+		where d.dept_sn = #{deptSn}
+	</select>
+
+	<!-- 根据角色ID查询部门树信息 -->
+    <select id="selectDeptListByRoleId" resultType="Long">
+		select d.id
+		from sys_dept d
+            left join sys_role_dept rd on d.id = rd.dept_id
+        where rd.role_id = #{roleId}
+            <if test="deptCheckStrictly">
+              and d.id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.id = rd.dept_id and rd.role_id = #{roleId})
+            </if>
+		order by d.parent_id, d.order_num
+	</select>
+
+	<!-- 根据部门ID查询信息 -->
+    <select id="selectDeptById" parameterType="Long" resultMap="SysDeptResult">
+		<include refid="selectDeptVo"/>
+		where id = #{deptId}
+	</select>
+
+	<!-- 查询部门是否存在用户 -->
+    <select id="checkDeptExistUser" parameterType="Long" resultType="int">
+		select count(1) from sys_user where dept_id = #{deptId} and delete_flag = 0
+	</select>
+
+	<!-- 查询部门是否存在子节点 -->
+	<select id="hasChildByDeptId" parameterType="Long" resultType="int">
+		select count(1) from sys_dept
+		where delete_flag = 0 and parent_id = #{deptId} limit 1
+	</select>
+
+	<!-- 根据ID查询所有子部门 -->
+	<select id="selectChildrenDeptById" parameterType="Long" resultMap="SysDeptResult">
+		select * from sys_dept where find_in_set(#{deptId}, ancestors)
+	</select>
+
+	<!-- 根据ID查询所有子部门（正常状态） -->
+	<select id="selectNormalChildrenDeptById" parameterType="Long" resultType="int">
+		select count(*) from sys_dept where stop_flag = 0 and delete_flag = 0 and find_in_set(#{deptId}, ancestors)
+	</select>
+
+	<!-- 校验部门名称是否唯一 -->
+	<select id="checkDeptNameUnique" resultMap="SysDeptResult">
+	    <include refid="selectDeptVo"/>
+		where dept_name=#{deptName} and parent_id = #{parentId} and delete_flag = 0 limit 1
+	</select>
+    
+    <insert id="insertDept" parameterType="SysDept" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_dept
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entId != null">ent_id,</if>
+			<if test="parentId != null">parent_id,</if>
+			<if test="originType != null">origin_type,</if>
+			<if test="correId != null">corre_id,</if>
+			<if test="ancestors != null">ancestors,</if>
+			<if test="isCanSelect != null">is_can_select,</if>
+			<if test="deptName != null">dept_name,</if>
+			<if test="deptSn != null">dept_sn,</if>
+			<if test="leader != null">leader,</if>
+			<if test="mobile != null">mobile,</if>
+			<if test="email != null">email,</if>
+			<if test="orderNum != null">order_num,</if>
+			<if test="remark != null">remark,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+			<if test="stopFlag != null">stop_flag,</if>
+			<if test="deleteFlag != null">delete_flag,</if>
+			create_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="entId != null">#{entId},</if>
+			<if test="parentId != null">#{parentId},</if>
+			<if test="originType != null">#{originType},</if>
+			<if test="correId != null">#{correId},</if>
+			<if test="ancestors != null">#{ancestors},</if>
+			<if test="isCanSelect != null">#{isCanSelect},</if>
+			<if test="deptName != null">#{deptName},</if>
+			<if test="deptSn != null">#{deptSn},</if>
+			<if test="leader != null">#{leader},</if>
+			<if test="mobile != null">#{mobile},</if>
+			<if test="email != null">#{email},</if>
+			<if test="orderNum != null">#{orderNum},</if>
+			<if test="remark != null">#{remark},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+			<if test="stopFlag != null">#{stopFlag},</if>
+			<if test="deleteFlag != null">#{deleteFlag},</if>
+			sysdate()
+		</trim>
+	</insert>
+	
+	<update id="updateDept" parameterType="SysDept">
+		update sys_dept
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="entId != null">ent_id = #{entId},</if>
+			<if test="parentId != null">parent_id = #{parentId},</if>
+			<if test="originType != null">origin_type = #{originType},</if>
+			<if test="correId != null">corre_id = #{correId},</if>
+			<if test="ancestors != null">ancestors = #{ancestors},</if>
+			<if test="isCanSelect != null">is_can_select = #{isCanSelect},</if>
+			<if test="deptName != null">dept_name = #{deptName},</if>
+			<if test="deptSn != null">dept_sn = #{deptSn},</if>
+			<if test="leader != null">leader = #{leader},</if>
+			<if test="mobile != null">mobile = #{mobile},</if>
+			<if test="email != null">email = #{email},</if>
+			<if test="orderNum != null">order_num = #{orderNum},</if>
+			<if test="remark != null">remark = #{remark},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+			<if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+			update_time = sysdate()
+		</trim>
+		where id = #{id}
+	</update>
+
+	<!-- 修改子元素关系 -->
+	<update id="updateDeptChildren" parameterType="java.util.List">
+	    update sys_dept set ancestors =
+	    <foreach collection="depts" item="item" index="index"
+	        separator=" " open="case id" close="end">
+	        when #{item.id} then #{item.ancestors}
+	    </foreach>
+	    where id in
+	    <foreach collection="depts" item="item" index="index"
+	        separator="," open="(" close=")">
+	        #{item.id}
+	    </foreach>
+	</update>
+
+	<!-- 修改所在部门：正常状态 -->
+	<update id="updateDeptStatusNormal" parameterType="Long">
+ 	    update sys_dept set stop_flag = 0 where id in 
+ 	    <foreach collection="array" item="deptId" open="(" separator="," close=")">
+        	#{deptId}
+        </foreach>
+	</update>
+
+	<!-- 删除部门管理信息 -->
+	<delete id="deleteDeptById" parameterType="Long">
+		update sys_dept set delete_flag = 1 where id = #{deptId}
+	</delete>
+
+	<!-- 删除所有部门管理信息 -->
+	<delete id="deleteDeptAll" parameterType="Long">
+		update sys_dept set delete_flag = 1
+	</delete>
+
+	<!-- 查询部门表中一共有多少条记录 -->
+	<select id="getAllCount" parameterType="Long" resultType="Long">
+		select count(1) from sys_dept
+	</select>
+</mapper> 

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysCompanyMapper">
+
+    <resultMap type="com.yunpower.system.domain.SysCompany" id="SysCompanyResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="companyNameEn"    column="company_name_en"    />
+        <result property="logicCode"    column="logic_code"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="companyType"    column="company_type"    />
+        <result property="industryGroupId"    column="industry_group_id"    />
+        <result property="logoUrl"    column="logo_url"    />
+        <result property="companyGrade"    column="company_grade"    />
+        <result property="companyScale"    column="company_scale"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
+        <result property="address"    column="address"    />
+        <result property="postCode"    column="post_code"    />
+        <result property="linkName"    column="link_name"    />
+        <result property="linkMobile"    column="link_mobile"    />
+        <result property="linkPhone"    column="linkPhone"    />
+        <result property="linkFax"    column="link_fax"    />
+        <result property="email"    column="email"    />
+        <result property="invoiceTitle"    column="invoice_title"    />
+        <result property="invoiceTax"    column="invoice_tax"    />
+        <result property="invoiceAddress"    column="invoice_address"    />
+        <result property="invoicePhone"    column="invoice_phone"    />
+        <result property="invoiceBack"    column="invoice_back"    />
+        <result property="invoiceAccount"    column="invoice_account"    />
+        <result property="description"    column="description"    />
+        <result property="homePage"    column="home_page"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysCompanyVo">
+        select id, ent_id, dept_id, parent_id, company_name, company_name_en, logic_code, group_id, company_type, industry_group_id, logo_url, company_grade, company_scale, province, city, county, address, post_code, link_name, link_mobile, linkPhone, link_fax, email, invoice_title, invoice_tax, invoice_address, invoice_phone, invoice_back, invoice_account, description, home_page, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from sys_company
+    </sql>
+
+    <select id="selectSysCompanyList" parameterType="SysCompany" resultMap="SysCompanyResult">
+        <include refid="selectSysCompanyVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="parentId != null "> and parent_id = #{parentId}</if>
+        <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+        <if test="companyNameEn != null  and companyNameEn != ''"> and company_name_en = #{companyNameEn}</if>
+        <if test="logicCode != null  and logicCode != ''"> and logic_code = #{logicCode}</if>
+        <if test="groupId != null "> and group_id = #{groupId}</if>
+        <if test="companyType != null "> and company_type = #{companyType}</if>
+        <if test="industryGroupId != null "> and industry_group_id = #{industryGroupId}</if>
+        <if test="logoUrl != null  and logoUrl != ''"> and logo_url = #{logoUrl}</if>
+        <if test="companyGrade != null  and companyGrade != ''"> and company_grade = #{companyGrade}</if>
+        <if test="companyScale != null  and companyScale != ''"> and company_scale = #{companyScale}</if>
+        <if test="province != null "> and province = #{province}</if>
+        <if test="city != null "> and city = #{city}</if>
+        <if test="county != null "> and county = #{county}</if>
+        <if test="address != null  and address != ''"> and address = #{address}</if>
+        <if test="postCode != null  and postCode != ''"> and post_code = #{postCode}</if>
+        <if test="linkName != null  and linkName != ''"> and link_name like concat('%', #{linkName}, '%')</if>
+        <if test="linkMobile != null  and linkMobile != ''"> and link_mobile = #{linkMobile}</if>
+        <if test="linkPhone != null  and linkPhone != ''"> and linkPhone = #{linkPhone}</if>
+        <if test="linkFax != null  and linkFax != ''"> and link_fax = #{linkFax}</if>
+        <if test="email != null  and email != ''"> and email = #{email}</if>
+        <if test="invoiceTitle != null  and invoiceTitle != ''"> and invoice_title = #{invoiceTitle}</if>
+        <if test="invoiceTax != null  and invoiceTax != ''"> and invoice_tax = #{invoiceTax}</if>
+        <if test="invoiceAddress != null  and invoiceAddress != ''"> and invoice_address = #{invoiceAddress}</if>
+        <if test="invoicePhone != null  and invoicePhone != ''"> and invoice_phone = #{invoicePhone}</if>
+        <if test="invoiceBack != null  and invoiceBack != ''"> and invoice_back = #{invoiceBack}</if>
+        <if test="invoiceAccount != null  and invoiceAccount != ''"> and invoice_account = #{invoiceAccount}</if>
+        <if test="description != null  and description != ''"> and description = #{description}</if>
+        <if test="homePage != null  and homePage != ''"> and home_page = #{homePage}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+    </select>
+
+    <select id="selectSysCompanyById" parameterType="Long" resultMap="SysCompanyResult">
+        <include refid="selectSysCompanyVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysCompany" parameterType="SysCompany" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_company
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="companyName != null">company_name,</if>
+            <if test="companyNameEn != null">company_name_en,</if>
+            <if test="logicCode != null">logic_code,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="companyType != null">company_type,</if>
+            <if test="industryGroupId != null">industry_group_id,</if>
+            <if test="logoUrl != null">logo_url,</if>
+            <if test="companyGrade != null">company_grade,</if>
+            <if test="companyScale != null">company_scale,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="county != null">county,</if>
+            <if test="address != null">address,</if>
+            <if test="postCode != null">post_code,</if>
+            <if test="linkName != null">link_name,</if>
+            <if test="linkMobile != null">link_mobile,</if>
+            <if test="linkPhone != null">linkPhone,</if>
+            <if test="linkFax != null">link_fax,</if>
+            <if test="email != null">email,</if>
+            <if test="invoiceTitle != null">invoice_title,</if>
+            <if test="invoiceTax != null">invoice_tax,</if>
+            <if test="invoiceAddress != null">invoice_address,</if>
+            <if test="invoicePhone != null">invoice_phone,</if>
+            <if test="invoiceBack != null">invoice_back,</if>
+            <if test="invoiceAccount != null">invoice_account,</if>
+            <if test="description != null">description,</if>
+            <if test="homePage != null">home_page,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="companyName != null">#{companyName},</if>
+            <if test="companyNameEn != null">#{companyNameEn},</if>
+            <if test="logicCode != null">#{logicCode},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="companyType != null">#{companyType},</if>
+            <if test="industryGroupId != null">#{industryGroupId},</if>
+            <if test="logoUrl != null">#{logoUrl},</if>
+            <if test="companyGrade != null">#{companyGrade},</if>
+            <if test="companyScale != null">#{companyScale},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="county != null">#{county},</if>
+            <if test="address != null">#{address},</if>
+            <if test="postCode != null">#{postCode},</if>
+            <if test="linkName != null">#{linkName},</if>
+            <if test="linkMobile != null">#{linkMobile},</if>
+            <if test="linkPhone != null">#{linkPhone},</if>
+            <if test="linkFax != null">#{linkFax},</if>
+            <if test="email != null">#{email},</if>
+            <if test="invoiceTitle != null">#{invoiceTitle},</if>
+            <if test="invoiceTax != null">#{invoiceTax},</if>
+            <if test="invoiceAddress != null">#{invoiceAddress},</if>
+            <if test="invoicePhone != null">#{invoicePhone},</if>
+            <if test="invoiceBack != null">#{invoiceBack},</if>
+            <if test="invoiceAccount != null">#{invoiceAccount},</if>
+            <if test="description != null">#{description},</if>
+            <if test="homePage != null">#{homePage},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysCompany" parameterType="SysCompany">
+        update sys_company s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="companyNameEn != null">company_name_en = #{companyNameEn},</if>
+            <if test="logicCode != null">logic_code = #{logicCode},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="companyType != null">company_type = #{companyType},</if>
+            <if test="industryGroupId != null">industry_group_id = #{industryGroupId},</if>
+            <if test="logoUrl != null">logo_url = #{logoUrl},</if>
+            <if test="companyGrade != null">company_grade = #{companyGrade},</if>
+            <if test="companyScale != null">company_scale = #{companyScale},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="county != null">county = #{county},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="postCode != null">post_code = #{postCode},</if>
+            <if test="linkName != null">link_name = #{linkName},</if>
+            <if test="linkMobile != null">link_mobile = #{linkMobile},</if>
+            <if test="linkPhone != null">linkPhone = #{linkPhone},</if>
+            <if test="linkFax != null">link_fax = #{linkFax},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="invoiceTitle != null">invoice_title = #{invoiceTitle},</if>
+            <if test="invoiceTax != null">invoice_tax = #{invoiceTax},</if>
+            <if test="invoiceAddress != null">invoice_address = #{invoiceAddress},</if>
+            <if test="invoicePhone != null">invoice_phone = #{invoicePhone},</if>
+            <if test="invoiceBack != null">invoice_back = #{invoiceBack},</if>
+            <if test="invoiceAccount != null">invoice_account = #{invoiceAccount},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="homePage != null">home_page = #{homePage},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteSysCompanyById" parameterType="Long">
+        delete from sys_company where id = #{id}
+    </delete>
+
+    <delete id="deleteSysCompanyByIds" parameterType="String">
+        delete from sys_company where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

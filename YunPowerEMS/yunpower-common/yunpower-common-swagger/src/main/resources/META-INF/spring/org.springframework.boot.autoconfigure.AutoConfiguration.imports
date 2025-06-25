@@ -1,0 +1,3 @@
+# com.yunpower.common.swagger.config.SwaggerAutoConfiguration
+# com.yunpower.common.swagger.config.SwaggerWebConfiguration
+# com.yunpower.common.swagger.config.SwaggerBeanPostProcessor

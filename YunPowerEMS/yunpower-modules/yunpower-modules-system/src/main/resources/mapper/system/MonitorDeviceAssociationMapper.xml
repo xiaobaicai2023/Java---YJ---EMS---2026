@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.MonitorDeviceAssociationMapper">
+    
+    <resultMap type="com.yunpower.system.domain.MonitorDeviceAssociation" id="MonitorDeviceAssociationResult">
+        <result property="id"    column="id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="correDeviceId"    column="corre_device_id"    />
+        <result property="correDeviceName"    column="corre_device_name"    />
+        <result property="correDeviceSn"    column="corre_device_sn"    />
+    </resultMap>
+
+    <sql id="selectMonitorDeviceAssociationVo">
+        select id, device_id, corre_device_id, corre_device_name, corre_device_sn from monitor_device_association
+    </sql>
+
+    <select id="selectMonitorDeviceAssociationList" parameterType="MonitorDeviceAssociation" resultMap="MonitorDeviceAssociationResult">
+        <include refid="selectMonitorDeviceAssociationVo"/>
+        <where>
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="correDeviceId != null "> and corre_device_id = #{correDeviceId}</if>
+            <if test="correDeviceName != null  and correDeviceName != ''"> and corre_device_name like concat('%', #{correDeviceName}, '%')</if>
+            <if test="correDeviceSn != null  and correDeviceSn != ''"> and corre_device_sn = #{correDeviceSn}</if>
+        </where>
+    </select>
+    
+    <select id="selectMonitorDeviceAssociationById" parameterType="Long" resultMap="MonitorDeviceAssociationResult">
+        <include refid="selectMonitorDeviceAssociationVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMonitorDeviceAssociation" parameterType="MonitorDeviceAssociation" useGeneratedKeys="true" keyProperty="id">
+        insert into monitor_device_association
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="correDeviceId != null">corre_device_id,</if>
+            <if test="correDeviceName != null">corre_device_name,</if>
+            <if test="correDeviceSn != null">corre_device_sn,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="correDeviceId != null">#{correDeviceId},</if>
+            <if test="correDeviceName != null">#{correDeviceName},</if>
+            <if test="correDeviceSn != null">#{correDeviceSn},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMonitorDeviceAssociation" parameterType="MonitorDeviceAssociation">
+        update monitor_device_association
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="correDeviceId != null">corre_device_id = #{correDeviceId},</if>
+            <if test="correDeviceName != null">corre_device_name = #{correDeviceName},</if>
+            <if test="correDeviceSn != null">corre_device_sn = #{correDeviceSn},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMonitorDeviceAssociationById" parameterType="Long">
+        delete from monitor_device_association where id = #{id}
+    </delete>
+
+    <delete id="deleteMonitorDeviceAssociationByIds" parameterType="String">
+        delete from monitor_device_association where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

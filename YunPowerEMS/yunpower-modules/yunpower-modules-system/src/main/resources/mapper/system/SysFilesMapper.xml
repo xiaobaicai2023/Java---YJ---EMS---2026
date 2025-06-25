@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysFilesMapper">
+    
+    <resultMap type="com.yunpower.system.domain.SysFiles" id="SysFilesResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="tableName"    column="table_name"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="serviceType"    column="service_type"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="fileSize"    column="file_size"    />
+        <result property="contentType"    column="content_type"    />
+        <result property="absolutePath"    column="absolute_path"    />
+        <result property="savePath"    column="save_path"    />
+        <result property="bucketName"    column="bucket_name"    />
+        <result property="onlyKey"    column="only_key"    />
+        <result property="storageClass"    column="storage_class"    />
+        <result property="etag"    column="etag"    />
+        <result property="webUrl"    column="web_url"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysFilesVo">
+        select id, ent_id, dept_id, table_name, record_id, service_type, file_name, file_size, content_type, absolute_path, save_path, bucket_name, only_key, storage_class, etag, web_url, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from sys_files
+    </sql>
+
+    <select id="selectSysFilesList" parameterType="SysFiles" resultMap="SysFilesResult">
+        <include refid="selectSysFilesVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="tableName != null  and tableName != ''"> and table_name like concat('%', #{tableName}, '%')</if>
+        <if test="recordId != null "> and record_id = #{recordId}</if>
+        <if test="serviceType != null "> and service_type = #{serviceType}</if>
+        <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+        <if test="fileSize != null "> and file_size = #{fileSize}</if>
+        <if test="contentType != null  and contentType != ''"> and content_type = #{contentType}</if>
+        <if test="absolutePath != null  and absolutePath != ''"> and absolute_path = #{absolutePath}</if>
+        <if test="savePath != null  and savePath != ''"> and save_path = #{savePath}</if>
+        <if test="bucketName != null  and bucketName != ''"> and bucket_name like concat('%', #{bucketName}, '%')</if>
+        <if test="onlyKey != null  and onlyKey != ''"> and only_key = #{onlyKey}</if>
+        <if test="storageClass != null  and storageClass != ''"> and storage_class = #{storageClass}</if>
+        <if test="etag != null  and etag != ''"> and etag = #{etag}</if>
+        <if test="webUrl != null  and webUrl != ''"> and web_url = #{webUrl}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+    </select>
+    
+    <select id="selectSysFilesById" parameterType="Long" resultMap="SysFilesResult">
+        <include refid="selectSysFilesVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysFiles" parameterType="SysFiles" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_files
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="tableName != null">table_name,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="serviceType != null">service_type,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="contentType != null">content_type,</if>
+            <if test="absolutePath != null">absolute_path,</if>
+            <if test="savePath != null">save_path,</if>
+            <if test="bucketName != null">bucket_name,</if>
+            <if test="onlyKey != null">only_key,</if>
+            <if test="storageClass != null">storage_class,</if>
+            <if test="etag != null">etag,</if>
+            <if test="webUrl != null">web_url,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="tableName != null">#{tableName},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="serviceType != null">#{serviceType},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="contentType != null">#{contentType},</if>
+            <if test="absolutePath != null">#{absolutePath},</if>
+            <if test="savePath != null">#{savePath},</if>
+            <if test="bucketName != null">#{bucketName},</if>
+            <if test="onlyKey != null">#{onlyKey},</if>
+            <if test="storageClass != null">#{storageClass},</if>
+            <if test="etag != null">#{etag},</if>
+            <if test="webUrl != null">#{webUrl},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysFiles" parameterType="SysFiles">
+        update sys_files s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="tableName != null">table_name = #{tableName},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="serviceType != null">service_type = #{serviceType},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="contentType != null">content_type = #{contentType},</if>
+            <if test="absolutePath != null">absolute_path = #{absolutePath},</if>
+            <if test="savePath != null">save_path = #{savePath},</if>
+            <if test="bucketName != null">bucket_name = #{bucketName},</if>
+            <if test="onlyKey != null">only_key = #{onlyKey},</if>
+            <if test="storageClass != null">storage_class = #{storageClass},</if>
+            <if test="etag != null">etag = #{etag},</if>
+            <if test="webUrl != null">web_url = #{webUrl},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteSysFilesById" parameterType="Long">
+        delete from sys_files where id = #{id}
+    </delete>
+
+    <delete id="deleteSysFilesByIds" parameterType="String">
+        delete from sys_files where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,37 @@
+
+# 启动环境配置Tomcat
+server:
+  # 服务器的HTTP端口，默认为80
+  port: 9500
+  servlet:
+    # 应用的访问路径
+    context-path: /
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: @artifactId@
+  profiles:
+    # 环境配置
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: 123456
+      config:
+        # 配置中心地址
+        server-addr: 127.0.0.1:8848
+        username: nacos
+        password: 123456
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+#配置文件加载的优先级（由高到低）
+#bootstrap.properties -> bootstrap.yml -> application.properties -> application.yml
+#Usage设计
+#https://patorjk.com/software/taag/#p=display&h=1&f=Big&t=yunpower-collect-biz

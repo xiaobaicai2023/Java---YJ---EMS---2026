@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysCommonConfigMapper">
+    
+    <resultMap type="com.yunpower.system.domain.SysCommonConfig" id="SysCommonConfigResult">
+    	<id     property="id"           column="id"      />
+        <result property="entId"        column="ent_id"    />
+        <result property="deptId"       column="dept_id"    />
+        <result property="paramKey"     column="param_key"    />
+        <result property="paramValue"   column="param_value"    />
+        <result property="isSystem"     column="is_system"    />
+        <result property="paramInfo"    column="param_info"    />
+        <result property="remark"       column="remark"    />
+        <result property="createBy"     column="create_by"    />
+        <result property="createTime"   column="create_time"    />
+        <result property="updateBy"     column="update_by"    />
+        <result property="updateTime"   column="update_time"    />
+        <result property="stopFlag"     column="stop_flag"    />
+        <result property="deleteFlag"   column="delete_flag"    />
+    </resultMap>
+    
+    <sql id="selectConfigVo">
+        select id, ent_id, dept_id, param_key, param_value, is_system, param_info, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag 
+        from sys_common_config
+    </sql>
+    
+    <!-- 查询条件 -->
+	<sql id="sqlwhereSearch">
+        where delete_flag = 0
+        <if test="id !=null">
+            and id = #{id}
+        </if>
+        <if test="paramKey !=null and paramKey != ''">
+            and param_key = #{paramKey}
+        </if>
+        <if test="isSystem != null and isSystem != ''">
+            and is_system = #{isSystem}
+        </if>
+        <if test="stopFlag != null and stopFlag != ''">
+            and stop_flag = #{stopFlag}
+        </if>
+	</sql>
+    
+    <select id="selectConfig" parameterType="SysCommonConfig" resultMap="SysCommonConfigResult">
+        <include refid="selectConfigVo"/>
+        <include refid="sqlwhereSearch"/>
+    </select>
+    
+    <select id="selectConfigList" parameterType="SysCommonConfig" resultMap="SysCommonConfigResult">
+        <include refid="selectConfigVo"/>
+        where delete_flag = 0
+        <if test="paramKey != null and paramKey != ''">
+            AND param_key like concat('%', #{paramKey}, '%')
+        </if>
+        <if test="isSystem != null and isSystem != ''">
+            AND is_system = #{isSystem}
+        </if>
+        <if test="remark != null and remark != ''">
+            AND remark like concat('%', #{remark}, '%')
+        </if>
+        <if test="stopFlag != null and stopFlag != ''">
+            and stop_flag = #{stopFlag}
+        </if>
+        <!-- 开始时间检索 -->
+        <if test="params.beginTime != null and params.beginTime != ''">
+            and date_format(create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+        </if>
+        <!-- 结束时间检索 -->
+        <if test="params.endTime != null and params.endTime != ''">
+            and date_format(create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+        </if>
+    </select>
+    
+    <select id="selectConfigById" parameterType="Long" resultMap="SysCommonConfigResult">
+        <include refid="selectConfigVo"/>
+        where id = #{configId}
+    </select>
+    
+    <select id="checkConfigKeyUnique" parameterType="String" resultMap="SysCommonConfigResult">
+        <include refid="selectConfigVo"/>
+        where param_key = #{configKey} limit 1
+    </select>
+    
+    <insert id="insertConfig" parameterType="SysCommonConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_common_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="paramKey != null">param_key,</if>
+            <if test="paramValue != null">param_value,</if>
+            <if test="isSystem != null">is_system,</if>
+            <if test="paramInfo != null">param_info,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="paramKey != null">#{paramKey},</if>
+            <if test="paramValue != null">#{paramValue},</if>
+            <if test="isSystem != null">#{isSystem},</if>
+            <if test="paramInfo != null">#{paramInfo},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            sysdate()
+        </trim>
+    </insert>
+	 
+    <update id="updateConfig" parameterType="SysCommonConfig">
+        update sys_common_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="paramKey != null">param_key = #{paramKey},</if>
+            <if test="paramValue != null">param_value = #{paramValue},</if>
+            <if test="isSystem != null">is_system = #{isSystem},</if>
+            <if test="paramInfo != null">param_info = #{paramInfo},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            update_time = sysdate()
+        </trim>
+        where id = #{id}
+    </update>
+	
+    <delete id="deleteConfigById" parameterType="Long">
+        delete from sys_common_config where id = #{configId}
+    </delete>
+    
+    <delete id="deleteConfigByIds" parameterType="Long">
+        delete from sys_common_config where id in 
+        <foreach item="configId" collection="array" open="(" separator="," close=")">
+        	#{configId}
+        </foreach>
+    </delete>
+    
+</mapper>

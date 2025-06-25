@@ -1,7 +1,7 @@
-# 能耗管理
+# YunPower
 
 #### Description
-YJ-EMS 能源管理系统，开源能源管理系统，适用于企业能源监测、能源管控、能源管理、能源监控和能源预测，能源管理平台针对高能耗企业用水、用电、用汽、用热、用油、空压机、光伏逆变器、中央空调等数据采集和分析，支持能源可视化看板、能耗自定义报表、自定义大屏，高耗能园区、写字楼、办公楼均适用；
+YunPowerEMS
 
 #### Software Architecture
 Software architecture description

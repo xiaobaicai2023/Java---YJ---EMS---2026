@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysCommonWeatherMapper">
+    
+    <resultMap type="com.yunpower.system.domain.SysCommonWeather" id="SysCommonWeatherResult">
+        <result property="id"    column="id"    />
+        <result property="country"    column="country"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
+        <result property="town"    column="town"    />
+        <result property="village"    column="village"    />
+        <result property="weatherDate"    column="weather_date"    />
+        <result property="weatherHour"    column="weather_hour"    />
+        <result property="sunrise"    column="sunrise"    />
+        <result property="weatherBase"    column="weather_base"    />
+        <result property="airQuality"    column="air_quality"    />
+        <result property="windDirection"    column="wind_direction"    />
+        <result property="windForce"    column="wind_force"    />
+        <result property="windSpeed"    column="wind_speed"    />
+        <result property="temperature"    column="temperature"    />
+        <result property="sendibleTemperature"    column="sendible_temperature"    />
+        <result property="humidity"    column="humidity"    />
+        <result property="precipitation"    column="precipitation"    />
+        <result property="lightRadiation"    column="light_radiation"    />
+        <result property="ultravioletRays"    column="ultraviolet_rays"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysCommonWeatherVo">
+        select id, country, province, city, county, town, village, weather_date, weather_hour, sunrise, weather_base, air_quality, wind_direction, wind_force, wind_speed, temperature, sendible_temperature, humidity, precipitation, light_radiation, ultraviolet_rays, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from sys_common_weather
+    </sql>
+
+    <select id="selectSysCommonWeatherList" parameterType="SysCommonWeather" resultMap="SysCommonWeatherResult">
+        <include refid="selectSysCommonWeatherVo"/>
+        where delete_flag = 0
+        <if test="country != null "> and country = #{country}</if>
+        <if test="province != null "> and province = #{province}</if>
+        <if test="city != null "> and city = #{city}</if>
+        <if test="county != null "> and county = #{county}</if>
+        <if test="town != null "> and town = #{town}</if>
+        <if test="village != null "> and village = #{village}</if>
+        <if test="weatherDate != null "> and weather_date = #{weatherDate}</if>
+        <if test="weatherHour != null "> and weather_hour = #{weatherHour}</if>
+        <if test="sunrise != null  and sunrise != ''"> and sunrise = #{sunrise}</if>
+        <if test="weatherBase != null  and weatherBase != ''"> and weather_base = #{weatherBase}</if>
+        <if test="airQuality != null  and airQuality != ''"> and air_quality = #{airQuality}</if>
+        <if test="windDirection != null  and windDirection != ''"> and wind_direction = #{windDirection}</if>
+        <if test="windForce != null "> and wind_force = #{windForce}</if>
+        <if test="windSpeed != null "> and wind_speed = #{windSpeed}</if>
+        <if test="temperature != null "> and temperature = #{temperature}</if>
+        <if test="sendibleTemperature != null "> and sendible_temperature = #{sendibleTemperature}</if>
+        <if test="humidity != null "> and humidity = #{humidity}</if>
+        <if test="precipitation != null "> and precipitation = #{precipitation}</if>
+        <if test="lightRadiation != null "> and light_radiation = #{lightRadiation}</if>
+        <if test="ultravioletRays != null  and ultravioletRays != ''"> and ultraviolet_rays = #{ultravioletRays}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+    </select>
+    
+    <select id="selectSysCommonWeatherById" parameterType="Long" resultMap="SysCommonWeatherResult">
+        <include refid="selectSysCommonWeatherVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysCommonWeather" parameterType="SysCommonWeather" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_common_weather
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="country != null">country,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="county != null">county,</if>
+            <if test="town != null">town,</if>
+            <if test="village != null">village,</if>
+            <if test="weatherDate != null">weather_date,</if>
+            <if test="weatherHour != null">weather_hour,</if>
+            <if test="sunrise != null">sunrise,</if>
+            <if test="weatherBase != null">weather_base,</if>
+            <if test="airQuality != null">air_quality,</if>
+            <if test="windDirection != null">wind_direction,</if>
+            <if test="windForce != null">wind_force,</if>
+            <if test="windSpeed != null">wind_speed,</if>
+            <if test="temperature != null">temperature,</if>
+            <if test="sendibleTemperature != null">sendible_temperature,</if>
+            <if test="humidity != null">humidity,</if>
+            <if test="precipitation != null">precipitation,</if>
+            <if test="lightRadiation != null">light_radiation,</if>
+            <if test="ultravioletRays != null">ultraviolet_rays,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="country != null">#{country},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="county != null">#{county},</if>
+            <if test="town != null">#{town},</if>
+            <if test="village != null">#{village},</if>
+            <if test="weatherDate != null">#{weatherDate},</if>
+            <if test="weatherHour != null">#{weatherHour},</if>
+            <if test="sunrise != null">#{sunrise},</if>
+            <if test="weatherBase != null">#{weatherBase},</if>
+            <if test="airQuality != null">#{airQuality},</if>
+            <if test="windDirection != null">#{windDirection},</if>
+            <if test="windForce != null">#{windForce},</if>
+            <if test="windSpeed != null">#{windSpeed},</if>
+            <if test="temperature != null">#{temperature},</if>
+            <if test="sendibleTemperature != null">#{sendibleTemperature},</if>
+            <if test="humidity != null">#{humidity},</if>
+            <if test="precipitation != null">#{precipitation},</if>
+            <if test="lightRadiation != null">#{lightRadiation},</if>
+            <if test="ultravioletRays != null">#{ultravioletRays},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCommonWeather" parameterType="SysCommonWeather">
+        update sys_common_weather
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="country != null">country = #{country},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="county != null">county = #{county},</if>
+            <if test="town != null">town = #{town},</if>
+            <if test="village != null">village = #{village},</if>
+            <if test="weatherDate != null">weather_date = #{weatherDate},</if>
+            <if test="weatherHour != null">weather_hour = #{weatherHour},</if>
+            <if test="sunrise != null">sunrise = #{sunrise},</if>
+            <if test="weatherBase != null">weather_base = #{weatherBase},</if>
+            <if test="airQuality != null">air_quality = #{airQuality},</if>
+            <if test="windDirection != null">wind_direction = #{windDirection},</if>
+            <if test="windForce != null">wind_force = #{windForce},</if>
+            <if test="windSpeed != null">wind_speed = #{windSpeed},</if>
+            <if test="temperature != null">temperature = #{temperature},</if>
+            <if test="sendibleTemperature != null">sendible_temperature = #{sendibleTemperature},</if>
+            <if test="humidity != null">humidity = #{humidity},</if>
+            <if test="precipitation != null">precipitation = #{precipitation},</if>
+            <if test="lightRadiation != null">light_radiation = #{lightRadiation},</if>
+            <if test="ultravioletRays != null">ultraviolet_rays = #{ultravioletRays},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysCommonWeatherById" parameterType="Long">
+        delete from sys_common_weather where id = #{id}
+    </delete>
+
+    <delete id="deleteSysCommonWeatherByIds" parameterType="String">
+        delete from sys_common_weather where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysEnterpriseMenuMapper">
+
+    <resultMap type="com.yunpower.system.domain.SysEnterpriseMenu" id="SysEnterpriseMenuResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="menuId"    column="menu_id"    />
+    </resultMap>
+
+    <sql id="selectSysEnterpriseMenuVo">
+        select id, ent_id, menu_id from sys_enterprise_menu
+    </sql>
+
+    <select id="selectSysEnterpriseMenuList" parameterType="SysEnterpriseMenu" resultMap="SysEnterpriseMenuResult">
+        <include refid="selectSysEnterpriseMenuVo"/>
+        <where>
+            <if test="entId != null "> and ent_id = #{entId}</if>
+            <if test="menuId != null "> and menu_id = #{menuId}</if>
+        </where>
+    </select>
+
+    <select id="selectSysEnterpriseMenuById" parameterType="Long" resultMap="SysEnterpriseMenuResult">
+        <include refid="selectSysEnterpriseMenuVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="batchInsertEnterpriseMenu">
+        insert into sys_enterprise_menu(ent_id, menu_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.entId},#{item.menuId})
+        </foreach>
+    </insert>
+
+    <insert id="insertSysEnterpriseMenu" parameterType="SysEnterpriseMenu" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_enterprise_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="menuId != null">menu_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="menuId != null">#{menuId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysEnterpriseMenu" parameterType="SysEnterpriseMenu">
+        update sys_enterprise_menu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="menuId != null">menu_id = #{menuId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysEnterpriseMenuById" parameterType="Long">
+        delete from sys_enterprise_menu where id = #{id}
+    </delete>
+
+    <delete id="deleteSysEnterpriseMenuByEntId" parameterType="Long">
+        delete from sys_enterprise_menu where ent_id = #{entId}
+    </delete>
+
+    <delete id="deleteSysEnterpriseMenuByIds" parameterType="String">
+        delete from sys_enterprise_menu where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

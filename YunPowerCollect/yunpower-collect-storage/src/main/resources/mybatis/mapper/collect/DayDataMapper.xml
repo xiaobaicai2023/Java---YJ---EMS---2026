@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.DayDataMapper">
+
+    <!-- 插入数据，有则替换 -->
+    <insert id="insert" parameterType="java.util.Map">
+        INSERT INTO ${tableName} (
+            variable_name,
+            save_time,
+            data_value
+        ) VALUES (
+             #{variableName},
+             #{saveTime},
+             #{dataValue}
+        ) ON DUPLICATE KEY UPDATE
+        save_time = VALUES(save_time),
+        data_value = VALUES(data_value);
+    </insert>
+
+    <!-- 创建日数据存储表 -->
+    <update id="createDayDataTable" parameterType="String">
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+            `variable_name` VARCHAR(32) NOT NULL COMMENT '变量名称' COLLATE 'utf8mb4_general_ci',
+            `save_time`     DATETIME    NOT NULL COMMENT '存盘时间',
+            `data_value`    DOUBLE(16,4)       NOT NULL COMMENT '数据',
+            UNIQUE INDEX `Index_var_u` (`variable_name`, `save_time`) USING BTREE
+        )
+        COMMENT='日数据存储表'
+        COLLATE='utf8mb4_general_ci'
+        ENGINE=InnoDB;
+    </update>
+
+    <!-- 创建月统计数据存储表 -->
+    <update id="createMonthDataTable" parameterType="String">
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+            `id`            INT(10)     NOT NULL AUTO_INCREMENT COMMENT '编号ID',
+            `variable_name` VARCHAR(32) NOT NULL COMMENT '变量名称' COLLATE 'utf8mb4_general_ci',
+            `day_sign`      INT(10)     NOT NULL COMMENT '日期天',
+            `min_value`     DOUBLE(16,4)  NOT NULL COMMENT '最小值',
+            `min_time`      DATETIME    NOT NULL COMMENT '最小值发生时间',
+            `max_value`     DOUBLE(16,4)   NOT NULL COMMENT '最大值',
+            `max_time`      DATETIME    NOT NULL COMMENT '最大值发生时间',
+            `avg_value`     DOUBLE(16,4)       NOT NULL COMMENT '平均值',
+            `accu_sign`     INT(10)     NOT NULL COMMENT '累积标记：1时累积 2天累积',
+            `accu_value`    DOUBLE(16,4)   NOT NULL COMMENT '累积值',
+            `runtime_value` DOUBLE(16,4)   NOT NULL COMMENT '实时值',
+            `total_count`   INT(10)     NOT NULL COMMENT '总记录数',
+            `save_time`     DATETIME    NOT NULL COMMENT '统计时间',
+            PRIMARY KEY (`id`) USING BTREE,
+            UNIQUE INDEX `index_variable_day` (`variable_name`, `day_sign`) USING BTREE,
+            INDEX `Index_variable_name` (`variable_name`) USING BTREE
+        )
+        COMMENT='月统计数据存储表'
+        COLLATE='utf8mb4_general_ci'
+        ENGINE=InnoDB;
+    </update>
+
+    <!-- 创建月变量累积数据存储表 -->
+    <update id="createMonthAccumulateDataTable" parameterType="String">
+        CREATE TABLE IF NOT EXISTS ${tableName} (
+            `id`                    INT(10)     NOT NULL AUTO_INCREMENT COMMENT '编号ID',
+            `variable_name`         VARCHAR(32) NOT NULL COMMENT '变量名称' COLLATE 'utf8mb4_general_ci',
+            `save_time`             DATETIME    NOT NULL COMMENT '存盘时间',
+            `data_value`            DOUBLE(16,4)    NOT NULL COMMENT '上一个小时runtime值',
+            `runtime_value`         DOUBLE(16,4)    NOT NULL COMMENT '当前数据',
+            `record_year`           INT(10)     NOT NULL COMMENT '年',
+            `record_month`          INT(10)     NOT NULL COMMENT '月',
+            `record_day`            INT(10)     NOT NULL COMMENT '日',
+            `record_week`           INT(10)     NOT NULL COMMENT '周',
+            `record_hour`           INT(10)     NOT NULL COMMENT '时',
+            `accu_data`             DOUBLE(16,4)    NOT NULL COMMENT '累积数据',
+            `seasonal_type_name`    VARCHAR(8)  NOT NULL COMMENT '峰谷类型' COLLATE 'utf8mb4_general_ci',
+            `charge_price`          FLOAT       NOT NULL COMMENT '计费电价',
+            `is_complete`           INT(10)     NOT NULL COMMENT '完成标记',
+            PRIMARY KEY (`id`) USING BTREE,
+            UNIQUE INDEX `Index_wy_u` (`variable_name`, `record_year`, `record_month`, `record_day`, `record_hour`) USING BTREE
+        )
+        COMMENT='变量累积数据月存储表'
+        COLLATE='utf8mb4_general_ci'
+        ENGINE=InnoDB;
+    </update>
+
+    <select id="selectDayValue" parameterType="com.yunpower.collect.storage.domain.ShardingQuery" resultType="com.yunpower.collect.storage.domain.ShardingDay">
+        SELECT
+            variable_name,
+            save_time,
+            data_value
+        FROM sharding_day
+        WHERE
+            variable_name = #{variableName}
+            <if test="params.beginTime != null and params.beginTime != ''">
+                and save_time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null and params.endTime != ''">
+                and save_time &lt;= #{params.endTime}
+            </if>
+            <if test="saveTime != null">
+                and save_time  = #{saveTime}
+            </if>
+            <!-- 间隔5/10/15/30分钟取数 -->
+            <if test="params.minute != null and params.minute != ''">and MINUTE(save_time) % #{params.minute} = 0</if>
+            <!-- 间隔1小时取数 --><!-- mybatis中的参数0被当作null值处理 -->
+            <if test="params.hour != null and params.hour != '' or params.hour == 0">and MINUTE(save_time) = 0</if>
+            <!-- data_value -->
+            <if test="params.dataValue != null and params.dataValue != ''">and data_value > #{params.dataValue}</if>
+        ORDER BY save_time DESC
+        LIMIT 1
+    </select>
+</mapper>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysGroupMapper">
+    
+    <resultMap type="com.yunpower.system.api.domain.SysGroup" id="SysGroupResult">
+        <result property="id"           column="id"    />
+        <result property="entId"        column="ent_id"    />
+        <result property="deptId"       column="dept_id"    />
+        <result property="mapId"        column="map_id"    />
+        <result property="parentId"     column="parent_id"    />
+        <result property="parentName"   column="parent_name"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="groupSn"      column="group_sn"    />
+        <result property="logicCode"    column="logic_code"    />
+        <result property="cascadeLogicCode"    column="cascade_logic_code"    />
+        <result property="orderNum"     column="order_num"    />
+        <result property="isShow"       column="is_show"    />
+        <result property="isSystem"     column="is_system"    />
+        <result property="remark"       column="remark"    />
+        <result property="ext1"         column="ext1"    />
+        <result property="ext2"         column="ext2"    />
+        <result property="ext3"         column="ext3"    />
+        <result property="ext4"         column="ext4"    />
+        <result property="createBy"     column="create_by"    />
+        <result property="createTime"   column="create_time"    />
+        <result property="updateBy"     column="update_by"    />
+        <result property="updateTime"   column="update_time"    />
+        <result property="stopFlag"     column="stop_flag"    />
+        <result property="deleteFlag"   column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysGroupVo">
+        select id, ent_id, dept_id, map_id, parent_id, parent_name, group_name, group_sn, logic_code, cascade_logic_code, order_num, is_show, is_system, remark, ext1, ext2, ext3, ext4, create_by, create_time, update_by, update_time, stop_flag, delete_flag from sys_group
+    </sql>
+
+    <select id="selectSysGroupList" parameterType="SysGroup" resultMap="SysGroupResult">
+        <include refid="selectSysGroupVo"/>
+        where delete_flag = 0
+        <if test="id != null "> and id = #{id}</if>
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="mapId != null "> and map_id = #{mapId}</if>
+        <if test="parentId != null "> and parent_id = #{parentId}</if>
+        <if test="parentName != null  and parentName != ''"> and parent_name like concat('%', #{parentName}, '%')</if>
+        <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+        <if test="groupSn != null  and groupSn != ''"> and group_sn = #{groupSn}</if>
+        <if test="logicCode != null  and logicCode != ''"> and logic_code = #{logicCode}</if>
+        <if test="cascadeLogicCode != null  and cascadeLogicCode != ''"> and cascade_logic_code = #{cascadeLogicCode}</if>
+        <if test="orderNum != null "> and order_num = #{orderNum}</if>
+        <if test="isShow != null "> and is_show = #{isShow}</if>
+        <if test="isSystem != null "> and is_system = #{isSystem}</if>
+        <if test="ext1 != null "> and ext1 = #{ext1}</if>
+        <if test="ext2 != null "> and ext2 = #{ext2}</if>
+        <if test="ext3 != null "> and ext3 = #{ext3}</if>
+        <if test="ext4 != null "> and ext4 = #{ext4}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="params.groupNames != null and params.groupNames != ''">
+            and group_name in
+            <foreach item="item" collection="params.groupNames" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="params.orderBy != null and params.orderBy != ''">
+            ${params.orderBy}
+        </if>
+        order by order_num asc
+    </select>
+    
+    <select id="selectSysGroupById" parameterType="Long" resultMap="SysGroupResult">
+        <include refid="selectSysGroupVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSysGroupByGroupSn" parameterType="String" resultMap="SysGroupResult">
+        <include refid="selectSysGroupVo"/>
+        where delete_flag = 0 and stop_flag = 0 and group_sn = #{groupSn}
+    </select>
+
+    <insert id="insertSysGroup" parameterType="SysGroup" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="mapId != null">map_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="parentName != null">parent_name,</if>
+            <if test="groupName != null">group_name,</if>
+            <if test="groupSn != null">group_sn,</if>
+            <if test="logicCode != null">logic_code,</if>
+            <if test="cascadeLogicCode != null">cascade_logic_code,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="isShow != null">is_show,</if>
+            <if test="isSystem != null">is_system,</if>
+            <if test="remark != null">remark,</if>
+            <if test="ext1 != null">ext1,</if>
+            <if test="ext2 != null">ext2,</if>
+            <if test="ext3 != null">ext3,</if>
+            <if test="ext4 != null">ext4,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="mapId != null">#{mapId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="parentName != null">#{parentName},</if>
+            <if test="groupName != null">#{groupName},</if>
+            <if test="groupSn != null">#{groupSn},</if>
+            <if test="logicCode != null">#{logicCode},</if>
+            <if test="cascadeLogicCode != null">#{cascadeLogicCode},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="isShow != null">#{isShow},</if>
+            <if test="isSystem != null">#{isSystem},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="ext1 != null">#{ext1},</if>
+            <if test="ext2 != null">#{ext2},</if>
+            <if test="ext3 != null">#{ext3},</if>
+            <if test="ext4 != null">#{ext4},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysGroup" parameterType="SysGroup">
+        update sys_group s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="mapId != null">map_id = #{mapId},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="parentName != null">parent_name = #{parentName},</if>
+            <if test="groupName != null">group_name = #{groupName},</if>
+            <if test="groupSn != null">group_sn = #{groupSn},</if>
+            <if test="logicCode != null">logic_code = #{logicCode},</if>
+            <if test="cascadeLogicCode != null">cascade_logic_code = #{cascadeLogicCode},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="isShow != null">is_show = #{isShow},</if>
+            <if test="isSystem != null">is_system = #{isSystem},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="ext1 != null">ext1 = #{ext1},</if>
+            <if test="ext2 != null">ext2 = #{ext2},</if>
+            <if test="ext3 != null">ext3 = #{ext3},</if>
+            <if test="ext4 != null">ext4 = #{ext4},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteSysGroupById" parameterType="Long">
+        delete from sys_group where id = #{id}
+    </delete>
+
+    <delete id="deleteSysGroupByIds" parameterType="String">
+        delete from sys_group where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

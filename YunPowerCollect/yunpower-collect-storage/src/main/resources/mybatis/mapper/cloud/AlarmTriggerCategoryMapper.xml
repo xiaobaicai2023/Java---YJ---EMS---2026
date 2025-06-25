@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.AlarmTriggerCategoryMapper">
+    
+    <resultMap type="com.yunpower.collect.storage.domain.AlarmTriggerCategory" id="AlarmTriggerCategoryResult">
+        <result property="id"           column="id"    />
+        <result property="entId"        column="ent_id"    />
+        <result property="deptId"       column="dept_id"    />
+        <result property="triggerName"  column="trigger_name"    />
+        <result property="triggerSn"    column="trigger_sn"    />
+        <result property="triggerLevel" column="trigger_level"    />
+        <result property="triggerType"  column="trigger_type"    />
+        <result property="suitType"     column="suit_type"    />
+        <result property="isAlarm"      column="is_alarm"    />
+        <result property="alarmMethod"  column="alarm_method" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.collect.storage.domain.handler.JsonCommonTypeHandler" />
+        <result property="remark"       column="remark"    />
+        <result property="createBy"     column="create_by"    />
+        <result property="createTime"   column="create_time"    />
+        <result property="updateBy"     column="update_by"    />
+        <result property="updateTime"   column="update_time"    />
+        <result property="stopFlag"     column="stop_flag"    />
+        <result property="deleteFlag"   column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectAlarmTriggerCategoryVo">
+        select id, ent_id, dept_id, trigger_name, trigger_sn, trigger_level, trigger_type, suit_type, is_alarm, alarm_method, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from alarm_trigger_category
+    </sql>
+
+    <select id="selectAlarmTriggerCategoryList" parameterType="AlarmTriggerCategory" resultMap="AlarmTriggerCategoryResult">
+        <include refid="selectAlarmTriggerCategoryVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="triggerName != null  and triggerName != ''"> and trigger_name like concat('%', #{triggerName}, '%')</if>
+        <if test="triggerSn != null  and triggerSn != ''"> and trigger_sn = #{triggerSn}</if>
+        <if test="triggerLevel != null "> and trigger_level = #{triggerLevel}</if>
+        <if test="triggerType != null "> and trigger_type = #{triggerType}</if>
+        <if test="suitType != null "> and suit_type = #{suitType}</if>
+        <if test="isAlarm != null "> and is_alarm = #{isAlarm}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+    </select>
+    
+    <select id="selectAlarmTriggerCategoryById" parameterType="Long" resultMap="AlarmTriggerCategoryResult">
+        <include refid="selectAlarmTriggerCategoryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAlarmTriggerCategory" parameterType="AlarmTriggerCategory" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_trigger_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="triggerName != null">trigger_name,</if>
+            <if test="triggerSn != null">trigger_sn,</if>
+            <if test="triggerLevel != null">trigger_level,</if>
+            <if test="triggerType != null">trigger_type,</if>
+            <if test="suitType != null">suit_type,</if>
+            <if test="isAlarm != null">is_alarm,</if>
+            <if test="alarmMethod != null">alarm_method,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="triggerName != null">#{triggerName},</if>
+            <if test="triggerSn != null">#{triggerSn},</if>
+            <if test="triggerLevel != null">#{triggerLevel},</if>
+            <if test="triggerType != null">#{triggerType},</if>
+            <if test="suitType != null">#{suitType},</if>
+            <if test="isAlarm != null">#{isAlarm},</if>
+            <if test="alarmMethod != null">#{alarmMethod, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.collect.storage.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAlarmTriggerCategory" parameterType="AlarmTriggerCategory">
+        update alarm_trigger_category s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="triggerName != null">trigger_name = #{triggerName},</if>
+            <if test="triggerSn != null">trigger_sn = #{triggerSn},</if>
+            <if test="triggerLevel != null">trigger_level = #{triggerLevel},</if>
+            <if test="triggerType != null">trigger_type = #{triggerType},</if>
+            <if test="suitType != null">suit_type = #{suitType},</if>
+            <if test="isAlarm != null">is_alarm = #{isAlarm},</if>
+            <if test="alarmMethod != null">alarm_method = #{alarmMethod, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.collect.storage.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteAlarmTriggerCategoryById" parameterType="Long">
+        delete from alarm_trigger_category where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmTriggerCategoryByIds" parameterType="String">
+        delete from alarm_trigger_category where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

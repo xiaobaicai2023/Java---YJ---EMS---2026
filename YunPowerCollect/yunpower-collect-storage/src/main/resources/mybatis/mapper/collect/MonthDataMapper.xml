@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.MonthDataMapper">
+
+    <resultMap type="MonthDataEntity" id="ShardingMonthResult">
+        <result property="id"           column="id"    />
+        <result property="variableName" column="variable_name"    />
+        <result property="daySign"      column="day_sign"    />
+        <result property="minValue"     column="min_value"    />
+        <result property="minTime"      column="min_time"    />
+        <result property="maxValue"     column="max_value"    />
+        <result property="maxTime"      column="max_time"    />
+        <result property="avgValue"     column="avg_value"    />
+        <result property="accuSign"     column="accu_sign"    />
+        <result property="accuValue"    column="accu_value"    />
+        <result property="runTimeValue" column="runtime_value"    />
+        <result property="totalCount"   column="total_count"    />
+        <result property="saveTime"     column="save_time"    />
+    </resultMap>
+
+    <!-- 查询月统计数据存储 -->
+    <select id="selectMonthDataByVarSnAndDay" resultMap="ShardingMonthResult">
+        select id, variable_name, day_sign, min_value, min_time, max_value, max_time, avg_value, accu_sign, accu_value, total_count, save_time,runtime_value
+        from ${tableName}
+        where variable_name = #{varSn} and day_sign = #{day}
+        limit 1
+    </select>
+
+    <!-- 新增月统计数据存储 -->
+    <insert id="insertMonthData" parameterType="MonthDataEntity" useGeneratedKeys="true" keyProperty="id">
+        insert into ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">variable_name,</if>
+            <if test="daySign != null">day_sign,</if>
+            <if test="minValue != null">min_value,</if>
+            <if test="minTime != null">min_time,</if>
+            <if test="maxValue != null">max_value,</if>
+            <if test="maxTime != null">max_time,</if>
+            <if test="avgValue != null">avg_value,</if>
+            <if test="accuSign != null">accu_sign,</if>
+            <if test="accuValue != null">accu_value,</if>
+            <if test="runTimeValue != null">runtime_value,</if>
+            <if test="totalCount != null">total_count,</if>
+            <if test="saveTime != null">save_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">#{variableName},</if>
+            <if test="daySign != null">#{daySign},</if>
+            <if test="minValue != null">#{minValue},</if>
+            <if test="minTime != null">#{minTime},</if>
+            <if test="maxValue != null">#{maxValue},</if>
+            <if test="maxTime != null">#{maxTime},</if>
+            <if test="avgValue != null">#{avgValue},</if>
+            <if test="accuSign != null">#{accuSign},</if>
+            <if test="accuValue != null">#{accuValue},</if>
+            <if test="runTimeValue != null">#{runTimeValue},</if>
+            <if test="totalCount != null">#{totalCount},</if>
+            <if test="saveTime != null">#{saveTime},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改月统计数据存储 -->
+    <update id="updateMonthData" parameterType="MonthDataEntity">
+        update ${tableName}
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="variableName != null">variable_name = #{variableName},</if>
+            <if test="daySign != null">day_sign = #{daySign},</if>
+            <if test="minValue != null">min_value = #{minValue},</if>
+            <if test="minTime != null">min_time = #{minTime},</if>
+            <if test="maxValue != null">max_value = #{maxValue},</if>
+            <if test="maxTime != null">max_time = #{maxTime},</if>
+            <if test="avgValue != null">avg_value = #{avgValue},</if>
+            <if test="accuSign != null">accu_sign = #{accuSign},</if>
+            <if test="accuValue != null">accu_value = #{accuValue},</if>
+            <if test="runTimeValue != null">runtime_value = #{runTimeValue},</if>
+            <if test="totalCount != null">total_count = #{totalCount},</if>
+            <if test="saveTime != null">save_time = #{saveTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="selectLastMonthData" parameterType="com.yunpower.collect.storage.domain.ShardingQuery" resultType="com.yunpower.collect.storage.domain.ShardingMonth">
+        SELECT
+            id, variable_name, day_sign, min_value, min_time, max_value, max_time, avg_value, accu_sign, accu_value, total_count, save_time,runtime_value
+        FROM sharding_month
+        WHERE
+            variable_name = #{variableName}
+            <if test="params.beginTime != null and params.beginTime != ''">
+                and min_time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null and params.endTime != ''">
+                and min_time &lt;= #{params.endTime}
+            </if>
+            ORDER BY min_time DESC LIMIT 1;
+    </select>
+</mapper>

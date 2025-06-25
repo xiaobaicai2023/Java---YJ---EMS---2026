@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.CommunicationDeviceAreaMapMapper">
+    
+    <resultMap type="com.yunpower.system.domain.CommunicationDeviceAreaMap" id="CommunicationDeviceAreaMapResult">
+        <result property="id"    column="id"    />
+        <result property="protocol"    column="protocol"    />
+        <result property="area"    column="area"    />
+        <result property="rw"    column="rw"    />
+    </resultMap>
+
+    <sql id="selectCommunicationDeviceAreaMapVo">
+        select id, protocol, area, rw from communication_device_area_map
+    </sql>
+
+    <select id="selectCommunicationDeviceAreaMapList" parameterType="CommunicationDeviceAreaMap" resultMap="CommunicationDeviceAreaMapResult">
+        <include refid="selectCommunicationDeviceAreaMapVo"/>
+        <where>
+            <if test="protocol != null  and protocol != ''"> and protocol = #{protocol}</if>
+            <if test="area != null  and area != ''"> and area = #{area}</if>
+            <if test="rw != null "> and rw = #{rw}</if>
+        </where>
+    </select>
+    
+    <select id="selectCommunicationDeviceAreaMapById" parameterType="Long" resultMap="CommunicationDeviceAreaMapResult">
+        <include refid="selectCommunicationDeviceAreaMapVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCommunicationDeviceAreaMap" parameterType="CommunicationDeviceAreaMap" useGeneratedKeys="true" keyProperty="id">
+        insert into communication_device_area_map
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="protocol != null">protocol,</if>
+            <if test="area != null">area,</if>
+            <if test="rw != null">rw,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="protocol != null">#{protocol},</if>
+            <if test="area != null">#{area},</if>
+            <if test="rw != null">#{rw},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommunicationDeviceAreaMap" parameterType="CommunicationDeviceAreaMap">
+        update communication_device_area_map
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="protocol != null">protocol = #{protocol},</if>
+            <if test="area != null">area = #{area},</if>
+            <if test="rw != null">rw = #{rw},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCommunicationDeviceAreaMapById" parameterType="Long">
+        delete from communication_device_area_map where id = #{id}
+    </delete>
+
+    <delete id="deleteCommunicationDeviceAreaMapByIds" parameterType="String">
+        delete from communication_device_area_map where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

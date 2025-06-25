@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+	<!-- 日志存放路径 -->
+	<property name="log.path" value="logs/${project.artifactId}" />
+
+	<!-- 彩色日志格式 -->
+	<property name="log.pattern"
+	          value="${log.pattern:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+	<!-- 彩色日志依赖的渲染类 -->
+	<conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+	<conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+	<conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+	<!-- 控制台输出 -->
+	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${log.pattern}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- 系统日志输出 -->
+	<appender name="file_info" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<!--discriminator鉴别器，设置运行时动态属性,siftingAppender根据这个属性来输出日志到不同文件 -->
+		<discriminator>
+			<key>channelSn</key>
+			<defaultValue>default</defaultValue>
+		</discriminator>
+		<sift>
+			<!-- 系统日志输出 -->
+			<appender name="file_info_${channelSn}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${log.path}/${channelSn}/info.log</file>
+				<!-- 使用 SizeAndTimeBasedRollingPolicy -->
+				<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+					<fileNamePattern>${log.path}/${channelSn}/info.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+					<maxFileSize>1024MB</maxFileSize>
+					<maxHistory>7</maxHistory>
+					<totalSizeCap>10GB</totalSizeCap>
+				</rollingPolicy>
+				<encoder>
+					<pattern>${log.pattern}</pattern>
+				</encoder>
+				<filter class="ch.qos.logback.classic.filter.LevelFilter">
+					<!-- 过滤的级别 -->
+					<level>INFO</level>
+					<!-- 匹配时的操作：接收（记录） -->
+					<onMatch>ACCEPT</onMatch>
+					<!-- 不匹配时的操作：拒绝（不记录） -->
+					<onMismatch>DENY</onMismatch>
+				</filter>
+			</appender>
+		</sift>
+	</appender>
+
+	<!-- 错误日志输出 -->
+	<appender name="file_error" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<!--discriminator鉴别器，设置运行时动态属性,siftingAppender根据这个属性来输出日志到不同文件 -->
+		<discriminator>
+			<key>channelSn</key>
+			<defaultValue>default</defaultValue>
+		</discriminator>
+		<sift>
+			<!-- 系统日志输出 -->
+			<appender name="file_error_${channelSn}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${log.path}/${channelSn}/error.log</file>
+				<!-- 使用 SizeAndTimeBasedRollingPolicy -->
+				<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+					<fileNamePattern>${log.path}/${channelSn}/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+					<maxFileSize>100MB</maxFileSize>
+					<maxHistory>7</maxHistory>
+					<totalSizeCap>10GB</totalSizeCap>
+				</rollingPolicy>
+				<encoder>
+					<pattern>${log.pattern}</pattern>
+				</encoder>
+				<filter class="ch.qos.logback.classic.filter.LevelFilter">
+					<!-- 过滤的级别 -->
+					<level>ERROR</level>
+					<!-- 匹配时的操作：接收（记录） -->
+					<onMatch>ACCEPT</onMatch>
+					<!-- 不匹配时的操作：拒绝（不记录） -->
+					<onMismatch>DENY</onMismatch>
+				</filter>
+			</appender>
+		</sift>
+	</appender>
+
+	<root level="info">
+		<appender-ref ref="console" />
+		<appender-ref ref="file_info" />
+		<appender-ref ref="file_error" />
+	</root>
+</configuration>

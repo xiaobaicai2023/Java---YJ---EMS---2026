@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysLogSystemMapper">
+    
+    <resultMap type="com.yunpower.system.domain.SysLogSystem" id="SysLogSystemResult">
+        <result property="id"    column="id"    />
+        <result property="errorMsg"    column="error_msg"    />
+        <result property="occurTime"    column="occur_time"    />
+    </resultMap>
+
+    <sql id="selectSysLogSystemVo">
+        select id, error_msg, occur_time from sys_log_system
+    </sql>
+
+    <sql id="selectCondigion">
+        <where>
+            <if test="errorMsg != null and errorMsg != ''">AND error_msg like concat('%', #{errorMsg}, '%')</if>
+            <!-- 开始时间检索 -->
+            <if test="params.beginTime != null and params.beginTime != ''">
+                AND occur_time &gt;= #{params.beginTime}
+            </if>
+            <!-- 结束时间检索 -->
+            <if test="params.endTime != null and params.endTime != ''">
+                AND occur_time &lt;= #{params.endTime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectSysLogSystemList" parameterType="SysLogSystem" resultMap="SysLogSystemResult">
+        select id, LEFT(error_msg, 100) as error_msg, occur_time
+        from sys_log_system
+        <include refid="selectCondigion"></include>
+    </select>
+    
+    <select id="selectSysLogSystemById" parameterType="Long" resultMap="SysLogSystemResult">
+        <include refid="selectSysLogSystemVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysLogSystem" parameterType="SysLogSystem" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_log_system
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="errorMsg != null">error_msg,</if>
+            <if test="occurTime != null">occur_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="errorMsg != null">#{errorMsg},</if>
+            <if test="occurTime != null">#{occurTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysLogSystem" parameterType="SysLogSystem">
+        update sys_log_system
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="errorMsg != null">error_msg = #{errorMsg},</if>
+            <if test="occurTime != null">occur_time = #{occurTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysLogSystemById" parameterType="Long">
+        delete from sys_log_system where id = #{id}
+    </delete>
+
+    <delete id="deleteSysLogSystemByIds" parameterType="String">
+        delete from sys_log_system where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

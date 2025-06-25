@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.AlarmTriggerMapper">
+    
+    <resultMap type="com.yunpower.collect.storage.domain.AlarmTrigger" id="AlarmTriggerResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="varId"    column="var_id"    />
+        <result property="varSn"    column="var_sn"    />
+        <result property="varName"    column="var_name"    />
+        <result property="varType"    column="var_type"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="categoryName"    column="category_name"    />
+        <result property="triggerLevel"    column="trigger_level"    />
+        <result property="triggerLevelName"    column="trigger_level_name"    />
+        <result property="triggerConditionName"    column="trigger_condition_name"    />
+        <result property="triggerConditionSn"    column="trigger_condition_sn"    />
+        <result property="threshold"    column="threshold"    />
+        <result property="realValue"    column="real_value"    />
+        <result property="triggerContent"    column="trigger_content"    />
+        <result property="isSendSms"    column="is_send_sms"    />
+        <result property="receiveType"    column="receive_type"    />
+        <result property="receiveConcrete"    column="receive_concrete" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.collect.storage.domain.handler.JsonCommonTypeHandler" />
+        <result property="happenTime"    column="happen_time"    />
+        <result property="recoverTime"    column="recover_time"    />
+        <result property="confirmTime"    column="confirm_time"    />
+        <result property="confirmBy"    column="confirm_by"    />
+        <result property="confirmContent"    column="confirm_content"    />
+        <result property="isAuto"    column="is_auto"    />
+        <result property="triggerStatus"    column="trigger_status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="statisticValue"       column="statistic_value"    />
+    </resultMap>
+
+    <sql id="selectAlarmTriggerVo">
+        select id, ent_id, dept_id, station_type, device_id, device_sn,device_name, var_id, var_sn,var_name, var_type, category_id,category_name, trigger_level,trigger_level_name, trigger_condition_name, trigger_condition_sn, threshold, real_value, trigger_content, is_send_sms, receive_type, receive_concrete, happen_time, recover_time, confirm_time, confirm_by, confirm_content, is_auto, trigger_status, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from alarm_trigger
+    </sql>
+
+    <sql id="selectCondition">
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="deviceId != null "> and device_id = #{deviceId}</if>
+        <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+        <if test="deviceName != null  and deviceName != ''"> and device_name = #{deviceName}</if>
+        <if test="varId != null "> and var_id = #{varId}</if>
+        <if test="varSn != null  and varSn != ''"> and var_sn = #{varSn}</if>
+        <if test="varName != null  and varName != ''"> and var_name = #{varName}</if>
+        <if test="varType != null "> and var_type = #{varType}</if>
+        <if test="categoryId != null "> and category_id = #{categoryId}</if>
+        <if test="categoryName != null  and categoryName != ''"> and category_name = #{categoryName}</if>
+        <if test="triggerLevel != null "> and trigger_level = #{triggerLevel}</if>
+        <if test="triggerLevelName != null  and triggerLevelName != ''"> and trigger_level_name = #{triggerLevelName}</if>
+        <if test="triggerConditionName != null  and triggerConditionName != ''"> and trigger_condition_name like concat('%', #{triggerConditionName}, '%')</if>
+        <if test="triggerConditionSn != null  and triggerConditionSn != ''"> and trigger_condition_sn = #{triggerConditionSn}</if>
+        <if test="threshold != null "> and threshold = #{threshold}</if>
+        <if test="realValue != null "> and real_value = #{realValue}</if>
+        <if test="triggerContent != null  and triggerContent != ''"> and trigger_content = #{triggerContent}</if>
+        <if test="isSendSms != null "> and is_send_sms = #{isSendSms}</if>
+        <if test="receiveType != null "> and receive_type = #{receiveType}</if>
+        <if test="happenTime != null "> and happen_time = #{happenTime}</if>
+        <if test="recoverTime != null "> and recover_time = #{recoverTime}</if>
+        <if test="confirmTime != null "> and confirm_time = #{confirmTime}</if>
+        <if test="confirmBy != null  and confirmBy != ''"> and confirm_by = #{confirmBy}</if>
+        <if test="isAuto != null "> and is_auto = #{isAuto}</if>
+        <if test="triggerStatus != null "> and trigger_status = #{triggerStatus}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(happen_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(happen_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+        <if test="params.status != null ">
+            and trigger_status in
+            <foreach item="item" collection="params.triggerStatus" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </sql>
+
+    <select id="selectAlarmTriggerList" parameterType="AlarmTrigger" resultMap="AlarmTriggerResult">
+        <include refid="selectAlarmTriggerVo"/>
+        <include refid="selectCondition"></include>
+    </select>
+
+    <!-- 根据报警级别统计数据，如：一级报警、二级报警...... -->
+    <select id="selectStatisticDataByAlarmLevelDate"  parameterType="AlarmTrigger" resultMap="AlarmTriggerResult">
+        SELECT DATE(happen_time) AS happen_time, trigger_level, COUNT(1) AS statistic_value
+        FROM alarm_trigger
+        <include refid="selectCondition"></include>
+        GROUP BY DATE(happen_time), trigger_level
+    </select>
+
+    <!-- 根据报警类型统计数据，自定义 -->
+    <select id="selectStatisticDataByCategory"  parameterType="AlarmTrigger" resultMap="AlarmTriggerResult">
+        SELECT category_id, COUNT(1) AS statistic_value
+        FROM alarm_trigger
+        <include refid="selectCondition"></include>
+        GROUP BY category_id
+    </select>
+
+    <!-- 根据报警级别统计数据 -->
+    <select id="selectStatisticDataByAlarmLevel" parameterType="AlarmTrigger" resultMap="AlarmTriggerResult">
+        select trigger_level, COUNT(1) AS statistic_value
+        FROM alarm_trigger
+        <include refid="selectCondition"></include>
+        GROUP BY trigger_level
+    </select>
+
+    <!-- 按日期统计 -->
+    <select id="selectStatisticByDate" parameterType="AlarmTrigger" resultMap="AlarmTriggerResult">
+        SELECT
+        COUNT(1) AS statistic_value,
+        <choose>
+            <when test="dateDim == 70">
+                DATE_FORMAT(happen_time, '%Y-%m-%d %H:00') as formattedDatetime
+            </when>
+            <when test="dateDim == 80">
+                DATE_FORMAT(happen_time, '%Y-%m-%d') AS formattedDatetime
+            </when>
+            <when test="dateDim == 90">
+                DATE_FORMAT(happen_time, '%Y-%m') AS formattedDatetime
+            </when>
+        </choose>
+        FROM alarm_trigger
+        <include refid="selectCondition"></include>
+        <choose>
+            <when test="dateDim == 70">
+                GROUP BY DATE_FORMAT(happen_time, '%Y-%m-%d %H:00')
+            </when>
+            <when test="dateDim == 80">
+                GROUP BY DATE_FORMAT(happen_time, '%Y-%m-%d')
+            </when>
+            <when test="dateDim == 90">
+                GROUP BY DATE_FORMAT(happen_time, '%Y-%m')
+            </when>
+        </choose>
+        order by formattedDatetime asc
+    </select>
+
+    <!-- 获取不重复的设备列表 -->
+    <select id="selectDistinctDevice" parameterType="AlarmTrigger" resultMap="AlarmTriggerResult">
+        select distinct device_id, dept_id
+        from alarm_trigger
+        <include refid="selectCondition"></include>
+    </select>
+
+    <select id="selectAlarmTriggerById" parameterType="Long" resultMap="AlarmTriggerResult">
+        <include refid="selectAlarmTriggerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAlarmTrigger" parameterType="AlarmTrigger" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_trigger
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceSn != null">device_sn,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="varId != null">var_id,</if>
+            <if test="varSn != null">var_sn,</if>
+            <if test="varName != null">var_name,</if>
+            <if test="varType != null">var_type,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="categoryName != null">category_name,</if>
+            <if test="triggerLevel != null">trigger_level,</if>
+            <if test="triggerLevelName != null">trigger_level_name,</if>
+            <if test="triggerConditionName != null">trigger_condition_name,</if>
+            <if test="triggerConditionSn != null">trigger_condition_sn,</if>
+            <if test="threshold != null">threshold,</if>
+            <if test="realValue != null">real_value,</if>
+            <if test="triggerContent != null">trigger_content,</if>
+            <if test="isSendSms != null">is_send_sms,</if>
+            <if test="receiveType != null">receive_type,</if>
+            <if test="receiveConcrete != null">receive_concrete,</if>
+            <if test="happenTime != null">happen_time,</if>
+            <if test="recoverTime != null">recover_time,</if>
+            <if test="confirmTime != null">confirm_time,</if>
+            <if test="confirmBy != null">confirm_by,</if>
+            <if test="confirmContent != null">confirm_content,</if>
+            <if test="isAuto != null">is_auto,</if>
+            <if test="triggerStatus != null">trigger_status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceSn != null">#{deviceSn},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="varId != null">#{varId},</if>
+            <if test="varSn != null">#{varSn},</if>
+            <if test="varName != null">#{varName},</if>
+            <if test="varType != null">#{varType},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="categoryName != null">#{categoryName},</if>
+            <if test="triggerLevel != null">#{triggerLevel},</if>
+            <if test="triggerLevelName != null">#{triggerLevelName},</if>
+            <if test="triggerConditionName != null">#{triggerConditionName},</if>
+            <if test="triggerConditionSn != null">#{triggerConditionSn},</if>
+            <if test="threshold != null">#{threshold},</if>
+            <if test="realValue != null">#{realValue},</if>
+            <if test="triggerContent != null">#{triggerContent},</if>
+            <if test="isSendSms != null">#{isSendSms},</if>
+            <if test="receiveType != null">#{receiveType},</if>
+            <if test="receiveConcrete != null">#{receiveConcrete, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.collect.storage.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="happenTime != null">#{happenTime},</if>
+            <if test="recoverTime != null">#{recoverTime},</if>
+            <if test="confirmTime != null">#{confirmTime},</if>
+            <if test="confirmBy != null">#{confirmBy},</if>
+            <if test="confirmContent != null">#{confirmContent},</if>
+            <if test="isAuto != null">#{isAuto},</if>
+            <if test="triggerStatus != null">#{triggerStatus},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAlarmTrigger" parameterType="AlarmTrigger">
+        update alarm_trigger s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="deviceSn != null">device_sn = #{deviceSn},</if>
+            <if test="deviceName != null">device_sn = #{deviceName},</if>
+            <if test="varId != null">var_id = #{varId},</if>
+            <if test="varSn != null">var_sn = #{varSn},</if>
+            <if test="varName != null">var_name = #{varName},</if>
+            <if test="varType != null">var_type = #{varType},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="categoryName != null">category_name = #{categoryName},</if>
+            <if test="triggerLevel != null">trigger_level = #{triggerLevel},</if>
+            <if test="triggerLevelName != null">trigger_level_name = #{triggerLevelName},</if>
+            <if test="triggerConditionName != null">trigger_condition_name = #{triggerConditionName},</if>
+            <if test="triggerConditionSn != null">trigger_condition_sn = #{triggerConditionSn},</if>
+            <if test="threshold != null">threshold = #{threshold},</if>
+            <if test="realValue != null">real_value = #{realValue},</if>
+            <if test="triggerContent != null">trigger_content = #{triggerContent},</if>
+            <if test="isSendSms != null">is_send_sms = #{isSendSms},</if>
+            <if test="receiveType != null">receive_type = #{receiveType},</if>
+            <if test="receiveConcrete != null">receive_concrete = #{receiveConcrete, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.collect.storage.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="happenTime != null">happen_time = #{happenTime},</if>
+            <if test="recoverTime != null">recover_time = #{recoverTime},</if>
+            <if test="confirmTime != null">confirm_time = #{confirmTime},</if>
+            <if test="confirmBy != null">confirm_by = #{confirmBy},</if>
+            <if test="confirmContent != null">confirm_content = #{confirmContent},</if>
+            <if test="isAuto != null">is_auto = #{isAuto},</if>
+            <if test="triggerStatus != null">trigger_status = #{triggerStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <!-- 批量恢复报警-->
+    <update id="batchRestoreAlarm"  parameterType="AlarmTrigger">
+        UPDATE
+            alarm_trigger
+        SET trigger_status = 10, is_auto = 1, recover_time = SYSDATE()
+        WHERE
+              var_sn = #{varSn}
+          and category_id = #{categoryId}
+          and create_by = #{createBy}
+          and trigger_status = 0
+          and happen_time BETWEEN #{params.beginTime} and  #{params.endTime}
+    </update>
+
+    <delete id="deleteAlarmTriggerById" parameterType="Long">
+        delete from alarm_trigger where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmTriggerByIds" parameterType="String">
+        delete from alarm_trigger where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

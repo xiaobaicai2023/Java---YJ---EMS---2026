@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysLogExecuteMapper">
+    
+    <resultMap type="com.yunpower.system.domain.SysLogExecute" id="SysLogExecuteResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="title"    column="title"    />
+        <result property="method"    column="method"    />
+        <result property="operateType"    column="operate_type"    />
+        <result property="operateBy"    column="operate_by"    />
+        <result property="operateResult"    column="operate_result"    />
+        <result property="status"    column="status"    />
+        <result property="executeTime"    column="execute_time"    />
+        <result property="costTime"    column="cost_time"    />
+    </resultMap>
+
+    <sql id="selectSysLogExecuteVo">
+        select id, ent_id, dept_id, title, method, operate_type, operate_by, operate_result, status, execute_time, cost_time from sys_log_execute
+    </sql>
+
+    <sql id="selectCondigion">
+        <where>
+            <if test="entId != null "> and ent_id = #{entId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="method != null  and method != ''"> and method like concat('%', #{method}, '%')</if>
+            <if test="operateType != null "> and operate_type = #{operateType}</if>
+            <if test="operateBy != null  and operateBy != ''"> and operate_by = #{operateBy}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <!-- 开始时间检索 -->
+            <if test="params.beginTime != null and params.beginTime != ''">
+                AND execute_time &gt;= #{params.beginTime}
+            </if>
+            <!-- 结束时间检索 -->
+            <if test="params.endTime != null and params.endTime != ''">
+                AND execute_time &lt;= #{params.endTime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectSysLogExecuteList" parameterType="SysLogExecute" resultMap="SysLogExecuteResult">
+        <include refid="selectSysLogExecuteVo"/>
+        <include refid="selectCondigion"></include>
+    </select>
+    
+    <select id="selectSysLogExecuteById" parameterType="Long" resultMap="SysLogExecuteResult">
+        <include refid="selectSysLogExecuteVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysLogExecute" parameterType="SysLogExecute" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_log_execute
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="title != null">title,</if>
+            <if test="method != null">method,</if>
+            <if test="operateType != null">operate_type,</if>
+            <if test="operateBy != null">operate_by,</if>
+            <if test="operateResult != null">operate_result,</if>
+            <if test="status != null">status,</if>
+            <if test="executeTime != null">execute_time,</if>
+            <if test="costTime != null">cost_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="title != null">#{title},</if>
+            <if test="method != null">#{method},</if>
+            <if test="operateType != null">#{operateType},</if>
+            <if test="operateBy != null">#{operateBy},</if>
+            <if test="operateResult != null">#{operateResult},</if>
+            <if test="status != null">#{status},</if>
+            <if test="executeTime != null">#{executeTime},</if>
+            <if test="costTime != null">#{costTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysLogExecute" parameterType="SysLogExecute">
+        update sys_log_execute
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="method != null">method = #{method},</if>
+            <if test="operateType != null">operate_type = #{operateType},</if>
+            <if test="operateBy != null">operate_by = #{operateBy},</if>
+            <if test="operateResult != null">operate_result = #{operateResult},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="executeTime != null">execute_time = #{executeTime},</if>
+            <if test="costTime != null">cost_time = #{costTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysLogExecuteById" parameterType="Long">
+        delete from sys_log_execute where id = #{id}
+    </delete>
+
+    <delete id="deleteSysLogExecuteByIds" parameterType="String">
+        delete from sys_log_execute where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

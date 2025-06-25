@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.WebtopoProjectMapper">
+
+    <resultMap type="com.yunpower.system.domain.WebtopoProject" id="WebtopoProjectResult">
+        <result property="id"             column="id"    />
+        <result property="entId"          column="ent_id"    />
+        <result property="deptId"         column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="projectName"    column="project_name"    />
+        <result property="thumbnail"      column="thumbnail"    />
+        <result property="dataModel"      column="data_model"    />
+        <result property="remark"         column="remark"    />
+        <result property="createBy"       column="create_by"    />
+        <result property="createTime"     column="create_time"    />
+        <result property="updateBy"       column="update_by"    />
+        <result property="updateTime"     column="update_time"    />
+        <result property="stopFlag"    		column="stop_flag"    />
+        <result property="deleteFlag"    	column="delete_flag"    />
+    </resultMap>
+
+    <!-- 项目详细信息 -->
+    <resultMap id="WebtopoProjectWebtopoProjectDeviceResult" type="WebtopoProject" extends="WebtopoProjectResult">
+        <collection property="deviceList" notNullColumn="sub_project_id" javaType="java.util.List" resultMap="WebtopoProjectDeviceResult" />
+    </resultMap>
+
+    <resultMap id="WebtopoProjectDeviceResult" type="WebtopoProjectDevice">
+        <result property="projectId"     column="sub_project_id"    />
+        <result property="deviceId"      column="sub_device_id"    />
+        <result property="deviceName"    column="sub_device_name"    />
+    </resultMap>
+
+    <sql id="selectWebtopoProjectVo">
+        select id, ent_id, dept_id, station_type, project_name, thumbnail, data_model, remark, create_by, create_time, update_by, update_time
+        from webtopo_project
+    </sql>
+
+    <!-- 项目列表 -->
+    <select id="selectWebtopoProjectList" parameterType="WebtopoProject" resultMap="WebtopoProjectResult">
+        <include refid="selectWebtopoProjectVo"/>
+        <where>
+            <if test="entId != null "> and ent_id = #{entId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="stationType != null "> and station_type = #{stationType}</if>
+            <if test="projectName != null and projectName != ''"> and project_name like concat('%', #{projectName}, '%')</if>
+            <if test="thumbnail != null and thumbnail != ''"> and thumbnail = #{thumbnail}</if>
+            <if test="dataModel != null and dataModel != ''"> and data_model = #{dataModel}</if>
+        </where>
+    </select>
+
+    <!-- 通过项目ID获取项目详细信息 -->
+    <select id="selectWebtopoProjectByProjectId" parameterType="Long" resultMap="WebtopoProjectWebtopoProjectDeviceResult">
+        SELECT a.id, a.ent_id, a.dept_id, a.station_type, a.project_name, a.thumbnail, a.data_model, a.create_by, a.create_time, a.update_by, a.update_time, a.remark,
+               b.project_id  AS sub_project_id, b.device_id AS sub_device_id,
+               c.device_name AS sub_device_name,
+               a.stop_flag
+        FROM webtopo_project a
+        LEFT JOIN webtopo_project_device b ON b.project_id = a.id
+        LEFT JOIN monitor_device c ON c.id = b.device_id
+        WHERE a.id = #{projectId}
+    </select>
+
+    <insert id="insertWebtopoProject" parameterType="WebtopoProject" useGeneratedKeys="true" keyProperty="id">
+        insert into webtopo_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="thumbnail != null">thumbnail,</if>
+            <if test="dataModel != null">data_model,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="thumbnail != null">#{thumbnail},</if>
+            <if test="dataModel != null">#{dataModel},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWebtopoProject" parameterType="WebtopoProject">
+        update webtopo_project
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="thumbnail != null">thumbnail = #{thumbnail},</if>
+            <if test="dataModel != null">data_model = #{dataModel},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteWebtopoProjectByProjectId" parameterType="Long">
+        delete from webtopo_project where id = #{id}
+    </delete>
+
+    <delete id="deleteWebtopoProjectByProjectIds" parameterType="String">
+        delete from webtopo_project where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWebtopoProjectDeviceByProjectIds" parameterType="String">
+        delete from webtopo_project_device where project_id in
+        <foreach item="projectId" collection="array" open="(" separator="," close=")">
+            #{projectId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteWebtopoProjectDeviceByProjectId" parameterType="Long">
+        delete from webtopo_project_device where project_id = #{projectId}
+    </delete>
+
+    <insert id="batchWebtopoProjectDevice">
+        insert into webtopo_project_device(project_id, device_id) values
+		<foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.projectId}, #{item.deviceId})
+        </foreach>
+    </insert>
+</mapper>

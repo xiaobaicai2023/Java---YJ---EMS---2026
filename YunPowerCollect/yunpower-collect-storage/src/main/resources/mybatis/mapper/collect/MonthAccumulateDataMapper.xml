@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.MonthAccumulateDataMapper">
+
+    <resultMap type="com.yunpower.collect.storage.domain.MonthAccumulateDataEntity" id="ShardingMonthAccumulateResult">
+        <result property="id"               column="id"    />
+        <result property="variableName"     column="variable_name"    />
+        <result property="saveTime"         column="save_time"    />
+        <result property="dataValue"        column="data_value"    />
+        <result property="runtimeValue"     column="runtime_value"    />
+        <result property="recordYear"       column="record_year"    />
+        <result property="recordMonth"      column="record_month"    />
+        <result property="recordDay"        column="record_day"    />
+        <result property="recordWeek"       column="record_week"    />
+        <result property="recordHour"       column="record_hour"    />
+        <result property="accuData"         column="accu_data"    />
+        <result property="seasonalTypeName" column="seasonal_type_name"    />
+        <result property="chargePrice"      column="charge_price"    />
+        <result property="isComplete"       column="is_complete"    />
+    </resultMap>
+
+    <!-- 查询月累计数据存储 -->
+    <select id="selectMonthDataByVarSnAndHour" resultMap="ShardingMonthAccumulateResult">
+        select id, variable_name, save_time, data_value,runtime_value, record_year, record_month, record_day, record_week, record_hour, accu_data, seasonal_type_name, charge_price, is_complete
+        from ${tableName}
+        where variable_name = #{varsn} and record_year = #{year} and record_month = #{month} and record_day = #{day} and record_hour = #{hour}
+        limit 1
+    </select>
+
+    <!-- 新增月累计数据存储 -->
+    <insert id="insertMonthAccumulateData" parameterType="com.yunpower.collect.storage.domain.MonthAccumulateDataEntity" useGeneratedKeys="true" keyProperty="id">
+        insert into ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">variable_name,</if>
+            <if test="saveTime != null">save_time,</if>
+            <if test="dataValue != null">data_value,</if>
+            <if test="runtimeValue != null">runtime_value,</if>
+            <if test="recordYear != null">record_year,</if>
+            <if test="recordMonth != null">record_month,</if>
+            <if test="recordDay != null">record_day,</if>
+            <if test="recordWeek != null">record_week,</if>
+            <if test="recordHour != null">record_hour,</if>
+            <if test="accuData != null">accu_data,</if>
+            <if test="seasonalTypeName != null">seasonal_type_name,</if>
+            <if test="chargePrice != null">charge_price,</if>
+            <if test="isComplete != null">is_complete,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">#{variableName},</if>
+            <if test="saveTime != null">#{saveTime},</if>
+            <if test="dataValue != null">#{dataValue},</if>
+            <if test="runtimeValue != null">#{runtimeValue},</if>
+            <if test="recordYear != null">#{recordYear},</if>
+            <if test="recordMonth != null">#{recordMonth},</if>
+            <if test="recordDay != null">#{recordDay},</if>
+            <if test="recordWeek != null">#{recordWeek},</if>
+            <if test="recordHour != null">#{recordHour},</if>
+            <if test="accuData != null">#{accuData},</if>
+            <if test="seasonalTypeName != null">#{seasonalTypeName},</if>
+            <if test="chargePrice != null">#{chargePrice},</if>
+            <if test="isComplete != null">#{isComplete},</if>
+        </trim>
+    </insert>
+
+    <!-- 修改月累计数据存储 -->
+    <update id="updateMonthAccumulateData" parameterType="com.yunpower.collect.storage.domain.MonthAccumulateDataEntity">
+        update ${tableName}
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="variableName != null">variable_name = #{variableName},</if>
+            <if test="saveTime != null">save_time = #{saveTime},</if>
+            <if test="dataValue != null">data_value = #{dataValue},</if>
+            <if test="runtimeValue != null">runtime_value = #{runtimeValue},</if>
+            <if test="recordYear != null">record_year = #{recordYear},</if>
+            <if test="recordMonth != null">record_month = #{recordMonth},</if>
+            <if test="recordDay != null">record_day = #{recordDay},</if>
+            <if test="recordWeek != null">record_week = #{recordWeek},</if>
+            <if test="recordHour != null">record_hour = #{recordHour},</if>
+            <if test="accuData != null">accu_data = #{accuData},</if>
+            <if test="seasonalTypeName != null">seasonal_type_name = #{seasonalTypeName},</if>
+            <if test="chargePrice != null">charge_price = #{chargePrice},</if>
+            <if test="isComplete != null">is_complete = #{isComplete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!-- 查询近7天内的最后一条数据-->
+    <select id="selectLastMonthAccumulateData" parameterType="com.yunpower.collect.storage.domain.ShardingQuery" resultType="com.yunpower.collect.storage.domain.ShardingMonthAccumulate">
+        SELECT
+        id, variable_name, save_time, data_value, runtime_value, record_year, record_month, record_day, record_week, record_hour, accu_data, seasonal_type_name, charge_price, is_complete
+        FROM sharding_month_accumulate
+        WHERE
+            variable_name = #{variableName}
+            <if test="params.beginTime != null and params.beginTime != ''">
+                and save_time &gt;= #{params.beginTime}</if>
+            <if test="params.endTime != null and params.endTime != ''">
+                and save_time &lt;= #{params.endTime}
+            </if>
+            ORDER BY save_time DESC LIMIT 1;
+    </select>
+</mapper>

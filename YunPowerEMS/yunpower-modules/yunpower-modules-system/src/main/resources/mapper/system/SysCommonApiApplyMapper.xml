@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysCommonApiApplyMapper">
+    
+    <resultMap type="com.yunpower.system.domain.SysCommonApiApply" id="SysCommonApiApplyResult">
+        <result property="id"    column="id"    />
+        <result property="companyName"    column="company_name"    />
+        <result property="linkName"    column="link_name"    />
+        <result property="linkMobile"    column="link_mobile"    />
+        <result property="appId"    column="app_id"    />
+        <result property="appKey"    column="app_key"    />
+        <result property="appSecret"    column="app_secret"    />
+        <result property="token"    column="token"    />
+        <result property="effectMinute"    column="effect_minute"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysCommonApiApplyVo">
+        select id, company_name, link_name, link_mobile, app_id, app_key, app_secret, token, effect_minute, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from sys_common_api_apply
+    </sql>
+
+    <select id="selectSysCommonApiApplyList" parameterType="SysCommonApiApply" resultMap="SysCommonApiApplyResult">
+        <include refid="selectSysCommonApiApplyVo"/>
+        where delete_flag = 0
+        <if test="companyName != null  and companyName != ''"> and company_name like concat('%', #{companyName}, '%')</if>
+        <if test="linkName != null  and linkName != ''"> and link_name like concat('%', #{linkName}, '%')</if>
+        <if test="linkMobile != null  and linkMobile != ''"> and link_mobile = #{linkMobile}</if>
+        <if test="appId != null  and appId != ''"> and app_id = #{appId}</if>
+        <if test="appKey != null  and appKey != ''"> and app_key = #{appKey}</if>
+        <if test="appSecret != null  and appSecret != ''"> and app_secret = #{appSecret}</if>
+        <if test="token != null  and token != ''"> and token = #{token}</if>
+        <if test="effectMinute != null "> and effect_minute = #{effectMinute}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+    </select>
+    
+    <select id="selectSysCommonApiApplyById" parameterType="Long" resultMap="SysCommonApiApplyResult">
+        <include refid="selectSysCommonApiApplyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysCommonApiApply" parameterType="SysCommonApiApply" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_common_api_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="companyName != null">company_name,</if>
+            <if test="linkName != null">link_name,</if>
+            <if test="linkMobile != null">link_mobile,</if>
+            <if test="appId != null">app_id,</if>
+            <if test="appKey != null">app_key,</if>
+            <if test="appSecret != null">app_secret,</if>
+            <if test="token != null">token,</if>
+            <if test="effectMinute != null">effect_minute,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="companyName != null">#{companyName},</if>
+            <if test="linkName != null">#{linkName},</if>
+            <if test="linkMobile != null">#{linkMobile},</if>
+            <if test="appId != null">#{appId},</if>
+            <if test="appKey != null">#{appKey},</if>
+            <if test="appSecret != null">#{appSecret},</if>
+            <if test="token != null">#{token},</if>
+            <if test="effectMinute != null">#{effectMinute},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCommonApiApply" parameterType="SysCommonApiApply">
+        update sys_common_api_apply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="companyName != null">company_name = #{companyName},</if>
+            <if test="linkName != null">link_name = #{linkName},</if>
+            <if test="linkMobile != null">link_mobile = #{linkMobile},</if>
+            <if test="appId != null">app_id = #{appId},</if>
+            <if test="appKey != null">app_key = #{appKey},</if>
+            <if test="appSecret != null">app_secret = #{appSecret},</if>
+            <if test="token != null">token = #{token},</if>
+            <if test="effectMinute != null">effect_minute = #{effectMinute},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysCommonApiApplyById" parameterType="Long">
+        delete from sys_common_api_apply where id = #{id}
+    </delete>
+
+    <delete id="deleteSysCommonApiApplyByIds" parameterType="String">
+        delete from sys_common_api_apply where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

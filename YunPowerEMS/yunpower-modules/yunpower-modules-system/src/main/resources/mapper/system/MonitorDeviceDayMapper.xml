@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.MonitorDeviceDayMapper">
+    
+    <resultMap type="com.yunpower.system.domain.MonitorDeviceDay" id="MonitorDeviceDayResult">
+        <result property="id"    column="id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="staticTime"    column="static_time"    />
+        <result property="status"    column="status"    />
+        <result property="electricPower"    column="electric_power"    />
+        <result property="electricQuantity"    column="electric_quantity"    />
+        <result property="electricHours"    column="electric_hours"    />
+        <result property="inverterPerformance"    column="inverter_performance"    />
+        <result property="dcDispersionRate"    column="dc_dispersion_rate"    />
+        <result property="normalizedRate"    column="normalized_rate"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMonitorDeviceDayVo">
+        select id, device_id, static_time, status, electric_power, electric_quantity, electric_hours, inverter_performance, dc_dispersion_rate, normalized_rate, update_time from monitor_device_day
+    </sql>
+
+    <sql id="selectCondigion">
+        <where>
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="staticTime != null "> and static_time = #{staticTime}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="electricPower != null "> and electric_power = #{electricPower}</if>
+            <if test="electricQuantity != null "> and electric_quantity = #{electricQuantity}</if>
+            <if test="electricHours != null "> and electric_hours = #{electricHours}</if>
+            <if test="inverterPerformance != null "> and inverter_performance = #{inverterPerformance}</if>
+            <if test="dcDispersionRate != null "> and dc_dispersion_rate = #{dcDispersionRate}</if>
+            <if test="normalizedRate != null "> and normalized_rate = #{normalizedRate}</if>
+        </where>
+    </sql>
+
+    <select id="selectMonitorDeviceDayList" parameterType="MonitorDeviceDay" resultMap="MonitorDeviceDayResult">
+        <include refid="selectMonitorDeviceDayVo"/>
+        <include refid="selectCondigion"></include>
+    </select>
+    
+    <select id="selectMonitorDeviceDayById" parameterType="Long" resultMap="MonitorDeviceDayResult">
+        <include refid="selectMonitorDeviceDayVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertMonitorDeviceDay" parameterType="MonitorDeviceDay" useGeneratedKeys="true" keyProperty="id">
+        insert into monitor_device_day
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="staticTime != null">static_time,</if>
+            <if test="status != null">status,</if>
+            <if test="electricPower != null">electric_power,</if>
+            <if test="electricQuantity != null">electric_quantity,</if>
+            <if test="electricHours != null">electric_hours,</if>
+            <if test="inverterPerformance != null">inverter_performance,</if>
+            <if test="dcDispersionRate != null">dc_dispersion_rate,</if>
+            <if test="normalizedRate != null">normalized_rate,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="staticTime != null">#{staticTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="electricPower != null">#{electricPower},</if>
+            <if test="electricQuantity != null">#{electricQuantity},</if>
+            <if test="electricHours != null">#{electricHours},</if>
+            <if test="inverterPerformance != null">#{inverterPerformance},</if>
+            <if test="dcDispersionRate != null">#{dcDispersionRate},</if>
+            <if test="normalizedRate != null">#{normalizedRate},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMonitorDeviceDay" parameterType="MonitorDeviceDay">
+        update monitor_device_day
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="staticTime != null">static_time = #{staticTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="electricPower != null">electric_power = #{electricPower},</if>
+            <if test="electricQuantity != null">electric_quantity = #{electricQuantity},</if>
+            <if test="electricHours != null">electric_hours = #{electricHours},</if>
+            <if test="inverterPerformance != null">inverter_performance = #{inverterPerformance},</if>
+            <if test="dcDispersionRate != null">dc_dispersion_rate = #{dcDispersionRate},</if>
+            <if test="normalizedRate != null">normalized_rate = #{normalizedRate},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMonitorDeviceDayById" parameterType="Long">
+        delete from monitor_device_day where id = #{id}
+    </delete>
+
+    <delete id="deleteMonitorDeviceDayByIds" parameterType="String">
+        delete from monitor_device_day where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

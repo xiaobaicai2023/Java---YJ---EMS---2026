@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.datav.mapper.ShardingMonthMapper">
+
+    <resultMap type="com.yunpower.datav.domain.ShardingMonth" id="ShardingMonthResult">
+        <result property="id"               column="id"    />
+        <result property="variableName"     column="variable_name"    />
+        <result property="daySign"          column="day_sign"    />
+        <result property="minValue"         column="min_value"   javaType="double" jdbcType="DOUBLE" />
+        <result property="minTime"          column="min_time"    />
+        <result property="maxValue"         column="max_value"   javaType="double" jdbcType="DOUBLE" />
+        <result property="maxTime"          column="max_time"    />
+        <result property="avgValue"         column="avg_value"   javaType="double" jdbcType="DOUBLE" />
+        <result property="accuSign"         column="accu_sign"    />
+        <result property="accuValue"        column="accu_value"    javaType="double" jdbcType="DOUBLE" />
+        <result property="runTimeValue"     column="runtime_value" javaType="double" jdbcType="DOUBLE"   />
+        <result property="totalCount"       column="total_count"    />
+        <result property="saveTime"         column="save_time"    />
+        <result property="year"             column="year"    />
+        <result property="month"            column="month"    />
+        <result property="hour"             column="hour"    />
+        <result property="minute"           column="minute"    />
+        <result property="dataValue"        column="data_value"    javaType="double" jdbcType="DOUBLE" />
+        <result property="statisticValue"   column="statistic_value"  javaType="double" jdbcType="DOUBLE"   />
+        <result property="seasonalTypeName" column="seasonal_type_name"    />
+    </resultMap>
+
+    <sql id="selectShardingMonthVo">
+        select id, variable_name, day_sign, ROUND(min_value, 1) AS min_value, min_time, ROUND(max_value, 1) AS max_value, max_time, ROUND(avg_value, 1) AS avg_value, accu_sign, ROUND(accu_value, 1) AS accu_value, runtime_value, total_count, save_time,
+            YEAR(min_time) AS year, MONTH(min_time) AS month, DAY(min_time) AS day
+        from sharding_month
+    </sql>
+
+    <sql id="selectCondition">
+        where variable_name = #{variableName}
+        <if test="daySign != null "> and day_sign = #{daySign}</if>
+        <if test="saveTime != null "> and save_time = #{saveTime}</if>
+        <if test="minTime != null "> and min_time = #{minTime}</if>
+        <!-- 这里不能使用 save_time，因为最后一次更新可能是第二天0点的数据 -->
+        <if test="params.beginTime != null and params.beginTime != ''"> and min_time &gt;= #{params.beginTime}</if>
+        <if test="params.endTime != null and params.endTime != ''"> and min_time &lt;= #{params.endTime}</if>
+    </sql>
+
+    <!-- 查询：最大值 -->
+    <select id="selectShardingMonthMax" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        select ROUND(max_value, 1) as max_value
+        from sharding_month
+        <include refid="selectCondition"></include>
+        order by max_value desc
+        limit 1
+    </select>
+
+    <!-- 查询：最小值 -->
+    <select id="selectShardingMonthMin" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        select ROUND(min_value, 1) as min_value
+        from sharding_month
+        <include refid="selectCondition"></include>
+        order by min_value asc
+        limit 1
+    </select>
+
+    <!-- 查询：平均值 -->
+    <select id="selectShardingMonthAvg" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        select ROUND(AVG(avg_value), 1) as avg_value
+        from sharding_month
+        <include refid="selectCondition"></include>
+        limit 1
+    </select>
+
+    <!-- 查询月统计数据存储（查询：记录数；查询：累计值；以及各单值） -->
+    <select id="selectShardingMonth" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        <include refid="selectShardingMonthVo"/>
+        <include refid="selectCondition"></include>
+        order by min_time desc
+        limit 1
+    </select>
+
+    <!-- 查询：月统计数据（累计值） -->
+    <select id="selectShardingMonthStatisticForMonth" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        SELECT YEAR(min_time) AS year, MONTH(min_time) AS month, ROUND(SUM(accu_value), 1) AS statistic_value
+        FROM sharding_month
+        <include refid="selectCondition"></include>
+        GROUP BY YEAR(min_time), MONTH(min_time)
+    </select>
+
+    <!-- 查询：月统计数据（平均值） -->
+    <select id="selectShardingMonthStatisticForMonthAvg" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        SELECT YEAR(min_time) AS year, MONTH(min_time) AS month, ROUND(AVG(avg_value), 1) AS statistic_value
+        FROM sharding_month
+        <include refid="selectCondition"></include>
+        GROUP BY YEAR(min_time), MONTH(min_time)
+    </select>
+
+    <!-- 查询：年统计数据（累计值） -->
+    <select id="selectShardingMonthStatisticForYear" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        SELECT YEAR(min_time) AS year, ROUND(SUM(accu_value), 1) AS statistic_value
+        FROM sharding_month
+        <include refid="selectCondition"></include>
+        GROUP BY YEAR(min_time)
+    </select>
+
+    <!-- 查询：年统计数据（平均值） -->
+    <select id="selectShardingMonthStatisticForYearAvg" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        SELECT YEAR(min_time) AS year, ROUND(AVG(avg_value), 1) AS statistic_value
+        FROM sharding_month
+        <include refid="selectCondition"></include>
+        GROUP BY YEAR(min_time)
+    </select>
+
+    <!-- 表中的数据是按天存储的，所以可取：按天列表数据、按天单值数据 -->
+    <select id="selectShardingMonthList" parameterType="ShardingMonth" resultMap="ShardingMonthResult">
+        <include refid="selectShardingMonthVo"/>
+        <include refid="selectCondition"></include>
+        order by min_time asc
+    </select>
+
+    <select id="selectShardingMonthById" parameterType="Long" resultMap="ShardingMonthResult">
+        <include refid="selectShardingMonthVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertShardingMonth" parameterType="ShardingMonth" useGeneratedKeys="true" keyProperty="id">
+        insert into sharding_month
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">variable_name,</if>
+            <if test="daySign != null">day_sign,</if>
+            <if test="minValue != null">min_value,</if>
+            <if test="minTime != null">min_time,</if>
+            <if test="maxValue != null">max_value,</if>
+            <if test="maxTime != null">max_time,</if>
+            <if test="avgValue != null">avg_value,</if>
+            <if test="accuSign != null">accu_sign,</if>
+            <if test="accuValue != null">accu_value,</if>
+            <if test="totalCount != null">total_count,</if>
+            <if test="saveTime != null">save_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">#{variableName},</if>
+            <if test="daySign != null">#{daySign},</if>
+            <if test="minValue != null">#{minValue},</if>
+            <if test="minTime != null">#{minTime},</if>
+            <if test="maxValue != null">#{maxValue},</if>
+            <if test="maxTime != null">#{maxTime},</if>
+            <if test="avgValue != null">#{avgValue},</if>
+            <if test="accuSign != null">#{accuSign},</if>
+            <if test="accuValue != null">#{accuValue},</if>
+            <if test="totalCount != null">#{totalCount},</if>
+            <if test="saveTime != null">#{saveTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShardingMonth" parameterType="ShardingMonth">
+        update sharding_month
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="variableName != null">variable_name = #{variableName},</if>
+            <if test="daySign != null">day_sign = #{daySign},</if>
+            <if test="minValue != null">min_value = #{minValue},</if>
+            <if test="minTime != null">min_time = #{minTime},</if>
+            <if test="maxValue != null">max_value = #{maxValue},</if>
+            <if test="maxTime != null">max_time = #{maxTime},</if>
+            <if test="avgValue != null">avg_value = #{avgValue},</if>
+            <if test="accuSign != null">accu_sign = #{accuSign},</if>
+            <if test="accuValue != null">accu_value = #{accuValue},</if>
+            <if test="totalCount != null">total_count = #{totalCount},</if>
+            <if test="saveTime != null">save_time = #{saveTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShardingMonthById" parameterType="Long">
+        delete from sharding_month where id = #{id}
+    </delete>
+
+    <delete id="deleteShardingMonthByIds" parameterType="String">
+        delete from sharding_month where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 查询：查询指定字段值 changeType （1实时 2平均值 3最小值 4最大值）-->
+    <select id="singleChangeDayMonth" parameterType="ShardingQuery" resultMap="ShardingMonthResult">
+        select
+        variable_name,
+        min_time,
+        <choose>
+            <when test="changeType == 1">
+                ROUND(runtime_value * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 2">
+                ROUND(avg_value * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 3">
+                ROUND(min_value * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 4">
+                ROUND(max_value * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 5">
+                ROUND(accu_value * #{coefficient}, 2) as data_value
+            </when>
+            <otherwise>
+                ROUND(runtime_value * #{coefficient}, 2) as data_value
+            </otherwise>
+        </choose>
+        from sharding_month
+        <include refid="selectCondition"></include>
+        order by data_value asc
+        limit 1
+    </select>
+
+    <!-- 单值 按月 -->
+    <select id="singleChangeMonthMonth" parameterType="ShardingQuery" resultMap="ShardingMonthResult">
+        select
+        <choose>
+            <when test="changeType == 2">
+                DATE_FORMAT(min_time, '%Y-%m-%d') as formattedDatetime,
+                ROUND(AVG(avg_value) * #{coefficient}, 2) AS data_value
+            </when>
+            <when test="changeType == 3">
+                DATE_FORMAT(min_time, '%Y-%m-%d') as formattedDatetime,
+                ROUND(MIN(min_value) * #{coefficient}, 2) AS data_value
+            </when>
+            <when test="changeType == 4">
+                ROUND(max(max_value) * #{coefficient}, 2) AS data_value
+            </when>
+            <when test="changeType == 5">
+                ROUND(SUM(accu_value) * #{coefficient}, 2) AS data_value
+            </when>
+            <otherwise>
+                ROUND(AVG(avg_value) * #{coefficient}, 2) AS data_value
+            </otherwise>
+        </choose>
+        from sharding_month
+        <include refid="selectCondition"></include>
+        <choose>
+            <when test="changeType == 2 || changeType == 3">
+                GROUP BY formattedDatetime
+            </when>
+        </choose>
+    </select>
+
+    <!-- 查询列表：根据日期维度查询数据；间隔取数（5分钟、10分钟、15分钟、30分钟、1时） -->
+    <select id="continuityChangeDayDay" parameterType="ShardingQuery" resultMap="ShardingMonthResult">
+        select variable_name,
+            save_time,
+            ROUND(data_value * #{coefficient}, 2) AS data_value,
+            YEAR (save_time) AS year,
+            MONTH (save_time) AS month,
+            DAY (save_time) AS day,
+            HOUR (save_time) AS hour,
+            MINUTE (save_time) AS minute,
+            DATE_FORMAT(save_time, '%Y-%m-%d %H:%i') AS formattedDatetime
+        from sharding_day
+        where variable_name = #{variableName}
+        <if test="saveTime != null ">and save_time = #{saveTime}</if>
+        <if test="params.beginTime != null and params.beginTime != ''">and save_time &gt;= #{params.beginTime}</if>
+        <if test="params.endTime != null and params.endTime != ''">and save_time &lt;= #{params.endTime}</if>
+        <!-- 间隔5/10/15/30分钟取数 -->
+        <if test="params.minute != null and params.minute != ''">and MINUTE(save_time) % #{params.minute} = 0</if>
+        <!-- 间隔1小时取数 --><!-- mybatis中的参数0被当作null值处理 -->
+        <if test="params.hour != null and params.hour != '' or params.hour == 0">and MINUTE(save_time) = 0</if>
+        order by formattedDatetime asc
+    </select>
+
+    <!-- 连续值+变化值+月维度-->
+    <select id="continuityChangeMonthDay" parameterType="ShardingQuery" resultMap="ShardingMonthResult">
+        select
+        variable_name,
+        min_time,
+        DATE_FORMAT(min_time, '%Y-%m-%d') as formattedDatetime,
+        <choose>
+            <when test="changeType == 2">
+                ROUND(avg_value * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 3">
+                ROUND(min_value * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 4">
+                ROUND(max_value * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 5">
+                ROUND(accu_value * #{coefficient}, 2) as data_value
+            </when>
+            <otherwise>
+                ROUND(avg_value * #{coefficient}, 2) as data_value
+            </otherwise>
+        </choose>
+        from sharding_month
+        <include refid="selectCondition"></include>
+        order by formattedDatetime asc
+    </select>
+
+    <!-- 连续值+变化值+年维度-->
+    <select id="continuityChangeYearDay" parameterType="ShardingQuery" resultMap="ShardingMonthResult">
+        select
+        <choose>
+            <when test="changeType == 2">
+                DATE_FORMAT(min_time, '%Y-%m-%d') AS formattedDatetime,
+                ROUND(AVG(avg_value) * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 3">
+                DATE_FORMAT(min_time, '%Y-%m-%d') AS formattedDatetime,
+                ROUND(MIN(min_value) * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 4">
+                DATE_FORMAT(min_time, '%Y-%m') AS formattedDatetime,
+                ROUND(max(max_value) * #{coefficient}, 2) as data_value
+            </when>
+            <when test="changeType == 5">
+                DATE_FORMAT(min_time, '%Y-%m') AS formattedDatetime,
+                ROUND(sum(accu_value) * #{coefficient}, 2) as data_value
+            </when>
+            <otherwise>
+                DATE_FORMAT(min_time, '%Y-%m') AS formattedDatetime,
+                ROUND(AVG(avg_value) * #{coefficient}, 2) as data_value
+            </otherwise>
+        </choose>
+        from sharding_month
+        <include refid="selectCondition"></include>
+        GROUP BY formattedDatetime
+        ORDER BY formattedDatetime ASC
+    </select>
+
+    <!-- 峰平谷数据 - 月（日）维度 -->
+    <select id="continuityFengGuMonthDay" parameterType="ShardingQuery" resultMap="ShardingMonthResult">
+        SELECT
+        DATE_FORMAT(save_time, '%Y-%m-%d') AS formattedDatetime,
+        seasonal_type_name,
+        <choose>
+            <when test="!isCharge">
+                ROUND(SUM(accu_data) * #{coefficient}, 1) AS data_value
+            </when>
+            <when test="isCharge">
+                ROUND(SUM(accu_data * charge_price) * #{coefficient}, 2) AS data_value
+            </when>
+            <otherwise>
+                ROUND(SUM(accu_data) * #{coefficient}, 1) AS data_value
+            </otherwise>
+        </choose>
+        FROM sharding_month_accumulate
+        WHERE variable_name = #{variableName}
+        <if test="params.beginTime != null and params.beginTime != ''">AND save_time &gt;= #{params.beginTime}</if>
+        <if test="params.endTime != null and params.endTime != ''">AND save_time &lt;= #{params.endTime}</if>
+        GROUP BY DATE_FORMAT(save_time, '%Y-%m-%d'), seasonal_type_name
+        ORDER BY formattedDatetime ASC
+    </select>
+
+    <!-- 峰平谷数据 - 年（月）维度 -->
+    <select id="continuityFengGuYearDay" parameterType="ShardingQuery" resultMap="ShardingMonthResult">
+        SELECT
+        DATE_FORMAT(save_time, '%Y-%m') AS formattedDatetime,
+        seasonal_type_name,
+        <choose>
+            <when test="!isCharge">
+                ROUND(SUM(accu_data) * #{coefficient}, 1) AS data_value
+            </when>
+            <when test="isCharge">
+                ROUND(SUM(accu_data * charge_price) * #{coefficient}, 2) AS data_value
+            </when>
+            <otherwise>
+                ROUND(SUM(accu_data) * #{coefficient}, 1) AS data_value
+            </otherwise>
+        </choose>
+        FROM sharding_month_accumulate
+        WHERE variable_name = #{variableName}
+        <if test="params.beginTime != null and params.beginTime != ''">AND save_time &gt;= #{params.beginTime}</if>
+        <if test="params.endTime != null and params.endTime != ''">AND save_time &lt;= #{params.endTime}</if>
+        GROUP BY DATE_FORMAT(save_time, '%Y-%m'), seasonal_type_name
+        ORDER BY formattedDatetime ASC
+    </select>
+
+    <!-- 获取年度数据 -->
+    <select id="selectTotalDataForYear" parameterType="ShardingQuery" resultType="Float">
+        SELECT ROUND(SUM(accu_value) * #{coefficient}, 1)
+        FROM sharding_month
+        WHERE variable_name = #{variableName}
+            AND min_time &gt;= #{params.beginTime}
+            AND min_time &lt;= #{params.endTime}
+        GROUP BY YEAR(min_time)
+    </select>
+
+    <!-- 大屏统计变量数据查询 -->
+    <select id="selectDatavStatVarData"  parameterType="ShardingQuery" resultMap="ShardingMonthResult">
+        SELECT
+            <choose>
+                <!-- 总数据 查询实时值 -->
+                <when test="changeType == 1">
+                    ROUND(IFNULL(runtime_value, 0) * #{coefficient}, 2) as data_value
+                </when>
+                <!-- 按年、月、日 查询累计值 分组后sum累计值 -->
+                <otherwise>
+                    DATE_FORMAT(min_time, '%Y-%m') AS formattedDatetime,
+                    ROUND(SUM(IFNULL(accu_value, 0)) * #{coefficient}, 2) AS data_value
+                </otherwise>
+            </choose>
+        FROM sharding_month
+        WHERE
+            variable_name = #{variableName}
+            AND min_time &gt;= #{params.beginTime}
+            AND min_time &lt;= #{params.endTime}
+        <choose>
+            <!-- 总数据 查询实时值 -->
+            <when test="changeType == 1">
+                LIMIT 1
+            </when>
+            <!-- 按年、月、日 查询累计值 分组后sum累计值 -->
+            <otherwise>
+                GROUP BY formattedDatetime
+            </otherwise>
+        </choose>
+    </select>
+</mapper>
