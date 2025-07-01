@@ -119,7 +119,7 @@ CREATE TABLE `communication_channel`  (
   `station_type` int(11) NULL DEFAULT NULL COMMENT '电站类型（1配电 2光伏）',
   `channel_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '通道名称',
   `channel_sn` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '通道编码',
-  `access_type` int(11) NULL DEFAULT NULL COMMENT '接入方式（1TCP 2MQTT）',
+  `access_type` int(11) NULL DEFAULT NULL COMMENT '接入方式1（1TCP 2MQTT）',
   `ip_address` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'IP地址',
   `port` int(11) NULL DEFAULT NULL COMMENT '端口',
   `registration_code` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '通讯注册码',
