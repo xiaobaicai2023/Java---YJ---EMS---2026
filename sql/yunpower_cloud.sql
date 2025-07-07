@@ -11,7 +11,7 @@ CREATE TABLE `alarm_trigger`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号ID',
   `ent_id` int(11) NULL DEFAULT NULL COMMENT '企业ID',
   `dept_id` int(11) NULL DEFAULT NULL COMMENT '部门ID',
-  `station_type` int(11) NULL DEFAULT NULL COMMENT '电站类型（1配电 2光伏）',
+  `station_type` int(11) NULL DEFAULT NULL COMMENT '电站类型（1 配电 2 光伏）',
   `device_id` int(11) NULL DEFAULT NULL COMMENT '设备ID',
   `device_sn` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备编码',
   `device_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '设备名称',
