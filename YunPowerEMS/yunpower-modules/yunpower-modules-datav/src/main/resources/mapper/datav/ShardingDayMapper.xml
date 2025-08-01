@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.datav.mapper.ShardingDayMapper">
+    <resultMap type="com.yunpower.datav.domain.ShardingDay" id="ShardingDayResult">
+        <result property="variableName" column="variable_name"/>
+        <result property="saveTime" column="save_time"/>
+        <result property="dataValue" column="data_value"/>
+        <result property="year" column="year"/>
+        <result property="month" column="month"/>
+        <result property="day" column="day"/>
+        <result property="hour" column="hour"/>
+        <result property="minute" column="minute"/>
+    </resultMap>
+
+    <sql id="selectShardingDayVo">
+        select variable_name,
+               save_time,
+               ROUND(data_value, 1) AS data_value,
+               YEAR(save_time)      AS year,
+               MONTH(save_time)     AS month,
+               DAY(save_time)       AS day,
+               HOUR(save_time)      AS hour,
+               MINUTE(save_time)    AS minute
+        from sharding_day
+    </sql>
+
+    <sql id="selectCondition">
+        where variable_name = #{variableName}
+        <if test="saveTime != null ">
+            and save_time = #{saveTime}
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''">
+            and save_time &gt;= #{params.beginTime}
+        </if>
+        <if test="params.endTime != null and params.endTime != ''">
+            and save_time &lt;= #{params.endTime}
+        </if>
+        <!-- 间隔5/10/15/30分钟取数 -->
+        <if test="params.minute != null and params.minute != ''">
+            and MINUTE(save_time) % #{params.minute} = 0
+        </if>
+        <!-- 间隔1小时取数 --><!-- mybatis中的参数0被当作null值处理 -->
+        <if test="params.hour != null and params.hour != '' or params.hour == 0">
+            and MINUTE(save_time) = 0
+        </if>
+    </sql>
+
+    <!-- 查询列表：正常取数；间隔取数（5/10/15/30分/1小时） -->
+    <select id="selectShardingDayList" parameterType="ShardingDay" resultMap="ShardingDayResult">
+        <include refid="selectShardingDayVo"/>
+        <include refid="selectCondition">
+        </include>
+        ORDER BY save_time ASC
+    </select>
+
+    <!-- 查询日数据存储 -->
+    <select id="selectShardingDay" parameterType="ShardingDay" resultMap="ShardingDayResult">
+        <include refid="selectShardingDayVo"/>
+        where variable_name = #{variableName}
+        <if test="params.beginTime != null and params.beginTime != ''">
+            and save_time &gt;= #{params.beginTime}
+        </if>
+        <if test="params.endTime != null and params.endTime != ''">
+            and save_time &lt;= #{params.endTime}
+        </if>
+        order by save_time desc
+        limit 1
+    </select>
+
+    <insert id="insertShardingDay" parameterType="ShardingDay">
+        insert into sharding_day
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">
+                variable_name,
+            </if>
+            <if test="saveTime != null">
+                save_time,
+            </if>
+            <if test="dataValue != null">
+                data_value,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="variableName != null">
+                #{variableName},
+            </if>
+            <if test="saveTime != null">
+                #{saveTime},
+            </if>
+            <if test="dataValue != null">
+                #{dataValue},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateShardingDay" parameterType="ShardingDay">
+        update sharding_day
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="saveTime != null">
+                save_time = #{saveTime},
+            </if>
+            <if test="dataValue != null">
+                data_value = #{dataValue},
+            </if>
+        </trim>
+        where variable_name = #{variableName}
+    </update>
+
+    <delete id="deleteShardingDayByVariableName" parameterType="String">
+        delete
+        from sharding_day
+        where variable_name = #{variableName}
+    </delete>
+
+    <delete id="deleteShardingDayByVariableNames" parameterType="String">
+        delete from sharding_day where variable_name in
+        <foreach item="variableName" collection="array" open="(" separator="," close=")">
+            #{variableName}
+        </foreach>
+    </delete>
+
+    <!-- 查询单条：查询最新一条数据 -->
+    <select id="singleChangeDayDay" parameterType="ShardingDay" resultMap="ShardingDayResult">
+        <include refid="selectShardingDayVo"/>
+        where variable_name = #{variableName}
+        order by save_time desc
+        limit 1
+    </select>
+
+    <!-- 获取上一条数据-->
+    <select id="selectUpperData" parameterType="ShardingQuery" resultType="Double">
+        select data_value from sharding_day
+        where variable_name = #{variableName}
+          AND save_time &gt;= #{params.beginTime}
+          AND save_time &lt;#{params.endTime}
+        order by save_time desc
+        limit 1
+    </select>
+</mapper>

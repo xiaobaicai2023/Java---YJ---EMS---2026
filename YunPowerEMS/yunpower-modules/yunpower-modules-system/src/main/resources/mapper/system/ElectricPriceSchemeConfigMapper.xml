@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.ElectricPriceSchemeConfigMapper">
+    
+    <resultMap type="com.yunpower.system.domain.ElectricPriceSchemeConfig" id="ElectricPriceSchemeConfigResult">
+        <result property="id"               column="id"    />
+        <result property="schemeId"         column="scheme_id"    />
+        <result property="effectYear"       column="effect_year"    />
+        <result property="effectMonth"      column="effect_month"    />
+        <result property="priceType"        column="price_type"    />
+        <result property="uniformPrice"     column="uniform_price"    />
+        <result property="jianPrice"        column="jian_price"    />
+        <result property="fengPrice"        column="feng_price"    />
+        <result property="pingPrice"        column="ping_price"    />
+        <result property="guPrice"          column="gu_price"    />
+        <result property="shenPrice"        column="shen_price"    />
+        <result property="wholePrice"       column="whole_price"    />
+        <result property="seasonalRange"    column="seasonal_range" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.SeasonalRangeTypeHandler" />
+    </resultMap>
+
+    <sql id="selectElectricPriceSchemeConfigVo">
+        select id, scheme_id, effect_year, effect_month, price_type, uniform_price, jian_price, feng_price, ping_price, gu_price, shen_price, whole_price, seasonal_range
+        from electric_price_scheme_config
+    </sql>
+
+    <select id="selectElectricPriceSchemeConfigList" parameterType="ElectricPriceSchemeConfig" resultMap="ElectricPriceSchemeConfigResult">
+        <include refid="selectElectricPriceSchemeConfigVo"/>
+        <where>
+            <if test="schemeId != null "> and scheme_id = #{schemeId}</if>
+            <if test="effectYear != null "> and effect_year = #{effectYear}</if>
+            <if test="effectMonth != null "> and find_in_set(#{effectMonth}, effect_month)</if>
+        </where>
+    </select>
+    
+    <select id="selectElectricPriceSchemeConfigById" parameterType="Long" resultMap="ElectricPriceSchemeConfigResult">
+        <include refid="selectElectricPriceSchemeConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <!-- 通过电价ID和月份获取符合的配置 -->
+    <select id="selectElectricPriceSchemeConfigBySchemeId" resultMap="ElectricPriceSchemeConfigResult">
+        <include refid="selectElectricPriceSchemeConfigVo"/>
+        where scheme_id = #{schemeId} and find_in_set(#{month}, effect_month)
+        order by id desc
+        limit 1
+    </select>
+
+    <select id="selectElectricPriceSchemeConfigForSchemeId" resultMap="ElectricPriceSchemeConfigResult">
+        <include refid="selectElectricPriceSchemeConfigVo"/>
+        where scheme_id = #{schemeId}
+        order by id desc
+        limit 1
+    </select>
+
+    <select id="selectElectricPriceSchemeConfigForFenDuanTu" resultMap="ElectricPriceSchemeConfigResult">
+        <include refid="selectElectricPriceSchemeConfigVo"/>
+        where scheme_id = #{schemeId} and find_in_set(#{month}, effect_month)
+        order by id desc
+        limit 1
+    </select>
+
+    <insert id="insertElectricPriceSchemeConfig" parameterType="ElectricPriceSchemeConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into electric_price_scheme_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="schemeId != null">scheme_id,</if>
+            <if test="effectYear != null">effect_year,</if>
+            <if test="effectMonth != null">effect_month,</if>
+            <if test="priceType != null">price_type,</if>
+            <if test="uniformPrice != null">uniform_price,</if>
+            <if test="jianPrice != null">jian_price,</if>
+            <if test="fengPrice != null">feng_price,</if>
+            <if test="pingPrice != null">ping_price,</if>
+            <if test="guPrice != null">gu_price,</if>
+            <if test="shenPrice != null">shen_price,</if>
+            <if test="wholePrice != null">whole_price,</if>
+            <if test="seasonalRange != null">seasonal_range,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="schemeId != null">#{schemeId},</if>
+            <if test="effectYear != null">#{effectYear},</if>
+            <if test="effectMonth != null">#{effectMonth},</if>
+            <if test="priceType != null">#{priceType},</if>
+            <if test="uniformPrice != null">#{uniformPrice},</if>
+            <if test="jianPrice != null">#{jianPrice},</if>
+            <if test="fengPrice != null">#{fengPrice},</if>
+            <if test="pingPrice != null">#{pingPrice},</if>
+            <if test="guPrice != null">#{guPrice},</if>
+            <if test="shenPrice != null">#{shenPrice},</if>
+            <if test="wholePrice != null">#{wholePrice},</if>
+            <if test="seasonalRange != null">#{seasonalRange, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.SeasonalRangeTypeHandler},</if>
+         </trim>
+    </insert>
+
+    <update id="updateElectricPriceSchemeConfig" parameterType="ElectricPriceSchemeConfig">
+        update electric_price_scheme_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="schemeId != null">scheme_id = #{schemeId},</if>
+            <if test="effectYear != null">effect_year = #{effectYear},</if>
+            <if test="effectMonth != null">effect_month = #{effectMonth},</if>
+            <if test="priceType != null">price_type = #{priceType},</if>
+            <if test="uniformPrice != null">uniform_price = #{uniformPrice},</if>
+            <if test="jianPrice != null">jian_price = #{jianPrice},</if>
+            <if test="fengPrice != null">feng_price = #{fengPrice},</if>
+            <if test="pingPrice != null">ping_price = #{pingPrice},</if>
+            <if test="guPrice != null">gu_price = #{guPrice},</if>
+            <if test="shenPrice != null">shen_price = #{shenPrice},</if>
+            <if test="wholePrice != null">whole_price = #{wholePrice},</if>
+            <if test="seasonalRange != null">seasonal_range = #{seasonalRange, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.SeasonalRangeTypeHandler},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteElectricPriceSchemeConfigById" parameterType="Long">
+        delete from electric_price_scheme_config where id = #{id}
+    </delete>
+
+    <delete id="deleteElectricPriceSchemeConfigByIds" parameterType="String">
+        delete from electric_price_scheme_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteElectricPriceSchemeConfigBySchemeId" parameterType="Long">
+        delete from electric_price_scheme_config where scheme_id = #{schemeId}
+    </delete>
+</mapper>

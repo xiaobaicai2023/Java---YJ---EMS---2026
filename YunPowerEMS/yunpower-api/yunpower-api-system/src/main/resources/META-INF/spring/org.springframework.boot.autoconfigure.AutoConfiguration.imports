@@ -1,0 +1,15 @@
+com.yunpower.system.api.factory.RemoteUserFallbackFactory
+com.yunpower.system.api.factory.RemoteLogFallbackFactory
+com.yunpower.system.api.factory.RemoteFileFallbackFactory
+com.yunpower.system.api.factory.RemoteDictDataFallbackFactory
+com.yunpower.system.api.factory.RemoteGroupFallbackFactory
+com.yunpower.system.api.factory.RemoteMonitorDeviceFallbackFactory
+com.yunpower.system.api.factory.RemoteMonitorDeviceVarFallbackFactory
+com.yunpower.system.api.factory.RemotePageConfigFallbackFactory
+com.yunpower.system.api.factory.RemoteAddressServiceFallbackFactory
+com.yunpower.system.api.factory.RemoteShardingMonthAccumulateFallbackFactory
+com.yunpower.system.api.factory.RemoteDashboardConfigCardFallbackFactory
+com.yunpower.system.api.factory.RemoteReportTemplateFallbackFactory
+com.yunpower.system.api.factory.RemoteSpecialDataVFallbackFactory
+com.yunpower.system.api.factory.RemoteCommunicationDeviceFallbackFactory
+com.yunpower.system.api.factory.RemoteElectricPriceSchemeConfigFallbackFactory

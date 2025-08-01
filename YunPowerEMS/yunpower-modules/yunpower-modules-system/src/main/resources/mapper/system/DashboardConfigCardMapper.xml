@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.DashboardConfigCardMapper">
+
+    <resultMap type="com.yunpower.system.api.domain.DashboardConfigCard" id="DashboardConfigCardResult">
+        <result property="id" column="id"/>
+        <result property="entId" column="ent_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="dashboardConfigId" column="dashboard_config_id"/>
+        <result property="cardName" column="card_name"/>
+        <result property="cardKey" column="card_key"/>
+        <result property="dateDim" column="date_dim"/>
+        <result property="secondDateDim" column="second_date_dim"/>
+        <result property="isFullDate" column="is_full_date"/>
+        <result property="indicator" column="indicator"/>
+        <result property="chartType" column="chart_type"/>
+        <result property="cardConfig" column="card_config"/>
+        <result property="cardConfigPre" column="card_config_pre"/>
+        <result property="remark" column="remark"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="stopFlag" column="stop_flag"/>
+        <result property="deleteFlag" column="delete_flag"/>
+    </resultMap>
+
+    <sql id="selectDashboardConfigCardVo">
+        select id,
+               ent_id,
+               dept_id,
+               dashboard_config_id,
+               card_name,
+               card_key,
+               date_dim,
+               second_date_dim,
+               is_full_date, indicator, chart_type, card_config, card_config_pre, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from dashboard_config_card
+    </sql>
+
+    <select id="selectDashboardConfigCardList" parameterType="DashboardConfigCard"
+            resultMap="DashboardConfigCardResult">
+        <include refid="selectDashboardConfigCardVo"/>
+        <where>
+            <if test="entId != null ">and ent_id = #{entId}</if>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+            <if test="dashboardConfigId != null ">and dashboard_config_id = #{dashboardConfigId}</if>
+            <if test="cardName != null  and cardName != ''">and card_name like concat('%', #{cardName}, '%')</if>
+            <if test="cardKey != null  and cardKey != ''">and card_key = #{cardKey}</if>
+            <if test="dateDim != null ">and date_dim = #{dateDim}</if>
+            <if test="secondDateDim != null ">and second_date_dim = #{secondDateDim}</if>
+            <if test="isFullDate != null ">and is_full_date = #{isFullDate}</if>
+            <if test="indicator != null ">and indicator = #{indicator}</if>
+            <if test="chartType != null ">and chart_type = #{chartType}</if>
+            <if test="cardConfig != null  and cardConfig != ''">and card_config = #{cardConfig}</if>
+            <if test="cardConfigPre != null  and cardConfigPre != ''">and card_config_pre = #{cardConfigPre}</if>
+            <if test="stopFlag != null ">and stop_flag = #{stopFlag}</if>
+            <if test="deleteFlag != null ">and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+
+    <select id="selectDashboardConfigCardById" parameterType="Long" resultMap="DashboardConfigCardResult">
+        <include refid="selectDashboardConfigCardVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectInfoByConfigIdWidthCardKey" resultMap="DashboardConfigCardResult">
+        <include refid="selectDashboardConfigCardVo"/>
+        where dashboard_config_id = #{dashboardConfigId} and card_key = #{cardKey} and delete_flag = 0
+    </select>
+
+    <insert id="insertDashboardConfigCard" parameterType="DashboardConfigCard"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into dashboard_config_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="dashboardConfigId != null">dashboard_config_id,</if>
+            <if test="cardName != null">card_name,</if>
+            <if test="cardKey != null">card_key,</if>
+            <if test="dateDim != null">date_dim,</if>
+            <if test="secondDateDim != null ">second_date_dim,</if>
+            <if test="isFullDate != null">is_full_date,</if>
+            <if test="indicator != null">indicator,</if>
+            <if test="chartType != null">chart_type,</if>
+            <if test="cardConfig != null">card_config,</if>
+            <if test="cardConfigPre != null">card_config_pre,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="dashboardConfigId != null">#{dashboardConfigId},</if>
+            <if test="cardName != null">#{cardName},</if>
+            <if test="cardKey != null">#{cardKey},</if>
+            <if test="dateDim != null">#{dateDim},</if>
+            <if test="secondDateDim != null ">#{secondDateDim},</if>
+            <if test="isFullDate != null">#{isFullDate},</if>
+            <if test="indicator != null">#{indicator},</if>
+            <if test="chartType != null">#{chartType},</if>
+            <if test="cardConfig != null">#{cardConfig},</if>
+            <if test="cardConfigPre != null">#{cardConfigPre},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDashboardConfigCard" parameterType="DashboardConfigCard">
+        update dashboard_config_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="dashboardConfigId != null">dashboard_config_id = #{dashboardConfigId},</if>
+            <if test="cardName != null">card_name = #{cardName},</if>
+            <if test="cardKey != null">card_key = #{cardKey},</if>
+            <if test="dateDim != null">date_dim = #{dateDim},</if>
+            <if test="secondDateDim != null ">second_date_dim = #{secondDateDim},</if>
+            <if test="isFullDate != null">is_full_date = #{isFullDate},</if>
+            <if test="indicator != null">indicator = #{indicator},</if>
+            <if test="chartType != null">chart_type = #{chartType},</if>
+            <if test="cardConfig != null">card_config = #{cardConfig},</if>
+            <if test="cardConfigPre != null">card_config_pre = #{cardConfigPre},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDashboardConfigCardById" parameterType="Long">
+        delete
+        from dashboard_config_card
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteDashboardConfigCardByIds" parameterType="String">
+        delete from dashboard_config_card where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByConfigIdWidthCardKeyList">
+        delete from dashboard_config_card where dashboard_config_id = #{dashboardConfigId}
+        <if test="cardKeyList != null and cardKeyList.size() > 0">
+            and card_key not in
+            <foreach item="cardKey" collection="cardKeyList" open="(" separator="," close=")">
+                #{cardKey}
+            </foreach>
+        </if>
+    </delete>
+
+    <select id="CheckExitByConfigIdWithCardKey" resultType="int">
+        select count(1)
+        from dashboard_config_card
+        where dashboard_config_id = #{dashboardConfigId}
+          and card_key = #{cardKey}
+          and delete_flag = 0
+    </select>
+</mapper>

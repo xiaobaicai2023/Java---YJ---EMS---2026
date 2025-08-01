@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.SysStationMapper">
+
+    <resultMap type="SysStation" id="SysStationResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="stationName"    column="station_name"    />
+        <result property="stationSn"    column="station_sn"    />
+        <result property="groupOrStation"    column="group_or_station"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="pvType"    column="pv_type"    />
+        <result property="logicCode"    column="logic_code"    />
+        <result property="buildSiteTime"    column="build_site_time"    />
+        <result property="voltageLevel"    column="voltage_level"    />
+        <result property="capacityKva"    column="capacity_kva"    />
+        <result property="sationVolume"    column="sation_volume"    />
+        <result property="azimuth"    column="azimuth"    />
+        <result property="dipAngle"    column="dip_angle"    />
+        <result property="useSiteTime"    column="use_site_time"    />
+        <result property="coordinate"    column="coordinate"    />
+        <result property="country"    		column="country"    />
+        <result property="province"    		column="province"    />
+        <result property="city"    			column="city"    />
+        <result property="county"    		column="county"    />
+        <result property="stationAddress"    column="station_address"    />
+        <result property="picUrl"    column="pic_url"    />
+        <result property="description"    column="description"    />
+        <result property="linkName"    column="link_name"    />
+        <result property="linkPhone"    column="link_phone"    />
+        <result property="openAlarm"    column="open_alarm"    />
+        <result property="schemeId"    column="scheme_id"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysStationVo">
+        select s.id, s.ent_id, s.dept_id, s.parent_id, s.group_id, s.station_name, s.station_sn, s.group_or_station, s.station_type, s.pv_type, s.logic_code, s.build_site_time, s.voltage_level, s.capacity_kva, s.sation_volume, s.azimuth, s.dip_angle, s.use_site_time, s.coordinate, s.country, s.province, s.city, s.county, s.station_address, s.pic_url, s.description, s.link_name, s.link_phone, s.open_alarm, s.scheme_id, s.order_num, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, s.stop_flag, s.delete_flag
+        from sys_station s
+    </sql>
+
+    <select id="selectSysStationList" resultMap="SysStationResult">
+        <include refid="selectSysStationVo"/>
+        where stop_flag = 0 and delete_flag = 0
+    </select>
+
+</mapper>

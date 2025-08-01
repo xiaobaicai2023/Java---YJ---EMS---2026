@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.AlarmTriggerConfigMapper">
+    
+    <resultMap type="com.yunpower.system.domain.AlarmTriggerConfig" id="AlarmTriggerConfigResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="varId"    column="var_id"    />
+        <result property="varSn"    column="var_sn"    />
+        <result property="varType"    column="var_type"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="threshold"    column="threshold"    />
+        <result property="isSendSms"    column="is_send_sms"    />
+        <result property="receiveType"    column="receive_type"    />
+        <result property="receiveConcrete"    column="receive_concrete" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectAlarmTriggerConfigVo">
+        select id, ent_id, dept_id, station_type, device_id, device_sn, var_id, var_sn, var_type, category_id, threshold, is_send_sms, receive_type, receive_concrete, start_time, end_time, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from alarm_trigger_config
+    </sql>
+
+    <select id="selectAlarmTriggerConfigList" parameterType="AlarmTriggerConfig" resultMap="AlarmTriggerConfigResult">
+        <include refid="selectAlarmTriggerConfigVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="deviceId != null "> and device_id = #{deviceId}</if>
+        <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+        <if test="varId != null "> and var_id = #{varId}</if>
+        <if test="varSn != null  and varSn != ''"> and var_sn = #{varSn}</if>
+        <if test="varType != null "> and var_type = #{varType}</if>
+        <if test="categoryId != null "> and category_id = #{categoryId}</if>
+        <if test="threshold != null "> and threshold = #{threshold}</if>
+        <if test="isSendSms != null "> and is_send_sms = #{isSendSms}</if>
+        <if test="receiveType != null "> and receive_type = #{receiveType}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+    </select>
+    
+    <select id="selectAlarmTriggerConfigById" parameterType="Long" resultMap="AlarmTriggerConfigResult">
+        <include refid="selectAlarmTriggerConfigVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertAlarmTriggerConfig" parameterType="AlarmTriggerConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into alarm_trigger_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceSn != null">device_sn,</if>
+            <if test="varId != null">var_id,</if>
+            <if test="varSn != null">var_sn,</if>
+            <if test="varType != null">var_type,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="threshold != null">threshold,</if>
+            <if test="isSendSms != null">is_send_sms,</if>
+            <if test="receiveType != null">receive_type,</if>
+            <if test="receiveConcrete != null">receive_concrete,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceSn != null">#{deviceSn},</if>
+            <if test="varId != null">#{varId},</if>
+            <if test="varSn != null">#{varSn},</if>
+            <if test="varType != null">#{varType},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="threshold != null">#{threshold},</if>
+            <if test="isSendSms != null">#{isSendSms},</if>
+            <if test="receiveType != null">#{receiveType},</if>
+            <if test="receiveConcrete != null">#{receiveConcrete, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAlarmTriggerConfig" parameterType="AlarmTriggerConfig">
+        update alarm_trigger_config s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="deviceSn != null">device_sn = #{deviceSn},</if>
+            <if test="varId != null">var_id = #{varId},</if>
+            <if test="varSn != null">var_sn = #{varSn},</if>
+            <if test="varType != null">var_type = #{varType},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="threshold != null">threshold = #{threshold},</if>
+            <if test="isSendSms != null">is_send_sms = #{isSendSms},</if>
+            <if test="receiveType != null">receive_type = #{receiveType},</if>
+            <if test="receiveConcrete != null">receive_concrete = #{receiveConcrete, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteAlarmTriggerConfigById" parameterType="Long">
+        delete from alarm_trigger_config where id = #{id}
+    </delete>
+
+    <delete id="deleteAlarmTriggerConfigByIds" parameterType="String">
+        delete from alarm_trigger_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

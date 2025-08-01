@@ -1,0 +1,2 @@
+com.yunpower.common.log.service.AsyncLogService
+com.yunpower.common.log.aspect.LogAspect

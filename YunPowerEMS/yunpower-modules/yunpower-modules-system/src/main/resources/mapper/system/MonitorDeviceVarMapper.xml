@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.MonitorDeviceVarMapper">
+    
+    <resultMap type="com.yunpower.system.domain.MonitorDeviceVar" id="MonitorDeviceVarResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelSn"    column="channel_sn"    />
+        <result property="comDeviceId"    column="com_device_id"    />
+        <result property="comDeviceSn"    column="com_device_sn"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="varName"    column="var_name"    />
+        <result property="varSn"    column="var_sn"    />
+        <result property="varMapSn"    column="var_map_sn"    />
+        <result property="unit"    column="unit"    />
+        <result property="isMonitor"    column="is_monitor"    />
+        <result property="varType"    column="var_type"    />
+        <result property="variableType"    column="variable_type"    />
+        <result property="origin"    column="origin"    />
+        <result property="registerName"    column="register_name"    />
+        <result property="registerIndex"    column="register_index"    />
+        <result property="registerAddress"    column="register_address"    />
+        <result property="messageAddress"    column="message_address"    />
+        <result property="dataAddress"    column="data_address"    />
+        <result property="rw"    column="rw"    />
+        <result property="computeFormula"    column="compute_formula"    />
+        <result property="deletionHandle"    column="deletion_handle"    />
+        <result property="zeroCompute"    column="zero_compute"    />
+        <result property="repairData"    column="repair_data"    />
+        <result property="dataType"    column="data_type"    />
+        <result property="initValue"    column="init_value"    />
+        <result property="baseValue"    column="base_value"    />
+        <result property="coefficient"    column="coefficient"    />
+        <result property="saveCycle"    column="save_cycle"    />
+        <result property="dataFix"    column="data_fix"    />
+        <result property="isAccumulation"    column="is_accumulation"    />
+        <result property="accumulationType"    column="accumulation_type"    />
+        <result property="isDataFilter"    column="is_data_filter"    />
+        <result property="moreAbs"    column="more_abs"    />
+        <result property="replaceValueUpper"    column="replace_value_upper"    />
+        <result property="lessAbs"    column="less_abs"    />
+        <result property="replaceValueLower"    column="replace_value_lower"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectMonitorDeviceVarVo">
+        select id, ent_id, dept_id, station_type, channel_id, channel_sn, com_device_id, com_device_sn, device_id, device_sn, var_name, var_sn, var_map_sn, unit, is_monitor, var_type, variable_type, origin, register_name, register_index, register_address, message_address, data_address, rw, compute_formula, deletion_handle, zero_compute, repair_data, data_type, init_value, base_value, coefficient, save_cycle, data_fix, is_accumulation, accumulation_type, is_data_filter, more_abs, replace_value_upper, less_abs, replace_value_lower, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from monitor_device_var
+    </sql>
+
+    <select id="selectMonitorDeviceVarList" parameterType="MonitorDeviceVar" resultMap="MonitorDeviceVarResult">
+        <include refid="selectMonitorDeviceVarVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="channelId != null "> and channel_id = #{channelId}</if>
+        <if test="channelSn != null  and channelSn != ''"> and channel_sn = #{channelSn}</if>
+        <if test="comDeviceId != null "> and com_device_id = #{comDeviceId}</if>
+        <if test="comDeviceSn != null  and comDeviceSn != ''"> and com_device_sn = #{comDeviceSn}</if>
+        <if test="deviceId != null "> and device_id = #{deviceId}</if>
+        <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+        <if test="varName != null  and varName != ''"> and var_name like concat('%', #{varName}, '%')</if>
+        <if test="varSn != null  and varSn != ''"> and var_sn = #{varSn}</if>
+        <if test="varMapSn != null  and varMapSn != ''"> and var_map_sn = #{varMapSn}</if>
+        <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+        <if test="isMonitor != null "> and is_monitor = #{isMonitor}</if>
+        <if test="varType != null "> and var_type = #{varType}</if>
+        <if test="variableType != null "> and variable_type = #{variableType}</if>
+        <if test="origin != null "> and origin = #{origin}</if>
+        <if test="registerName != null  and registerName != ''"> and register_name like concat('%', #{registerName}, '%')</if>
+        <if test="registerIndex != null "> and register_index = #{registerIndex}</if>
+        <if test="rw != null "> and rw = #{rw}</if>
+        <if test="computeFormula != null  and computeFormula != ''"> and compute_formula = #{computeFormula}</if>
+        <if test="deletionHandle != null "> and deletion_handle = #{deletionHandle}</if>
+        <if test="dataType != null "> and data_type = #{dataType}</if>
+        <if test="initValue != null "> and init_value = #{initValue}</if>
+        <if test="baseValue != null "> and base_value = #{baseValue}</if>
+        <if test="coefficient != null "> and coefficient = #{coefficient}</if>
+        <if test="saveCycle != null "> and save_cycle = #{saveCycle}</if>
+        <if test="dataFix != null "> and data_fix = #{dataFix}</if>
+        <if test="isAccumulation != null "> and is_accumulation = #{isAccumulation}</if>
+        <if test="accumulationType != null "> and accumulation_type = #{accumulationType}</if>
+        <if test="isDataFilter != null "> and is_data_filter = #{isDataFilter}</if>
+        <if test="moreAbs != null "> and more_abs = #{moreAbs}</if>
+        <if test="replaceValueUpper != null "> and replace_value_upper = #{replaceValueUpper}</if>
+        <if test="lessAbs != null "> and less_abs = #{lessAbs}</if>
+        <if test="replaceValueLower != null "> and replace_value_lower = #{replaceValueLower}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <!-- 批量设备编码 -->
+        <if test="params.deviceSns != null and params.deviceSns != ''">
+            and device_sn in
+            <foreach item="item" collection="params.deviceSns" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <!-- 批量设备变量编码 -->
+        <if test="params.varSns != null and params.varSns != ''">
+            and var_sn in
+            <foreach item="item" collection="params.varSns" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <!-- 批量索引编码 -->
+        <if test="params.varMapSns != null and params.varMapSns != ''">
+            and var_map_sn in
+            <foreach item="item" collection="params.varMapSns" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="params.varMapSn != null and params.varMapSn != ''">
+            and var_map_sn like concat('%', #{params.varMapSn}, '%')
+        </if>
+        <!-- 批量变量类型 -->
+        <if test="params.variableTypes != null and params.variableTypes != ''">
+            and variable_type in
+            <foreach item="item" collection="params.variableTypes" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    
+    <select id="selectMonitorDeviceVarById" parameterType="Long" resultMap="MonitorDeviceVarResult">
+        <include refid="selectMonitorDeviceVarVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectLastMonitorDeviceVar" parameterType="MonitorDeviceVar" resultMap="MonitorDeviceVarResult">
+        <include refid="selectMonitorDeviceVarVo"/>
+        where dept_id = #{deptId} and station_type = #{stationType}
+        order by id desc
+        limit 1
+    </select>
+
+    <select id="selectMonitorDeviceVarByVarSn" parameterType="String" resultMap="MonitorDeviceVarResult">
+        <include refid="selectMonitorDeviceVarVo"/>
+        where var_sn = #{varSn}
+    </select>
+
+    <insert id="insertMonitorDeviceVar" parameterType="MonitorDeviceVar" useGeneratedKeys="true" keyProperty="id">
+        insert into monitor_device_var
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelSn != null">channel_sn,</if>
+            <if test="comDeviceId != null">com_device_id,</if>
+            <if test="comDeviceSn != null">com_device_sn,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="deviceSn != null">device_sn,</if>
+            <if test="varName != null">var_name,</if>
+            <if test="varSn != null">var_sn,</if>
+            <if test="varMapSn != null">var_map_sn,</if>
+            <if test="unit != null">unit,</if>
+            <if test="isMonitor != null">is_monitor,</if>
+            <if test="varType != null">var_type,</if>
+            <if test="variableType != null">variable_type,</if>
+            <if test="origin != null">origin,</if>
+            <if test="registerName != null">register_name,</if>
+            <if test="registerIndex != null">register_index,</if>
+            <if test="registerAddress != null">register_address,</if>
+            <if test="messageAddress != null">message_address,</if>
+            <if test="dataAddress != null">data_address,</if>
+            <if test="rw != null">rw,</if>
+            <if test="computeFormula != null">compute_formula,</if>
+            <if test="deletionHandle != null">deletion_handle,</if>
+            <if test="zeroCompute != null">zero_compute,</if>
+            <if test="repairData != null">repair_data,</if>
+            <if test="dataType != null">data_type,</if>
+            <if test="initValue != null">init_value,</if>
+            <if test="baseValue != null">base_value,</if>
+            <if test="coefficient != null">coefficient,</if>
+            <if test="saveCycle != null">save_cycle,</if>
+            <if test="dataFix != null">data_fix,</if>
+            <if test="isAccumulation != null">is_accumulation,</if>
+            <if test="accumulationType != null">accumulation_type,</if>
+            <if test="isDataFilter != null">is_data_filter,</if>
+            <if test="moreAbs != null">more_abs,</if>
+            <if test="replaceValueUpper != null">replace_value_upper,</if>
+            <if test="lessAbs != null">less_abs,</if>
+            <if test="replaceValueLower != null">replace_value_lower,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelSn != null">#{channelSn},</if>
+            <if test="comDeviceId != null">#{comDeviceId},</if>
+            <if test="comDeviceSn != null">#{comDeviceSn},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="deviceSn != null">#{deviceSn},</if>
+            <if test="varName != null">#{varName},</if>
+            <if test="varSn != null">#{varSn},</if>
+            <if test="varMapSn != null">#{varMapSn},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="isMonitor != null">#{isMonitor},</if>
+            <if test="varType != null">#{varType},</if>
+            <if test="variableType != null">#{variableType},</if>
+            <if test="origin != null">#{origin},</if>
+            <if test="registerName != null">#{registerName},</if>
+            <if test="registerIndex != null">#{registerIndex},</if>
+            <if test="registerAddress != null">#{registerAddress},</if>
+            <if test="messageAddress != null">#{messageAddress},</if>
+            <if test="dataAddress != null">#{dataAddress},</if>
+            <if test="rw != null">#{rw},</if>
+            <if test="computeFormula != null">#{computeFormula},</if>
+            <if test="deletionHandle != null">#{deletionHandle},</if>
+            <if test="zeroCompute != null">#{zeroCompute},</if>
+            <if test="repairData != null">#{repairData},</if>
+            <if test="dataType != null">#{dataType},</if>
+            <if test="initValue != null">#{initValue},</if>
+            <if test="baseValue != null">#{baseValue},</if>
+            <if test="coefficient != null">#{coefficient},</if>
+            <if test="saveCycle != null">#{saveCycle},</if>
+            <if test="dataFix != null">#{dataFix},</if>
+            <if test="isAccumulation != null">#{isAccumulation},</if>
+            <if test="accumulationType != null">#{accumulationType},</if>
+            <if test="isDataFilter != null">#{isDataFilter},</if>
+            <if test="moreAbs != null">#{moreAbs},</if>
+            <if test="replaceValueUpper != null">#{replaceValueUpper},</if>
+            <if test="lessAbs != null">#{lessAbs},</if>
+            <if test="replaceValueLower != null">#{replaceValueLower},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMonitorDeviceVar" parameterType="MonitorDeviceVar">
+        update monitor_device_var s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelSn != null">channel_sn = #{channelSn},</if>
+            <if test="comDeviceId != null">com_device_id = #{comDeviceId},</if>
+            <if test="comDeviceSn != null">com_device_sn = #{comDeviceSn},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="deviceSn != null">device_sn = #{deviceSn},</if>
+            <if test="varName != null">var_name = #{varName},</if>
+            <if test="varSn != null">var_sn = #{varSn},</if>
+            <if test="varMapSn != null">var_map_sn = #{varMapSn},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="isMonitor != null">is_monitor = #{isMonitor},</if>
+            <if test="varType != null">var_type = #{varType},</if>
+            <if test="variableType != null">variable_type = #{variableType},</if>
+            <if test="origin != null">origin = #{origin},</if>
+            <if test="registerName != null">register_name = #{registerName},</if>
+            <if test="registerIndex != null">register_index = #{registerIndex},</if>
+            <if test="registerAddress != null">register_address = #{registerAddress},</if>
+            <if test="messageAddress != null">message_address = #{messageAddress},</if>
+            <if test="dataAddress != null">data_address = #{dataAddress},</if>
+            <if test="rw != null">rw = #{rw},</if>
+            <if test="computeFormula != null">compute_formula = #{computeFormula},</if>
+            <if test="deletionHandle != null">deletion_handle = #{deletionHandle},</if>
+            <if test="zeroCompute != null">zero_compute = #{zeroCompute},</if>
+            <if test="repairData != null">repair_data = #{repairData},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+            <if test="initValue != null">init_value = #{initValue},</if>
+            <if test="baseValue != null">base_value = #{baseValue},</if>
+            <if test="coefficient != null">coefficient = #{coefficient},</if>
+            <if test="saveCycle != null">save_cycle = #{saveCycle},</if>
+            <if test="dataFix != null">data_fix = #{dataFix},</if>
+            <if test="isAccumulation != null">is_accumulation = #{isAccumulation},</if>
+            <if test="accumulationType != null">accumulation_type = #{accumulationType},</if>
+            <if test="isDataFilter != null">is_data_filter = #{isDataFilter},</if>
+            <if test="moreAbs != null">more_abs = #{moreAbs},</if>
+            <if test="replaceValueUpper != null">replace_value_upper = #{replaceValueUpper},</if>
+            <if test="lessAbs != null">less_abs = #{lessAbs},</if>
+            <if test="replaceValueLower != null">replace_value_lower = #{replaceValueLower},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteMonitorDeviceVarById" parameterType="Long">
+        delete from monitor_device_var where id = #{id}
+    </delete>
+
+    <delete id="deleteMonitorDeviceVarByIds" parameterType="String">
+        delete from monitor_device_var where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 删除上传之外的设备 - 物理删除-->
+    <delete id="deleteMonitorDeviceBySns" parameterType="String">
+        delete from monitor_device_var
+        where ent_id = #{entId} and dept_id = #{deptId} and station_type = #{stationType}
+        and var_sn not in
+        <foreach item="sn" collection="params.varSns" open="(" separator="," close=")">
+            #{sn}
+        </foreach>
+    </delete>
+
+    <!-- 删除上传之外的设备 - 逻辑删除-->
+    <delete id="deleteMonitorDeviceBySnsLogic" parameterType="String">
+        update monitor_device_var set delete_flag = 1
+        where ent_id = #{entId} and dept_id = #{deptId} and station_type = #{stationType}
+        and var_sn not in
+        <foreach item="sn" collection="params.varSns" open="(" separator="," close=")">
+            #{sn}
+        </foreach>
+    </delete>
+
+    <!-- 根据部门ID查询所有点位 -->
+    <select id="selectDeviceVarCountByDeptId" parameterType="Long" resultType="int">
+        select count(1) from monitor_device_var where dept_id = #{deptId} and stop_flag = 0 and delete_flag = 0
+    </select>
+
+    <!-- IO型变量，同一管理机下，信息体地址唯一 -->
+    <select id="checkMessageAddressOnly" parameterType="MonitorDeviceVar" resultMap="MonitorDeviceVarResult">
+        <include refid="selectMonitorDeviceVarVo"/>
+        where com_device_sn = #{comDeviceSn} and origin = 1 and message_address = #{messageAddress}
+        limit 1
+    </select>
+</mapper>

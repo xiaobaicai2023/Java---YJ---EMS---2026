@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.ReportTemplatesMapper">
+
+    <resultMap type="com.yunpower.system.api.domain.ReportTemplates" id="ReportTemplatesResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="userId"    column="user_id"    />
+        <result property="reportName"    column="report_name"    />
+        <result property="reportType"    column="report_type"    />
+        <result property="visibilityType"    column="visibility_type"    />
+        <result property="multiLevelHeader"    column="multi_level_header"    />
+        <result property="headConfig"    column="head_config"    />
+        <result property="remark"    column="remark"    />
+        <result property="systemFlag"    column="system_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectReportTemplatesVo">
+        select id, ent_id, dept_id,station_type, user_id, report_name, report_type, visibility_type, multi_level_header, head_config, remark, system_flag, create_by, create_time, update_by, update_time, stop_flag, delete_flag from report_templates
+    </sql>
+
+    <select id="count" parameterType="ReportTemplates" resultType="java.lang.Integer">
+       select count(1) from report_templates
+        <where>
+            <if test="entId != null "> and ent_id = #{entId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="stationType != null "> and station_type = #{stationType}</if>
+            <if test="reportName != null  and reportName != ''"> and report_name like concat('%', #{reportName}, '%')</if>
+            <if test="reportType != null "> and report_type = #{reportType}</if>
+            <if test="visibilityType != null "> and visibility_type = #{visibilityType}</if>
+            <if test="multiLevelHeader != null "> and multi_level_header = #{multiLevelHeader}</if>
+            <if test="headConfig != null  and headConfig != ''"> and head_config = #{headConfig}</if>
+            <if test="systemFlag != null "> and system_flag = #{systemFlag}</if>
+            <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            <if test="userId != null "> and (visibility_type <![CDATA[ < ]]>  2 or user_id = #{userId}) </if>
+        </where>
+    </select>
+
+    <select id="selectReportTemplatesList" parameterType="ReportTemplates" resultMap="ReportTemplatesResult">
+        <include refid="selectReportTemplatesVo"/>
+        <where>
+            <if test="entId != null "> and ent_id = #{entId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="stationType != null "> and station_type = #{stationType}</if>
+            <if test="reportName != null  and reportName != ''"> and report_name like concat('%', #{reportName}, '%')</if>
+            <if test="reportType != null "> and report_type = #{reportType}</if>
+            <if test="visibilityType != null "> and visibility_type = #{visibilityType}</if>
+            <if test="multiLevelHeader != null "> and multi_level_header = #{multiLevelHeader}</if>
+            <if test="headConfig != null  and headConfig != ''"> and head_config = #{headConfig}</if>
+            <if test="systemFlag != null "> and system_flag = #{systemFlag}</if>
+            <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            <if test="userId != null "> and (visibility_type <![CDATA[ < ]]>  2 or user_id = #{userId}) </if>
+        </where>
+        order by visibility_type asc,create_time desc
+    </select>
+
+    <select id="selectReportTemplatesById" parameterType="Long" resultMap="ReportTemplatesResult">
+        <include refid="selectReportTemplatesVo"/>
+        where id = #{id} and delete_flag = 0
+    </select>
+
+    <insert id="insertReportTemplates" parameterType="ReportTemplates" useGeneratedKeys="true" keyProperty="id">
+        insert into report_templates
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="stationType != null ">station_type,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="reportName != null">report_name,</if>
+            <if test="reportType != null">report_type,</if>
+            <if test="visibilityType != null">visibility_type,</if>
+            <if test="multiLevelHeader != null">multi_level_header,</if>
+            <if test="headConfig != null">head_config,</if>
+            <if test="remark != null">remark,</if>
+            <if test="systemFlag != null">system_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="reportName != null">#{reportName},</if>
+            <if test="reportType != null">#{reportType},</if>
+            <if test="visibilityType != null">#{visibilityType},</if>
+            <if test="multiLevelHeader != null">#{multiLevelHeader},</if>
+            <if test="headConfig != null">#{headConfig},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="systemFlag != null">#{systemFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateReportTemplates" parameterType="ReportTemplates">
+        update report_templates
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="reportName != null">report_name = #{reportName},</if>
+            <if test="reportType != null">report_type = #{reportType},</if>
+            <if test="visibilityType != null">visibility_type = #{visibilityType},</if>
+            <if test="multiLevelHeader != null">multi_level_header = #{multiLevelHeader},</if>
+            <if test="headConfig != null">head_config = #{headConfig},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="systemFlag != null">system_flag = #{systemFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteReportTemplatesById" parameterType="Long">
+        delete from report_templates where id = #{id}
+    </delete>
+
+    <delete id="deleteReportTemplatesByIds" parameterType="String">
+        delete from report_templates where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

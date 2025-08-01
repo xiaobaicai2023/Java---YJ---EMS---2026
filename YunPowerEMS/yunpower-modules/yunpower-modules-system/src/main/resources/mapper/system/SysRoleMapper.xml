@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysRoleMapper">
+
+	<resultMap type="com.yunpower.system.api.domain.SysRole" id="SysRoleResult">
+		<id     property="id"             		column="id"               />
+		<result property="entId"    			column="ent_id"    />
+		<result property="deptId"    			column="dept_id"    />
+		<result property="roleName"    			column="role_name"    />
+		<result property="roleKey"    			column="role_key"    />
+		<result property="orderNum"    			column="order_num"    />
+		<result property="menuScope"    		column="menu_scope"    />
+		<result property="dataScope"    		column="data_scope"    />
+		<result property="menuCheckStrictly"    column="menu_check_strictly"    />
+		<result property="deptCheckStrictly"    column="dept_check_strictly"    />
+		<result property="remark"    			column="remark"    />
+		<result property="createBy"    			column="create_by"    />
+		<result property="createTime"    		column="create_time"    />
+		<result property="updateBy"    			column="update_by"    />
+		<result property="updateTime"    		column="update_time"    />
+		<result property="stopFlag"    			column="stop_flag"    />
+		<result property="deleteFlag"    		column="delete_flag"    />
+	</resultMap>
+	
+	<sql id="selectRoleVo">
+	    select distinct r.id, r.ent_id, r.dept_id, r.role_name, r.role_key, r.order_num, r.menu_scope, r.data_scope, r.menu_check_strictly, r.dept_check_strictly, r.remark, r.create_by, r.create_time, r.update_by, r.update_time, r.stop_flag, r.delete_flag
+        from sys_role r
+	        left join sys_user_role ur on ur.role_id = r.id
+	        left join sys_user u on u.id = ur.user_id
+	        left join sys_dept d on u.dept_id = d.id
+    </sql>
+
+	<!-- 根据条件分页查询角色数据（数据范围） -->
+    <select id="selectRoleList" parameterType="SysRole" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		where r.delete_flag = 0
+		<if test="id != null and id != 0">
+			AND r.id = #{id}
+		</if>
+		<if test="entId != null and entId != ''">
+			AND r.ent_id = #{entId}
+		</if>
+		<if test="roleName != null and roleName != ''">
+			AND r.role_name like concat('%', #{roleName}, '%')
+		</if>
+		<if test="stopFlag != null and stopFlag != ''">
+			AND r.stop_flag = #{stopFlag}
+		</if>
+		<if test="roleKey != null and roleKey != ''">
+			AND r.role_key like concat('%', #{roleKey}, '%')
+		</if>
+		<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+			and date_format(r.create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+			and date_format(r.create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+		</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+		order by r.order_num
+	</select>
+
+	<!-- 根据用户ID查询角色 -->
+	<select id="selectRolePermissionByUserId" parameterType="Long" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		WHERE r.delete_flag = 0 and ur.user_id = #{userId}
+	</select>
+
+	<!-- 查询所有角色 -->
+	<select id="selectRoleAll" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+	</select>
+
+	<!-- 根据用户ID获取角色选择框列表 -->
+	<select id="selectRoleListByUserId" parameterType="Long" resultType="Long">
+		select r.id
+        from sys_role r
+	        left join sys_user_role ur on ur.role_id = r.id
+	        left join sys_user u on u.id = ur.user_id
+	    where u.id = #{userId}
+	</select>
+
+	<!-- 通过角色ID查询角色 -->
+	<select id="selectRoleById" parameterType="Long" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		where r.id = #{roleId}
+	</select>
+
+	<!-- 根据用户ID查询角色 -->
+	<select id="selectRolesByUserName" parameterType="String" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		WHERE r.delete_flag = 0 and u.logon_name = #{userName}
+	</select>
+
+	<!-- 校验角色名称是否唯一 -->
+	<select id="checkRoleNameUnique" parameterType="String" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		 where r.role_name=#{roleName} and r.delete_flag = 0 limit 1
+	</select>
+
+	<!-- 校验角色权限是否唯一 -->
+	<select id="checkRoleKeyUnique" parameterType="String" resultMap="SysRoleResult">
+		<include refid="selectRoleVo"/>
+		 where r.role_key=#{roleKey} and r.delete_flag = 0 limit 1
+	</select>
+	
+ 	<insert id="insertRole" parameterType="SysRole" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entId != null">ent_id,</if>
+			<if test="deptId != null">dept_id,</if>
+			<if test="roleName != null">role_name,</if>
+			<if test="roleKey != null">role_key,</if>
+			<if test="orderNum != null">order_num,</if>
+			<if test="menuScope != null">menu_scope,</if>
+			<if test="dataScope != null">data_scope,</if>
+			<if test="menuCheckStrictly != null">menu_check_strictly,</if>
+			<if test="deptCheckStrictly != null">dept_check_strictly,</if>
+			<if test="remark != null">remark,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+			<if test="stopFlag != null">stop_flag,</if>
+			<if test="deleteFlag != null">delete_flag,</if>
+			create_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="entId != null">#{entId},</if>
+			<if test="deptId != null">#{deptId},</if>
+			<if test="roleName != null">#{roleName},</if>
+			<if test="roleKey != null">#{roleKey},</if>
+			<if test="orderNum != null">#{orderNum},</if>
+			<if test="menuScope != null">#{menuScope},</if>
+			<if test="dataScope != null">#{dataScope},</if>
+			<if test="menuCheckStrictly != null">#{menuCheckStrictly},</if>
+			<if test="deptCheckStrictly != null">#{deptCheckStrictly},</if>
+			<if test="remark != null">#{remark},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+			<if test="stopFlag != null">#{stopFlag},</if>
+			<if test="deleteFlag != null">#{deleteFlag},</if>
+			sysdate()
+		</trim>
+	</insert>
+	
+	<update id="updateRole" parameterType="SysRole">
+		update sys_role
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="entId != null">ent_id = #{entId},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+			<if test="roleName != null">role_name = #{roleName},</if>
+			<if test="roleKey != null">role_key = #{roleKey},</if>
+			<if test="orderNum != null">order_num = #{orderNum},</if>
+			<if test="menuScope != null">menu_scope = #{menuScope},</if>
+			<if test="dataScope != null">data_scope = #{dataScope},</if>
+			<if test="menuCheckStrictly != null">menu_check_strictly = #{menuCheckStrictly},</if>
+			<if test="deptCheckStrictly != null">dept_check_strictly = #{deptCheckStrictly},</if>
+			<if test="remark != null">remark = #{remark},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+			<if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+			update_time = sysdate()
+		</trim>
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteRoleById" parameterType="Long">
+ 		update sys_role set delete_flag = 1 where id = #{roleId}
+ 	</delete>
+ 	
+ 	<delete id="deleteRoleByIds" parameterType="Long">
+ 	    update sys_role set delete_flag = 1 where id in
+ 		<foreach collection="array" item="roleId" open="(" separator="," close=")">
+ 			#{roleId}
+        </foreach> 
+ 	</delete>
+ 	
+</mapper> 

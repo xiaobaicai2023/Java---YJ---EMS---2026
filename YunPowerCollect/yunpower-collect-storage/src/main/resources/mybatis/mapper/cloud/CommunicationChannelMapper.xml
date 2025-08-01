@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.CommunicationChannelMapper">
+
+    <resultMap type="CommunicationChannel" id="CommunicationChannelResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="channelSn"    column="channel_sn"    />
+        <result property="accessType"    column="access_type"    />
+        <result property="ipAddress"    column="ip_address"    />
+        <result property="port"    column="port"    />
+        <result property="registrationCode"    column="registration_code"    />
+        <result property="codeStart"    column="code_start"    />
+        <result property="codeLength"    column="code_length"    />
+        <result property="registrationRsp"    column="registration_rsp"    />
+        <result property="connIp"    column="conn_ip"    />
+        <result property="connPort"    column="conn_port"    />
+        <result property="connUsername"    column="conn_username"    />
+        <result property="connPwd"    column="conn_pwd"    />
+        <result property="subscribeTopic"    column="subscribe_topic"    />
+        <result property="publishTopic"    column="publish_topic"    />
+        <result property="timeout"    column="timeout"    />
+        <result property="scheduleInterval"    column="schedule_interval"    />
+        <result property="onlineTime"    column="online_time"    />
+        <result property="offlineTime"    column="offline_time"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="activeUpdateTime"    column="active_update_time"    />
+        <result property="connectAlarm"    column="connect_alarm"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectCommunicationChannelVo">
+        select id, ent_id, dept_id, station_type, channel_name, channel_sn, access_type, ip_address, port, registration_code, code_start, code_length, registration_rsp, conn_ip, conn_port, conn_username, conn_pwd, subscribe_topic, publish_topic, timeout, schedule_interval, online_time, offline_time, is_active, active_update_time, connect_alarm, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from communication_channel
+    </sql>
+
+    <select id="selectCommunicationChannelList" parameterType="CommunicationChannel" resultMap="CommunicationChannelResult">
+        <include refid="selectCommunicationChannelVo"/>
+        where delete_flag = 0 and stop_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+        <if test="channelSn != null  and channelSn != ''"> and channel_sn = #{channelSn}</if>
+        <if test="accessType != null "> and access_type = #{accessType}</if>
+        <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
+        <if test="port != null "> and port = #{port}</if>
+        <if test="registrationCode != null  and registrationCode != ''"> and registration_code = #{registrationCode}</if>
+        <if test="codeStart != null "> and code_start = #{codeStart}</if>
+        <if test="codeLength != null "> and code_length = #{codeLength}</if>
+        <if test="registrationRsp != null  and registrationRsp != ''"> and registration_rsp = #{registrationRsp}</if>
+        <if test="connIp != null  and connIp != ''"> and conn_ip = #{connIp}</if>
+        <if test="connPort != null "> and conn_port = #{connPort}</if>
+        <if test="connUsername != null  and connUsername != ''"> and conn_username like concat('%', #{connUsername}, '%')</if>
+        <if test="connPwd != null  and connPwd != ''"> and conn_pwd = #{connPwd}</if>
+        <if test="subscribeTopic != null  and subscribeTopic != ''"> and subscribe_topic = #{subscribeTopic}</if>
+        <if test="publishTopic != null  and publishTopic != ''"> and publish_topic = #{publishTopic}</if>
+        <if test="timeout != null "> and timeout = #{timeout}</if>
+        <if test="scheduleInterval != null "> and schedule_interval = #{scheduleInterval}</if>
+        <if test="onlineTime != null "> and online_time = #{onlineTime}</if>
+        <if test="offlineTime != null "> and offline_time = #{offlineTime}</if>
+        <if test="isActive != null "> and is_active = #{isActive}</if>
+        <if test="activeUpdateTime != null "> and active_update_time = #{activeUpdateTime}</if>
+        <if test="connectAlarm != null "> and connect_alarm = #{connectAlarm}</if>
+    </select>
+
+    <select id="selectCommunicationChannelById" parameterType="Long" resultMap="CommunicationChannelResult">
+        <include refid="selectCommunicationChannelVo"/>
+        where id = #{id}
+    </select>
+
+
+    <update id="updateCommunicationChannel" parameterType="CommunicationChannel">
+        update communication_channel s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="channelName != null">channel_name = #{channelName},</if>
+            <if test="channelSn != null">channel_sn = #{channelSn},</if>
+            <if test="accessType != null">access_type = #{accessType},</if>
+            <if test="ipAddress != null">ip_address = #{ipAddress},</if>
+            <if test="port != null">port = #{port},</if>
+            <if test="registrationCode != null">registration_code = #{registrationCode},</if>
+            <if test="codeStart != null">code_start = #{codeStart},</if>
+            <if test="codeLength != null">code_length = #{codeLength},</if>
+            <if test="registrationRsp != null">registration_rsp = #{registrationRsp},</if>
+            <if test="connIp != null">conn_ip = #{connIp},</if>
+            <if test="connPort != null">conn_port = #{connPort},</if>
+            <if test="connUsername != null">conn_username = #{connUsername},</if>
+            <if test="connPwd != null">conn_pwd = #{connPwd},</if>
+            <if test="subscribeTopic != null">subscribe_topic = #{subscribeTopic},</if>
+            <if test="publishTopic != null">publish_topic = #{publishTopic},</if>
+            <if test="timeout != null">timeout = #{timeout},</if>
+            <if test="scheduleInterval != null">schedule_interval = #{scheduleInterval},</if>
+            <if test="onlineTime != null">online_time = #{onlineTime},</if>
+            <if test="offlineTime != null">offline_time = #{offlineTime},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="activeUpdateTime != null">active_update_time = #{activeUpdateTime},</if>
+            <if test="connectAlarm != null">connect_alarm = #{connectAlarm},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+</mapper>

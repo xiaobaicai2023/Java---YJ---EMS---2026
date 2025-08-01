@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.SysCommonDictDataMapper">
+	
+	<resultMap type="com.yunpower.collect.storage.domain.SysCommonDictData" id="SysCommonDictDataResult">
+		<id     property="id"   			column="id"   />
+		<result property="dictSn"    		column="dict_sn"    />
+		<result property="dictLabel"    	column="dict_label"    />
+		<result property="dictValue"    	column="dict_value"    />
+		<result property="orderNum"    		column="order_num"    />
+		<result property="iconClass"    	column="icon_class"    />
+		<result property="listClass"    	column="list_class"    />
+		<result property="isDefault"    	column="is_default"    />
+		<result property="isMultiLevel"		column="is_multi_level"    />
+		<result property="remark"    		column="remark"    />
+		<result property="createBy"    		column="create_by"    />
+		<result property="createTime"    	column="create_time"    />
+		<result property="updateBy"    		column="update_by"    />
+		<result property="updateTime"    	column="update_time"    />
+		<result property="stopFlag"    		column="stop_flag"    />
+		<result property="deleteFlag"    	column="delete_flag"    />
+	</resultMap>
+	
+	<sql id="selectDictDataVo">
+        select id, dict_sn, dict_label, dict_value, order_num, icon_class, list_class, is_default, is_multi_level, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from sys_common_dict_data
+    </sql>
+
+	<select id="selectDictDataList" parameterType="SysCommonDictData" resultMap="SysCommonDictDataResult">
+	    <include refid="selectDictDataVo"/>
+		where delete_flag = 0
+		<if test="dictSn != null and dictSn != ''">
+			AND dict_sn = #{dictSn}
+		</if>
+		<if test="dictLabel != null and dictLabel != ''">
+			AND dict_label = #{dictLabel}
+		</if>
+		<if test="dictValue != null and dictValue != ''">
+			AND dict_value = #{dictValue}
+		</if>
+		<if test="stopFlag != null and stopFlag != ''">
+			AND stop_flag = #{stopFlag}
+		</if>
+		order by order_num asc
+	</select>
+	
+	<select id="selectDictDataByType" parameterType="String" resultMap="SysCommonDictDataResult">
+		<include refid="selectDictDataVo"/>
+		where stop_flag = 0 and delete_flag = 0 and dict_sn = #{dictType} order by order_num asc
+	</select>
+</mapper>

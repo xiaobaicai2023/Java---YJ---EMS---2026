@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysCommonDictDataMapper">
+	
+	<resultMap type="com.yunpower.system.api.domain.SysCommonDictData" id="SysCommonDictDataResult">
+		<id     property="id"   			column="id"   />
+		<result property="dictSn"    		column="dict_sn"    />
+		<result property="dictLabel"    	column="dict_label"    />
+		<result property="dictValue"    	column="dict_value"    />
+		<result property="orderNum"    		column="order_num"    />
+		<result property="iconClass"    	column="icon_class"    />
+		<result property="listClass"    	column="list_class"    />
+		<result property="isDefault"    	column="is_default"    />
+		<result property="isMultiLevel"		column="is_multi_level"    />
+		<result property="remark"    		column="remark"    />
+		<result property="createBy"    		column="create_by"    />
+		<result property="createTime"    	column="create_time"    />
+		<result property="updateBy"    		column="update_by"    />
+		<result property="updateTime"    	column="update_time"    />
+		<result property="stopFlag"    		column="stop_flag"    />
+		<result property="deleteFlag"    	column="delete_flag"    />
+	</resultMap>
+	
+	<sql id="selectDictDataVo">
+        select id, dict_sn, dict_label, dict_value, order_num, icon_class, list_class, is_default, is_multi_level, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from sys_common_dict_data
+    </sql>
+
+	<select id="selectDictDataList" parameterType="SysCommonDictData" resultMap="SysCommonDictDataResult">
+	    <include refid="selectDictDataVo"/>
+		where delete_flag = 0
+		<if test="dictSn != null and dictSn != ''">
+			AND dict_sn = #{dictSn}
+		</if>
+		<if test="dictLabel != null and dictLabel != ''">
+			AND dict_label = #{dictLabel}
+		</if>
+		<if test="dictValue != null and dictValue != ''">
+			AND dict_value = #{dictValue}
+		</if>
+		<if test="stopFlag != null and stopFlag != ''">
+			AND stop_flag = #{stopFlag}
+		</if>
+		order by order_num asc
+	</select>
+	
+	<select id="selectDictDataByType" parameterType="String" resultMap="SysCommonDictDataResult">
+		<include refid="selectDictDataVo"/>
+		where stop_flag = 0 and delete_flag = 0 and dict_sn = #{dictType} order by order_num asc
+	</select>
+
+	<!-- 通过字典类型和字典值获取 -->
+	<select id="selectDictDataBy" resultMap="SysCommonDictDataResult">
+		<include refid="selectDictDataVo"/>
+		where dict_sn = #{dictType} and dict_value = #{dictValue}
+	</select>
+
+	<select id="selectDictLabel" resultType="String">
+		select dict_label from sys_common_dict_data
+		where dict_sn = #{dictType} and dict_value = #{dictValue}
+		limit 1
+	</select>
+
+	<select id="selectDictValue" resultType="String">
+		select dict_value from sys_common_dict_data
+		where dict_sn = #{dictType} and dict_label = #{dictLabel}
+		limit 1
+	</select>
+	
+	<select id="selectDictDataById" parameterType="Long" resultMap="SysCommonDictDataResult">
+		<include refid="selectDictDataVo"/>
+		where id = #{dictCode}
+	</select>
+	
+	<select id="countDictDataByType" resultType="Integer">
+	    select count(1) from sys_common_dict_data where dict_sn=#{dictType}  
+	</select>
+	
+	<delete id="deleteDictDataById" parameterType="Long">
+ 		delete from sys_common_dict_data where id = #{dictCode}
+ 	</delete>
+ 	
+ 	<delete id="deleteDictDataByIds" parameterType="Long">
+ 		delete from sys_common_dict_data where id in
+ 		<foreach collection="array" item="dictCode" open="(" separator="," close=")">
+ 			#{dictCode}
+        </foreach> 
+ 	</delete>
+
+ 	<insert id="insertDictData" parameterType="SysCommonDictData" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_common_dict_data
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="dictSn != null">dict_sn,</if>
+			<if test="dictLabel != null">dict_label,</if>
+			<if test="dictValue != null">dict_value,</if>
+			<if test="orderNum != null">order_num,</if>
+			<if test="iconClass != null">icon_class,</if>
+			<if test="listClass != null">list_class,</if>
+			<if test="isDefault != null">is_default,</if>
+			<if test="isMultiLevel != null">is_multi_level,</if>
+			<if test="remark != null">remark,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+			<if test="stopFlag != null">stop_flag,</if>
+			<if test="deleteFlag != null">delete_flag,</if>
+			create_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="dictSn != null">#{dictSn},</if>
+			<if test="dictLabel != null">#{dictLabel},</if>
+			<if test="dictValue != null">#{dictValue},</if>
+			<if test="orderNum != null">#{orderNum},</if>
+			<if test="iconClass != null">#{iconClass},</if>
+			<if test="listClass != null">#{listClass},</if>
+			<if test="isDefault != null">#{isDefault},</if>
+			<if test="isMultiLevel != null">#{isMultiLevel},</if>
+			<if test="remark != null">#{remark},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+			<if test="stopFlag != null">#{stopFlag},</if>
+			<if test="deleteFlag != null">#{deleteFlag},</if>
+			sysdate()
+		</trim>
+	</insert>
+
+	<update id="updateDictData" parameterType="SysCommonDictData">
+		update sys_common_dict_data
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="dictSn != null">dict_sn = #{dictSn},</if>
+			<if test="dictLabel != null">dict_label = #{dictLabel},</if>
+			<if test="dictValue != null">dict_value = #{dictValue},</if>
+			<if test="orderNum != null">order_num = #{orderNum},</if>
+			<if test="iconClass != null">icon_class = #{iconClass},</if>
+			<if test="listClass != null">list_class = #{listClass},</if>
+			<if test="isDefault != null">is_default = #{isDefault},</if>
+			<if test="isMultiLevel != null">is_multi_level = #{isMultiLevel},</if>
+			<if test="remark != null">remark = #{remark},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+			<if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+			update_time = sysdate()
+		</trim>
+		where id = #{id}
+	</update>
+
+	<update id="updateDictDataType" parameterType="String">
+ 		update sys_common_dict_data set dict_sn = #{newDictType} where dict_sn = #{oldDictType}
+	</update>
+
+</mapper> 

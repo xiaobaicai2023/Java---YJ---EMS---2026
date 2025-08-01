@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysLeaveMessageMapper">
+    
+    <resultMap type="com.yunpower.system.domain.SysLeaveMessage" id="SysLeaveMessageResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="tableName"    column="table_name"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="replyContent"    column="reply_content"    />
+        <result property="replyTime"    column="reply_time"    />
+        <result property="replyFiles"    column="reply_files" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysLeaveMessageVo">
+        select id, ent_id, dept_id, table_name, record_id, user_id, user_name, reply_content, reply_time, reply_files, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from sys_leave_message
+    </sql>
+
+    <select id="selectSysLeaveMessageList" parameterType="SysLeaveMessage" resultMap="SysLeaveMessageResult">
+        <include refid="selectSysLeaveMessageVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="tableName != null  and tableName != ''"> and table_name like concat('%', #{tableName}, '%')</if>
+        <if test="recordId != null "> and record_id = #{recordId}</if>
+        <if test="userId != null "> and user_id = #{userId}</if>
+        <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+        <if test="replyContent != null  and replyContent != ''"> and reply_content = #{replyContent}</if>
+        <if test="replyTime != null "> and reply_time = #{replyTime}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+    </select>
+    
+    <select id="selectSysLeaveMessageById" parameterType="Long" resultMap="SysLeaveMessageResult">
+        <include refid="selectSysLeaveMessageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysLeaveMessage" parameterType="SysLeaveMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_leave_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="tableName != null">table_name,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="replyContent != null">reply_content,</if>
+            <if test="replyTime != null">reply_time,</if>
+            <if test="replyFiles != null">reply_files,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="tableName != null">#{tableName},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="replyContent != null">#{replyContent},</if>
+            <if test="replyTime != null">#{replyTime},</if>
+            <if test="replyFiles != null">#{replyFiles, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysLeaveMessage" parameterType="SysLeaveMessage">
+        update sys_leave_message s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="tableName != null">table_name = #{tableName},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="replyContent != null">reply_content = #{replyContent},</if>
+            <if test="replyTime != null">reply_time = #{replyTime},</if>
+            <if test="replyFiles != null">reply_files = #{replyFiles, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteSysLeaveMessageById" parameterType="Long">
+        delete from sys_leave_message where id = #{id}
+    </delete>
+
+    <delete id="deleteSysLeaveMessageByIds" parameterType="String">
+        delete from sys_leave_message where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

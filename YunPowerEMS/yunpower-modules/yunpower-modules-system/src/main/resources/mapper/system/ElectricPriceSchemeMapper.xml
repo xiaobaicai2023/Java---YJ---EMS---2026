@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.ElectricPriceSchemeMapper">
+    
+    <resultMap type="com.yunpower.system.domain.ElectricPriceScheme" id="ElectricPriceSchemeResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="electricName"    column="electric_name"    />
+        <result property="province"    column="province"    />
+        <result property="city"    column="city"    />
+        <result property="county"    column="county"    />
+        <result property="electricGroup"    column="electric_group"    />
+        <result property="electricStandard"    column="electric_standard"    />
+        <result property="voltageLevel"    column="voltage_level"    />
+        <result property="effectYear"       column="effect_year"    />
+        <result property="startDate"    column="start_date"    />
+        <result property="endDate"    column="end_date"    />
+        <result property="electricText"    column="electric_text"    />
+        <result property="capacityPrice"    column="capacity_price"    />
+        <result property="demandPrice"    column="demand_price"    />
+        <result property="demandPercent"    column="demand_percent"    />
+        <result property="demandRate"    column="demand_rate"    />
+        <result property="electricUp"    column="electric_up"    />
+        <result property="electricUpRate"    column="electric_up_rate"    />
+        <result property="deviationPrice"    column="deviation_price" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="additiveName"    column="additive_name"    />
+        <result property="additivePrice"    column="additive_price"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectElectricPriceSchemeVo">
+        select id, ent_id, dept_id, parent_id, electric_name, province, city, county, electric_group, electric_standard, voltage_level, effect_year, start_date, end_date, electric_text, capacity_price, demand_price, demand_percent, demand_rate, electric_up, electric_up_rate, deviation_price, additive_name, additive_price, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from electric_price_scheme
+    </sql>
+
+    <sql id="selectCondition">
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="parentId != null "> and parent_id = #{parentId}</if>
+        <if test="electricName != null  and electricName != ''"> and electric_name like concat('%', #{electricName}, '%')</if>
+        <if test="province != null "> and province = #{province}</if>
+        <if test="city != null "> and city = #{city}</if>
+        <if test="county != null "> and county = #{county}</if>
+        <if test="electricGroup != null "> and electric_group = #{electricGroup}</if>
+        <if test="electricStandard != null "> and electric_standard = #{electricStandard}</if>
+        <if test="voltageLevel != null "> and voltage_level = #{voltageLevel}</if>
+        <if test="effectYear != null "> and effect_year = #{effectYear}</if>
+        <if test="startDate != null "> and start_date = #{startDate}</if>
+        <if test="endDate != null "> and end_date = #{endDate}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="params.beginTime != null and params.beginTime != ''">
+            and date_format(start_date,'%y%m%d') &lt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''">
+            and date_format(end_date,'%y%m%d') &gt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+    </sql>
+
+    <select id="selectElectricPriceSchemeList" parameterType="ElectricPriceScheme" resultMap="ElectricPriceSchemeResult">
+        <include refid="selectElectricPriceSchemeVo"/>
+        <include refid="selectCondition"/>
+    </select>
+    
+    <select id="selectElectricPriceSchemeById" parameterType="Long" resultMap="ElectricPriceSchemeResult">
+        <include refid="selectElectricPriceSchemeVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectElectricPriceScheme" parameterType="ElectricPriceScheme" resultMap="ElectricPriceSchemeResult">
+        <include refid="selectElectricPriceSchemeVo"/>
+        <include refid="selectCondition"/>
+        ORDER BY id DESC
+        LIMIT 1
+    </select>
+
+    <insert id="insertElectricPriceScheme" parameterType="ElectricPriceScheme" useGeneratedKeys="true" keyProperty="id">
+        insert into electric_price_scheme
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="electricName != null">electric_name,</if>
+            <if test="province != null">province,</if>
+            <if test="city != null">city,</if>
+            <if test="county != null">county,</if>
+            <if test="electricGroup != null">electric_group,</if>
+            <if test="electricStandard != null">electric_standard,</if>
+            <if test="voltageLevel != null">voltage_level,</if>
+            <if test="effectYear != null">effect_year,</if>
+            <if test="startDate != null">start_date,</if>
+            <if test="endDate != null">end_date,</if>
+            <if test="electricText != null">electric_text,</if>
+            <if test="capacityPrice != null">capacity_price,</if>
+            <if test="demandPrice != null">demand_price,</if>
+            <if test="demandPercent != null">demand_percent,</if>
+            <if test="demandRate != null">demand_rate,</if>
+            <if test="electricUp != null">electric_up,</if>
+            <if test="electricUpRate != null">electric_up_rate,</if>
+            <if test="deviationPrice != null">deviation_price,</if>
+            <if test="additiveName != null">additive_name,</if>
+            <if test="additivePrice != null">additive_price,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="electricName != null">#{electricName},</if>
+            <if test="province != null">#{province},</if>
+            <if test="city != null">#{city},</if>
+            <if test="county != null">#{county},</if>
+            <if test="electricGroup != null">#{electricGroup},</if>
+            <if test="electricStandard != null">#{electricStandard},</if>
+            <if test="voltageLevel != null">#{voltageLevel},</if>
+            <if test="effectYear != null">#{effectYear},</if>
+            <if test="startDate != null">#{startDate},</if>
+            <if test="endDate != null">#{endDate},</if>
+            <if test="electricText != null">#{electricText},</if>
+            <if test="capacityPrice != null">#{capacityPrice},</if>
+            <if test="demandPrice != null">#{demandPrice},</if>
+            <if test="demandPercent != null">#{demandPercent},</if>
+            <if test="demandRate != null">#{demandRate},</if>
+            <if test="electricUp != null">#{electricUp},</if>
+            <if test="electricUpRate != null">#{electricUpRate},</if>
+            <if test="deviationPrice != null">#{deviationPrice, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="additiveName != null">#{additiveName},</if>
+            <if test="additivePrice != null">#{additivePrice},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateElectricPriceScheme" parameterType="ElectricPriceScheme">
+        update electric_price_scheme s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="electricName != null">electric_name = #{electricName},</if>
+            <if test="province != null">province = #{province},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="county != null">county = #{county},</if>
+            <if test="electricGroup != null">electric_group = #{electricGroup},</if>
+            <if test="electricStandard != null">electric_standard = #{electricStandard},</if>
+            <if test="voltageLevel != null">voltage_level = #{voltageLevel},</if>
+            <if test="effectYear != null">effect_year = #{effectYear},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="endDate != null">end_date = #{endDate},</if>
+            <if test="electricText != null">electric_text = #{electricText},</if>
+            <if test="capacityPrice != null">capacity_price = #{capacityPrice},</if>
+            <if test="demandPrice != null">demand_price = #{demandPrice},</if>
+            <if test="demandPercent != null">demand_percent = #{demandPercent},</if>
+            <if test="demandRate != null">demand_rate = #{demandRate},</if>
+            <if test="electricUp != null">electric_up = #{electricUp},</if>
+            <if test="electricUpRate != null">electric_up_rate = #{electricUpRate},</if>
+            <if test="deviationPrice != null">deviation_price = #{deviationPrice, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="additiveName != null">additive_name = #{additiveName},</if>
+            <if test="additivePrice != null">additive_price = #{additivePrice},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteElectricPriceSchemeById" parameterType="Long">
+        delete from electric_price_scheme where id = #{id}
+    </delete>
+
+    <delete id="deleteElectricPriceSchemeByIds" parameterType="String">
+        delete from electric_price_scheme where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 校验配置年份是否唯一：新增是只校验deptId，修改和启用时还要校验id -->
+    <select id="checkEffectYearUnique" resultMap="ElectricPriceSchemeResult">
+        select id, electric_name from electric_price_scheme
+        where dept_id = #{deptId} and effect_year = #{effectYear} and stop_flag = 0 and delete_flag = 0
+        limit 1
+    </select>
+</mapper>

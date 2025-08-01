@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysUserMapper">
+
+    <resultMap type="com.yunpower.system.api.domain.SysUser" id="SysUserResult">
+		<id     property="id"    			column="id"    />
+		<result property="entId"    		column="ent_id"    />
+		<result property="deptId"    		column="dept_id"    />
+		<result property="logicCode"    	column="logic_code"    />
+		<result property="logonName"    	column="logon_name"    />
+		<result property="logonPwd"    		column="logon_pwd"    />
+		<result property="nickName"    		column="nick_name"    />
+		<result property="mobile"    		column="mobile"    />
+		<result property="email"    		column="email"    />
+		<result property="postId"    		column="post_id"    />
+		<result property="isSupper"    		column="is_supper"    />
+		<result property="userLevel"    	column="user_level"    />
+		<result property="sex"    			column="sex"    />
+		<result property="marry"    		column="marry"    />
+		<result property="birthday"    		column="birthday"    />
+		<result property="age"    			column="age"    />
+		<result property="trueName"    		column="true_name"    />
+		<result property="cardType"    		column="card_type"    />
+		<result property="cardNumber"    	column="card_number"    />
+		<result property="cardPicFront"    	column="card_pic_front"    />
+		<result property="cardPicBack"    	column="card_pic_back"    />
+		<result property="isAuth"    		column="is_auth"    />
+		<result property="country"    		column="country"    />
+		<result property="province"    		column="province"    />
+		<result property="city"    			column="city"    />
+		<result property="county"    		column="county"    />
+		<result property="town"    			column="town"    />
+		<result property="village"    		column="village"    />
+		<result property="detailAddress"    column="detail_address"    />
+		<result property="postCode"    		column="post_code"    />
+		<result property="phone"    		column="phone"    />
+		<result property="fax"    			column="fax"    />
+		<result property="headPic"    		column="head_pic"    />
+		<result property="personDes"    	column="person_des"    />
+		<result property="regTime"    		column="reg_time"    />
+		<result property="regIp"    		column="reg_ip"    />
+		<result property="lastLoginTime"    column="last_login_time"    />
+		<result property="lastLoginIp"    	column="last_login_ip"    />
+		<result property="loginTimes"    	column="login_times"    />
+	    <result property="pwdUpdateDate"    column="pwd_update_date"    />
+		<result property="createBy"    		column="create_by"    />
+		<result property="createTime"    	column="create_time"    />
+		<result property="updateBy"    		column="update_by"    />
+		<result property="updateTime"    	column="update_time"    />
+		<result property="stopFlag"    		column="stop_flag"    />
+		<result property="deleteFlag"    	column="delete_flag"    />
+        <association property="dept"    	javaType="com.yunpower.system.api.domain.SysDept"  resultMap="deptResult" />
+        <collection  property="roles"   	javaType="java.util.List"  						resultMap="RoleResult" />
+    </resultMap>
+	
+    <resultMap id="deptResult" type="com.yunpower.system.api.domain.SysDept">
+        <id     property="id"    	 column="depts_id"     	  />
+        <result property="parentId"  column="parent_id"   />
+        <result property="deptName"  column="dept_name"   />
+        <result property="ancestors" column="ancestors"   />
+        <result property="orderNum"  column="depts_order_num"   />
+        <result property="leader"    column="leader"      />
+        <result property="stopFlag"  column="depts_status" />
+    </resultMap>
+	
+    <resultMap id="RoleResult" type="com.yunpower.system.api.domain.SysRole">
+        <id     property="id"       	column="role_id"        		/>
+        <result property="roleName"     column="role_name"      />
+        <result property="roleKey"      column="role_key"       />
+        <result property="orderNum"     column="role_order_num"      />
+        <result property="dataScope"    column="data_scope"     />
+        <result property="stopFlag"     column="role_status"    />
+    </resultMap>
+	
+	<sql id="selectUserVo">
+        select u.id, u.ent_id, u.dept_id, u.logon_name, u.nick_name, u.email, u.head_pic, u.mobile, u.post_id, u.is_supper, u.user_level, u.logon_pwd, u.sex, u.person_des, u.stop_flag, u.delete_flag, u.last_login_ip, u.last_login_time, u.pwd_update_date, u.create_by, u.create_time,
+        d.id as depts_id, d.parent_id, d.ancestors, d.dept_name, d.order_num as depts_order_num, d.leader, d.stop_flag as depts_status,
+        r.id as role_id, r.role_name, r.role_key, r.order_num as role_order_num, r.data_scope, r.stop_flag as role_status
+        from sys_user u
+		    left join sys_dept d on u.dept_id = d.id
+		    left join sys_user_role ur on u.id = ur.user_id
+		    left join sys_role r on r.id = ur.role_id
+    </sql>
+
+	<!-- 根据条件分页查询用户列表（数据范围） -->
+    <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
+		select u.id, u.ent_id, u.dept_id, u.nick_name, u.logon_name, u.email, u.head_pic, u.mobile, u.is_supper, u.sex, u.stop_flag, u.delete_flag, u.last_login_ip, u.last_login_time, u.pwd_update_date, u.create_by, u.create_time,
+		d.dept_name, d.leader
+		from sys_user u
+			left join sys_dept d on u.dept_id = d.id
+		where u.delete_flag = 0
+		<if test="id != null and id != 0">
+			AND u.id = #{id}
+		</if>
+		<if test="entId != null and entId != ''">
+			AND u.ent_id = #{entId}
+		</if>
+		<if test="logonName != null and logonName != ''">
+			AND u.logon_name like concat('%', #{logonName}, '%')
+		</if>
+		<if test="nickName != null  and nickName != ''">
+			AND u.nick_name like concat('%', #{nickName}, '%')
+		</if>
+		<if test="isSupper != null and isSupper != ''">
+			AND u.is_supper = #{isSupper}
+		</if>
+		<if test="stopFlag != null and stopFlag != ''">
+			AND u.stop_flag = #{stopFlag}
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND u.mobile like concat('%', #{mobile}, '%')
+		</if>
+		<!-- 开始时间检索 -->
+		<if test="params.beginTime != null and params.beginTime != ''">
+			AND date_format(u.create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+		</if>
+		<if test="params.endTime != null and params.endTime != ''">
+			AND date_format(u.create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+		</if>
+		<!-- 结束时间检索 -->
+		<if test="deptId != null and deptId != 0">
+			AND (u.dept_id = #{deptId} OR u.dept_id IN ( SELECT t.id FROM sys_dept t WHERE find_in_set(#{deptId}, ancestors) ))
+		</if>
+		<if test="params.userIds != null and params.userIds.size() > 0">
+			AND u.id in
+			<foreach collection="params.userIds" item="userId" open="(" separator="," close=")">
+				#{userId}
+			</foreach>
+		</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+	</select>
+
+	<!-- 根据条件分页查询已配用户角色列表（数据范围） -->
+	<select id="selectAllocatedList" parameterType="SysUser" resultMap="SysUserResult">
+	    select distinct u.id, u.dept_id, u.logon_name, u.nick_name, u.email, u.mobile, u.stop_flag, u.create_time
+	    from sys_user u
+			 left join sys_dept d on u.dept_id = d.id
+			 left join sys_user_role ur on u.id = ur.user_id
+			 left join sys_role r on r.id = ur.role_id
+	    where u.delete_flag = 0 and r.id = #{roleId}
+	    <if test="logonName != null and logonName != ''">
+			AND u.logon_name like concat('%', #{logonName}, '%')
+		</if>
+		<if test="nickName != null and nickName != ''">
+			AND u.nick_name like concat('%', #{nickName}, '%')
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND u.mobile like concat('%', #{mobile}, '%')
+		</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+	</select>
+
+	<!-- 根据条件分页查询未分配用户角色列表（数据范围） -->
+	<select id="selectUnallocatedList" parameterType="SysUser" resultMap="SysUserResult">
+	    select distinct u.id, u.dept_id, u.logon_name, u.nick_name, u.email, u.mobile, u.stop_flag, u.create_time
+	    from sys_user u
+			 left join sys_dept d on u.dept_id = d.id
+			 left join sys_user_role ur on u.id = ur.user_id
+			 left join sys_role r on r.id = ur.role_id
+	    where u.delete_flag = 0 and (r.id != #{roleId} or r.id IS NULL)
+	    and u.id not in (select u.id from sys_user u inner join sys_user_role ur on u.id = ur.user_id and ur.role_id = #{roleId})
+	    <if test="logonName != null and logonName != ''">
+			AND u.logon_name like concat('%', #{logonName}, '%')
+		</if>
+		<if test="nickName != null and nickName != ''">
+			AND u.nick_name like concat('%', #{nickName}, '%')
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND u.mobile like concat('%', #{mobile}, '%')
+		</if>
+		<!-- 数据范围过滤 -->
+		${params.dataScope}
+	</select>
+
+	<!-- 通过用户名查询用户 -->
+	<select id="selectUserByUserName" parameterType="String" resultMap="SysUserResult">
+	    <include refid="selectUserVo"/>
+		where u.logon_name = #{logonName} and u.delete_flag = 0
+	</select>
+
+	<!-- 通过用户ID查询用户 -->
+	<select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.id = #{id}
+	</select>
+
+	<!-- 校验用户名称是否唯一 -->
+	<select id="checkNickNameUnique" parameterType="String" resultMap="SysUserResult">
+		select id, nick_name from sys_user where nick_name = #{nickName} and delete_flag = 0 limit 1
+	</select>
+
+	<!-- 校验用户名称是否唯一 -->
+	<select id="checkUserNameUnique" parameterType="String" resultMap="SysUserResult">
+		select id, logon_name from sys_user where logon_name = #{logonName} and delete_flag = 0 limit 1
+	</select>
+
+	<!-- 校验手机号码是否唯一 -->
+	<select id="checkPhoneUnique" parameterType="String" resultMap="SysUserResult">
+		select id, mobile from sys_user where mobile = #{mobile} and delete_flag = 0 limit 1
+	</select>
+
+	<!-- 校验email是否唯一 -->
+	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
+		select id, email from sys_user where email = #{email} and delete_flag = 0 limit 1
+	</select>
+	
+	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entId != null">ent_id,</if>
+			<if test="deptId != null">dept_id,</if>
+			<if test="logicCode != null">logic_code,</if>
+			<if test="logonName != null">logon_name,</if>
+			<if test="logonPwd != null">logon_pwd,</if>
+			<if test="nickName != null">nick_name,</if>
+			<if test="mobile != null">mobile,</if>
+			<if test="email != null">email,</if>
+			<if test="postId != null">post_id,</if>
+			<if test="isSupper != null">is_supper,</if>
+			<if test="userLevel != null">user_level,</if>
+			<if test="sex != null">sex,</if>
+			<if test="marry != null">marry,</if>
+			<if test="birthday != null">birthday,</if>
+			<if test="age != null">age,</if>
+			<if test="trueName != null">true_name,</if>
+			<if test="cardType != null">card_type,</if>
+			<if test="cardNumber != null">card_number,</if>
+			<if test="cardPicFront != null">card_pic_front,</if>
+			<if test="cardPicBack != null">card_pic_back,</if>
+			<if test="isAuth != null">is_auth,</if>
+			<if test="country != null">country,</if>
+			<if test="province != null">province,</if>
+			<if test="city != null">city,</if>
+			<if test="county != null">county,</if>
+			<if test="town != null">town,</if>
+			<if test="village != null">village,</if>
+			<if test="detailAddress != null">detail_address,</if>
+			<if test="postCode != null">post_code,</if>
+			<if test="phone != null">phone,</if>
+			<if test="fax != null">fax,</if>
+			<if test="headPic != null">head_pic,</if>
+			<if test="personDes != null">person_des,</if>
+			<if test="regTime != null">reg_time,</if>
+			<if test="regIp != null">reg_ip,</if>
+			<if test="lastLoginTime != null">last_login_time,</if>
+			<if test="lastLoginIp != null">last_login_ip,</if>
+			<if test="loginTimes != null">login_times,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+			<if test="stopFlag != null">stop_flag,</if>
+			<if test="deleteFlag != null">delete_flag,</if>
+			create_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="entId != null">#{entId},</if>
+			<if test="deptId != null">#{deptId},</if>
+			<if test="logicCode != null">#{logicCode},</if>
+			<if test="logonName != null">#{logonName},</if>
+			<if test="logonPwd != null">#{logonPwd},</if>
+			<if test="nickName != null">#{nickName},</if>
+			<if test="mobile != null">#{mobile},</if>
+			<if test="email != null">#{email},</if>
+			<if test="postId != null">#{postId},</if>
+			<if test="isSupper != null">#{isSupper},</if>
+			<if test="userLevel != null">#{userLevel},</if>
+			<if test="sex != null">#{sex},</if>
+			<if test="marry != null">#{marry},</if>
+			<if test="birthday != null">#{birthday},</if>
+			<if test="age != null">#{age},</if>
+			<if test="trueName != null">#{trueName},</if>
+			<if test="cardType != null">#{cardType},</if>
+			<if test="cardNumber != null">#{cardNumber},</if>
+			<if test="cardPicFront != null">#{cardPicFront},</if>
+			<if test="cardPicBack != null">#{cardPicBack},</if>
+			<if test="isAuth != null">#{isAuth},</if>
+			<if test="country != null">#{country},</if>
+			<if test="province != null">#{province},</if>
+			<if test="city != null">#{city},</if>
+			<if test="county != null">#{county},</if>
+			<if test="town != null">#{town},</if>
+			<if test="village != null">#{village},</if>
+			<if test="detailAddress != null">#{detailAddress},</if>
+			<if test="postCode != null">#{postCode},</if>
+			<if test="phone != null">#{phone},</if>
+			<if test="fax != null">#{fax},</if>
+			<if test="headPic != null">#{headPic},</if>
+			<if test="personDes != null">#{personDes},</if>
+			<if test="regTime != null">#{regTime},</if>
+			<if test="regIp != null">#{regIp},</if>
+			<if test="lastLoginTime != null">#{lastLoginTime},</if>
+			<if test="lastLoginIp != null">#{lastLoginIp},</if>
+			<if test="loginTimes != null">#{loginTimes},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+			<if test="stopFlag != null">#{stopFlag},</if>
+			<if test="deleteFlag != null">#{deleteFlag},</if>
+			sysdate()
+		</trim>
+	</insert>
+	
+
+	<update id="updateUser" parameterType="SysUser">
+		update sys_user
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="entId != null">ent_id = #{entId},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+			<if test="logicCode != null">logic_code = #{logicCode},</if>
+			<if test="logonName != null">logon_name = #{logonName},</if>
+			<if test="logonPwd != null">logon_pwd = #{logonPwd},</if>
+			<if test="nickName != null">nick_name = #{nickName},</if>
+			<if test="mobile != null">mobile = #{mobile},</if>
+			<if test="email != null">email = #{email},</if>
+			<if test="postId != null">post_id = #{postId},</if>
+			<if test="isSupper != null">is_supper = #{isSupper},</if>
+			<if test="userLevel != null">user_level = #{userLevel},</if>
+			<if test="sex != null">sex = #{sex},</if>
+			<if test="marry != null">marry = #{marry},</if>
+			<if test="birthday != null">birthday = #{birthday},</if>
+			<if test="age != null">age = #{age},</if>
+			<if test="trueName != null">true_name = #{trueName},</if>
+			<if test="cardType != null">card_type = #{cardType},</if>
+			<if test="cardNumber != null">card_number = #{cardNumber},</if>
+			<if test="cardPicFront != null">card_pic_front = #{cardPicFront},</if>
+			<if test="cardPicBack != null">card_pic_back = #{cardPicBack},</if>
+			<if test="isAuth != null">is_auth = #{isAuth},</if>
+			<if test="country != null">country = #{country},</if>
+			<if test="province != null">province = #{province},</if>
+			<if test="city != null">city = #{city},</if>
+			<if test="county != null">county = #{county},</if>
+			<if test="town != null">town = #{town},</if>
+			<if test="village != null">village = #{village},</if>
+			<if test="detailAddress != null">detail_address = #{detailAddress},</if>
+			<if test="postCode != null">post_code = #{postCode},</if>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="fax != null">fax = #{fax},</if>
+			<if test="headPic != null">head_pic = #{headPic},</if>
+			<if test="personDes != null">person_des = #{personDes},</if>
+			<if test="regTime != null">reg_time = #{regTime},</if>
+			<if test="regIp != null">reg_ip = #{regIp},</if>
+			<if test="lastLoginTime != null">last_login_time = #{lastLoginTime},</if>
+			<if test="lastLoginIp != null">last_login_ip = #{lastLoginIp},</if>
+			<if test="loginTimes != null">login_times = #{loginTimes},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+			<if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+			update_time = sysdate()
+		</trim>
+		where id = #{id}
+	</update>
+
+	<!-- 修改用户状态 -->
+	<update id="updateUserStatus" parameterType="SysUser">
+ 		update sys_user set stop_flag = #{stopFlag} where id = #{id}
+	</update>
+
+	<!-- 修改用户头像 -->
+	<update id="updateUserAvatar" parameterType="SysUser">
+ 		update sys_user set head_pic = #{avatar} where logon_name = #{userName}
+	</update>
+
+	<!-- 重置用户密码 -->
+	<update id="resetUserPwd" parameterType="SysUser">
+ 		update sys_user set logon_pwd = #{password},pwd_update_date = sysdate(),update_time = sysdate() where logon_name = #{logonName}
+	</update>
+
+	<!-- 通过用户ID删除用户 -->
+	<delete id="deleteUserById" parameterType="Long">
+ 		update sys_user set logon_name = concat(logon_name, '-', #{suffix}), nick_name = concat(nick_name, '-', #{suffix}), mobile = concat(mobile, '-', #{suffix}), delete_flag = 1 where id = #{id}
+ 	</delete>
+
+	<!-- 批量删除用户信息 -->
+ 	<delete id="deleteUserByIds" parameterType="Long">
+ 		update sys_user set logon_name = concat(logon_name, '-', #{suffix}), nick_name = concat(nick_name, '-', #{suffix}), mobile = concat(mobile, '-', #{suffix}), delete_flag = 1 where id in
+ 		<foreach collection="userIds" item="userId" open="(" separator="," close=")">
+ 			#{userId}
+        </foreach> 
+ 	</delete>
+	
+</mapper> 

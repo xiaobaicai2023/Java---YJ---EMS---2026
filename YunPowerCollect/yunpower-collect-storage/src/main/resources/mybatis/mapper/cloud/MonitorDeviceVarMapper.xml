@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.MonitorDeviceVarMapper">
+    
+    <resultMap type="MonitorDeviceVar" id="MonitorDeviceVarResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelSn"    column="channel_sn"    />
+        <result property="comDeviceId"    column="com_device_id"    />
+        <result property="comDeviceSn"    column="com_device_sn"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="varName"    column="var_name"    />
+        <result property="varSn"    column="var_sn"    />
+        <result property="varMapSn"    column="var_map_sn"    />
+        <result property="unit"    column="unit"    />
+        <result property="isMonitor"    column="is_monitor"    />
+        <result property="varType"    column="var_type"    />
+        <result property="origin"    column="origin"    />
+        <result property="registerName"    column="register_name"    />
+        <result property="registerIndex"    column="register_index"    />
+        <result property="messageAddress"    column="message_address"    />
+        <result property="rw"    column="rw"    />
+        <result property="computeFormula"    column="compute_formula"    />
+        <result property="deletionHandle"    column="deletion_handle"    />
+        <result property="zeroCompute"    column="zero_compute"    />
+        <result property="repairData"    column="repair_data"    />
+        <result property="dataType"    column="data_type"    />
+        <result property="initValue"    column="init_value"    />
+        <result property="baseValue"    column="base_value"    />
+        <result property="coefficient"    column="coefficient"    />
+        <result property="saveCycle"    column="save_cycle"    />
+        <result property="dataFix"    column="data_fix"    />
+        <result property="isAccumulation"    column="is_accumulation"    />
+        <result property="accumulationType"    column="accumulation_type"    />
+        <result property="isDataFilter"    column="is_data_filter"    />
+        <result property="moreAbs"    column="more_abs"    />
+        <result property="replaceValueUpper"    column="replace_value_upper"    />
+        <result property="lessAbs"    column="less_abs"    />
+        <result property="replaceValueLower"    column="replace_value_lower"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectMonitorDeviceVarVo">
+        select id, ent_id, dept_id, station_type, channel_id, channel_sn, com_device_id, com_device_sn, device_id, device_sn, var_name, var_sn, var_map_sn, unit, is_monitor, var_type, origin, register_name, register_index, message_address, rw, compute_formula, deletion_handle, zero_compute, repair_data, data_type, init_value, base_value, coefficient, save_cycle, data_fix, is_accumulation, accumulation_type, is_data_filter, more_abs, replace_value_upper, less_abs, replace_value_lower, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from monitor_device_var
+    </sql>
+
+    <sql id="selectCondition">
+        where delete_flag = 0 and stop_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="channelId != null "> and channel_id = #{channelId}</if>
+        <if test="channelSn != null  and channelSn != ''"> and channel_sn = #{channelSn}</if>
+        <if test="comDeviceId != null "> and com_device_id = #{comDeviceId}</if>
+        <if test="comDeviceSn != null  and comDeviceSn != ''"> and com_device_sn = #{comDeviceSn}</if>
+        <if test="deviceId != null "> and device_id = #{deviceId}</if>
+        <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+        <if test="varName != null  and varName != ''"> and var_name like concat('%', #{varName}, '%')</if>
+        <if test="varSn != null  and varSn != ''"> and var_sn = #{varSn}</if>
+        <if test="varMapSn != null  and varMapSn != ''"> and var_map_sn = #{varMapSn}</if>
+        <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+        <if test="isMonitor != null "> and is_monitor = #{isMonitor}</if>
+        <if test="varType != null "> and var_type = #{varType}</if>
+        <if test="origin != null "> and origin = #{origin}</if>
+        <if test="registerName != null  and registerName != ''"> and register_name like concat('%', #{registerName}, '%')</if>
+        <if test="saveCycle != null "> and save_cycle = #{saveCycle}</if>
+        <if test="dataFix != null "> and data_fix = #{dataFix}</if>
+        <if test="isAccumulation != null "> and is_accumulation = #{isAccumulation}</if>
+        <if test="accumulationType != null "> and accumulation_type = #{accumulationType}</if>
+        <if test="isDataFilter != null "> and is_data_filter = #{isDataFilter}</if>
+        <!-- 批量设备编码 -->
+        <if test="params.deviceSns != null and params.deviceSns != ''">
+            and device_sn in
+            <foreach item="item" collection="params.deviceSns" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <!-- 批量索引编码 -->
+        <if test="params.varMapSns != null and params.varMapSns != ''">
+            and var_map_sn in
+            <foreach item="item" collection="params.varMapSns" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="params.varMapSn != null and params.varMapSn != ''">
+            and var_map_sn like concat('%', #{params.varMapSn}, '%')
+        </if>
+        <!-- 批量变量编码 -->
+        <if test="params.varSns != null and params.varSns != ''">
+            and var_sn in
+            <foreach item="item" collection="params.varSns" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="params.hasComputeFormula != null and params.hasComputeFormula == 1">
+            and LENGTH(compute_formula) > 0
+        </if>
+    </sql>
+
+    <select id="selectMonitorDeviceVarList" parameterType="MonitorDeviceVar" resultMap="MonitorDeviceVarResult">
+        <include refid="selectMonitorDeviceVarVo"/>
+        <include refid="selectCondition"></include>
+    </select>
+
+    <select id="selectMonitorDeviceVarListByChannelDevice" parameterType="Long" resultMap="MonitorDeviceVarResult">
+        <include refid="selectMonitorDeviceVarVo"/>
+        where delete_flag = 0 and stop_flag = 0 and message_address >= 0 and com_device_id = #{comDeviceId}
+    </select>
+
+    <select id="selectMonitorDeviceVarById" parameterType="Long" resultMap="MonitorDeviceVarResult">
+        <include refid="selectMonitorDeviceVarVo"/>
+        where id = #{id}
+    </select>
+
+</mapper>

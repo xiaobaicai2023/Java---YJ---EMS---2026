@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.DevopsOrderMapper">
+    
+    <resultMap type="com.yunpower.system.domain.DevopsOrder" id="DevopsOrderResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="orderTitle"    column="order_title"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="stationId"    column="station_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="alarmId"    column="alarm_id"    />
+        <result property="priorityLevel"    column="priority_level"    />
+        <result property="orderType"    column="order_type"    />
+        <result property="planStartTime"    column="plan_start_time"    />
+        <result property="planEndTime"    column="plan_end_time"    />
+        <result property="orderContent"    column="order_content"    />
+        <result property="orderFiles"    column="order_files" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="chargeBy"    column="charge_by"    />
+        <result property="collaborateFor"    column="collaborate_for" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="copyFor"    column="copy_for" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="verifyFor"    column="verify_for" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="receiveTime"    column="receive_time"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="completeTime"    column="complete_time"    />
+        <result property="useMinutes"    column="use_minutes"    />
+        <result property="handleProcess"    column="handle_process"    />
+        <result property="handleFiles"    column="handle_files" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="verifyTime"    column="verify_time"    />
+        <result property="verifyAdvice"    column="verify_advice"    />
+        <result property="timeoutStatus"    column="timeout_status"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="statisticValue"       column="statistic_value"    />
+    </resultMap>
+
+    <sql id="selectDevopsOrderVo">
+        select id, ent_id, dept_id, order_title, station_type, station_id, device_id, alarm_id, priority_level, order_type, plan_start_time, plan_end_time, order_content, order_files, charge_by, collaborate_for, copy_for, verify_for, receive_time, start_time, complete_time, use_minutes, handle_process, handle_files, verify_time, verify_advice, timeout_status, status, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from devops_order
+    </sql>
+
+    <sql id="selectCondition">
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="orderTitle != null  and orderTitle != ''"> and order_title like concat('%', #{orderTitle}, '%')</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="stationId != null "> and station_id = #{stationId}</if>
+        <if test="deviceId != null "> and device_id = #{deviceId}</if>
+        <if test="alarmId != null "> and alarm_id = #{alarmId}</if>
+        <if test="priorityLevel != null  and priorityLevel != ''"> and priority_level = #{priorityLevel}</if>
+        <if test="orderType != null  and orderType != ''"> and order_type = #{orderType}</if>
+        <if test="planStartTime != null "> and plan_start_time = #{planStartTime}</if>
+        <if test="planEndTime != null "> and plan_end_time = #{planEndTime}</if>
+        <if test="orderContent != null  and orderContent != ''"> and order_content = #{orderContent}</if>
+        <if test="chargeBy != null  and chargeBy != ''"> and charge_by = #{chargeBy}</if>
+        <if test="receiveTime != null "> and receive_time = #{receiveTime}</if>
+        <if test="startTime != null "> and start_time = #{startTime}</if>
+        <if test="completeTime != null "> and complete_time = #{completeTime}</if>
+        <if test="useMinutes != null "> and use_minutes = #{useMinutes}</if>
+        <if test="handleProcess != null  and handleProcess != ''"> and handle_process = #{handleProcess}</if>
+        <if test="verifyTime != null "> and verify_time = #{verifyTime}</if>
+        <if test="verifyAdvice != null  and verifyAdvice != ''"> and verify_advice = #{verifyAdvice}</if>
+        <if test="timeoutStatus != null "> and timeout_status = #{timeoutStatus}</if>
+        <if test="status != null "> and status = #{status}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="params.status != null "><!-- 开始时间检索 -->
+            and status in
+           <foreach item="item" collection="params.status" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+    </sql>
+
+    <select id="selectDevopsOrderList" parameterType="DevopsOrder" resultMap="DevopsOrderResult">
+        <include refid="selectDevopsOrderVo"/>
+        <include refid="selectCondition"></include>
+        ORDER BY create_time DESC
+        <if test="params.limit != null and params.limit != ''"><!-- 结束时间检索 -->
+            LIMIT #{params.limit}
+        </if>
+    </select>
+
+    <!-- 按工单状态统计 -->
+    <select id="selectStatisticByStatus" parameterType="DevopsOrder" resultMap="DevopsOrderResult">
+        SELECT status, COUNT(1) AS statistic_value
+        FROM devops_order
+        <include refid="selectCondition"></include>
+        GROUP BY status
+    </select>
+
+    <!-- 按工单类型统计 -->
+    <select id="selectStatisticByOrderType" parameterType="DevopsOrder" resultMap="DevopsOrderResult">
+        SELECT order_type, COUNT(1) AS statistic_value
+        FROM devops_order
+        <include refid="selectCondition"></include>
+        GROUP BY order_type
+    </select>
+
+    <!-- 按日期统计 -->
+    <select id="selectStatisticByDate" parameterType="DevopsOrder" resultMap="DevopsOrderResult">
+        SELECT
+            COUNT(1) AS statistic_value,
+            <choose>
+                <when test="dateDim == 70">
+                    DATE_FORMAT(create_time, '%Y-%m-%d %H:00') as formattedDatetime
+                </when>
+                <when test="dateDim == 80">
+                    DATE_FORMAT(create_time, '%Y-%m-%d') AS formattedDatetime
+                </when>
+                <when test="dateDim == 90">
+                    DATE_FORMAT(create_time, '%Y-%m') AS formattedDatetime
+                </when>
+            </choose>
+        FROM devops_order
+        <include refid="selectCondition"></include>
+        <choose>
+            <when test="dateDim == 70">
+                GROUP BY DATE_FORMAT(create_time, '%Y-%m-%d %H:00')
+            </when>
+            <when test="dateDim == 80">
+                GROUP BY DATE_FORMAT(create_time, '%Y-%m-%d')
+            </when>
+            <when test="dateDim == 90">
+                GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+            </when>
+        </choose>
+        order by formattedDatetime asc
+    </select>
+
+    <select id="selectDevopsOrderById" parameterType="Long" resultMap="DevopsOrderResult">
+        <include refid="selectDevopsOrderVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDevopsOrder" parameterType="DevopsOrder" useGeneratedKeys="true" keyProperty="id">
+        insert into devops_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="orderTitle != null">order_title,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="stationId != null">station_id,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="alarmId != null">alarm_id,</if>
+            <if test="priorityLevel != null">priority_level,</if>
+            <if test="orderType != null">order_type,</if>
+            <if test="planStartTime != null">plan_start_time,</if>
+            <if test="planEndTime != null">plan_end_time,</if>
+            <if test="orderContent != null">order_content,</if>
+            <if test="orderFiles != null">order_files,</if>
+            <if test="chargeBy != null">charge_by,</if>
+            <if test="collaborateFor != null">collaborate_for,</if>
+            <if test="copyFor != null">copy_for,</if>
+            <if test="verifyFor != null">verify_for,</if>
+            <if test="receiveTime != null">receive_time,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="completeTime != null">complete_time,</if>
+            <if test="useMinutes != null">use_minutes,</if>
+            <if test="handleProcess != null">handle_process,</if>
+            <if test="handleFiles != null">handle_files,</if>
+            <if test="verifyTime != null">verify_time,</if>
+            <if test="verifyAdvice != null">verify_advice,</if>
+            <if test="timeoutStatus != null">timeout_status,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="orderTitle != null">#{orderTitle},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="stationId != null">#{stationId},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="alarmId != null">#{alarmId},</if>
+            <if test="priorityLevel != null">#{priorityLevel},</if>
+            <if test="orderType != null">#{orderType},</if>
+            <if test="planStartTime != null">#{planStartTime},</if>
+            <if test="planEndTime != null">#{planEndTime},</if>
+            <if test="orderContent != null">#{orderContent},</if>
+            <if test="orderFiles != null">#{orderFiles, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="chargeBy != null">#{chargeBy},</if>
+            <if test="collaborateFor != null">#{collaborateFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="copyFor != null">#{copyFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="verifyFor != null">#{verifyFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="receiveTime != null">#{receiveTime},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="completeTime != null">#{completeTime},</if>
+            <if test="useMinutes != null">#{useMinutes},</if>
+            <if test="handleProcess != null">#{handleProcess},</if>
+            <if test="handleFiles != null">#{handleFiles, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="verifyTime != null">#{verifyTime},</if>
+            <if test="verifyAdvice != null">#{verifyAdvice},</if>
+            <if test="timeoutStatus != null">#{timeoutStatus},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDevopsOrder" parameterType="DevopsOrder">
+        update devops_order s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="orderTitle != null">order_title = #{orderTitle},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="stationId != null">station_id = #{stationId},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="alarmId != null">alarm_id = #{alarmId},</if>
+            <if test="priorityLevel != null">priority_level = #{priorityLevel},</if>
+            <if test="orderType != null">order_type = #{orderType},</if>
+            <if test="planStartTime != null">plan_start_time = #{planStartTime},</if>
+            <if test="planEndTime != null">plan_end_time = #{planEndTime},</if>
+            <if test="orderContent != null">order_content = #{orderContent},</if>
+            <if test="orderFiles != null">order_files = #{orderFiles, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="chargeBy != null">charge_by = #{chargeBy},</if>
+            <if test="collaborateFor != null">collaborate_for = #{collaborateFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="copyFor != null">copy_for = #{copyFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="verifyFor != null">verify_for = #{verifyFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="receiveTime != null">receive_time = #{receiveTime},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+            <if test="useMinutes != null">use_minutes = #{useMinutes},</if>
+            <if test="handleProcess != null">handle_process = #{handleProcess},</if>
+            <if test="handleFiles != null">handle_files = #{handleFiles, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="verifyTime != null">verify_time = #{verifyTime},</if>
+            <if test="verifyAdvice != null">verify_advice = #{verifyAdvice},</if>
+            <if test="timeoutStatus != null">timeout_status = #{timeoutStatus},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteDevopsOrderById" parameterType="Long">
+        delete from devops_order where id = #{id}
+    </delete>
+
+    <delete id="deleteDevopsOrderByIds" parameterType="String">
+        delete from devops_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

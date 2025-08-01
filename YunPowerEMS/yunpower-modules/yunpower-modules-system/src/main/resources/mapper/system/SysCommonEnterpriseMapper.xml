@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysCommonEnterpriseMapper">
+
+    <resultMap type="com.yunpower.system.domain.SysCommonEnterprise" id="SysCommonEnterpriseResult">
+        <result property="id"    column="id"    />
+        <result property="entName"    column="ent_name"    />
+        <result property="entSn"    column="ent_sn"    />
+        <result property="entType"    column="ent_type"    />
+        <result property="entLogo"    column="ent_logo"    />
+        <result property="entIntro"    column="ent_intro"    />
+        <result property="creditCode"    column="credit_code"    />
+        <result property="legalPerson"    column="legal_person"    />
+        <result property="linkName"    column="link_name"    />
+        <result property="linkMobile"    column="link_mobile"    />
+        <result property="linkAddress"    column="link_address"    />
+        <result property="email"    column="email"    />
+        <result property="businessScope"    column="business_scope"    />
+        <result property="registeredCapital"    column="registered_capital"    />
+        <result property="foundDate"    column="found_date"    />
+        <result property="openStartDate"    column="open_start_date"    />
+        <result property="openEndDate"    column="open_end_date"    />
+        <result property="address"    column="address"    />
+        <result property="regOffice"    column="reg_office"    />
+        <result property="issueDate"    column="Issue_date"    />
+        <result property="logicCode"    column="logic_code"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <association property="stations"    javaType="java.util.List"  resultMap="SysStationResult" />
+    </resultMap>
+
+    <resultMap type="com.yunpower.system.api.domain.SysStation" id="SysStationResult">
+        <result property="id"               column="sta_id"    />
+        <result property="entId"            column="sta_ent_id"    />
+        <result property="parentId"         column="parent_id"    />
+        <result property="groupId"          column="group_id"    />
+        <result property="stationName"      column="station_name"    />
+        <result property="stationSn"        column="station_sn"    />
+        <result property="groupOrStation"   column="group_or_station"    />
+        <result property="stationType"      column="station_type"    />
+        <result property="logicCode"        column="logic_code"    />
+        <result property="linkName"         column="sta_link_name"    />
+        <result property="linkPhone"        column="link_phone"    />
+        <result property="orderNum"         column="order_num"    />
+        <result property="remark"           column="sta_remark"    />
+        <result property="createBy"         column="sta_create_by"    />
+        <result property="createTime"       column="sta_create_time"    />
+        <result property="updateBy"         column="sta_update_by"    />
+        <result property="updateTime"       column="sta_update_time"    />
+        <result property="stopFlag"         column="sta_stop_flag"    />
+        <result property="deleteFlag"       column="sta_delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysCommonEnterpriseVo">
+        select id, ent_name, ent_sn, ent_type, ent_logo, ent_intro, credit_code, legal_person, link_name, link_mobile, link_address, email, business_scope, registered_capital, found_date, open_start_date, open_end_date, address, reg_office, Issue_date, logic_code, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from sys_common_enterprise
+    </sql>
+
+    <select id="selectSysCommonEnterpriseList" parameterType="SysCommonEnterprise" resultMap="SysCommonEnterpriseResult">
+        <include refid="selectSysCommonEnterpriseVo"/>
+        where delete_flag = 0
+        <if test="entName != null  and entName != ''"> and ent_name like concat('%', #{entName}, '%')</if>
+        <if test="entSn != null  and entSn != ''"> and ent_sn = #{entSn}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+    </select>
+
+    <!-- 获取企业-站点关联列表 -->
+    <select id="selectEnterpriseStationList" parameterType="SysCommonEnterprise" resultMap="SysCommonEnterpriseResult">
+        select e.id, e.ent_name, e.ent_sn, e.link_name, e.link_mobile, e.email, e.remark, e.create_by, e.create_time, e.update_by, e.update_time, e.stop_flag, e.delete_flag,
+            s.id as sta_id, s.ent_id as sta_ent_id, s.parent_id, s.station_name, s.station_sn, s.group_or_station, s.link_name as sta_link_name, s.link_phone, s.order_num, s.remark as sta_remark, s.create_by as sta_create_by, s.create_time as sta_create_time, s.update_by as sta_update_by, s.update_time as sta_update_time, s.stop_flag as sta_stop_flag, s.delete_flag as sta_delete_flag
+        from sys_common_enterprise e
+        left join sys_station s on s.ent_id = e.id
+        order by s.parent_id asc, s.order_num asc
+    </select>
+
+    <!-- 根据ID查询所有子站点（正常状态） -->
+    <select id="selectNormalChildrenStationById" parameterType="Long" resultType="int">
+		select count(*) from sys_station where stop_flag = 0 and delete_flag = 0 and ent_id = #{id}
+	</select>
+
+    <!-- 查询企业是否存在子节点 -->
+    <select id="hasChildrenStationById" parameterType="Long" resultType="int">
+		select count(1) from sys_station where delete_flag = 0 and ent_id = #{id}
+	</select>
+
+    <!-- 查询站点是否存在用户 -->
+    <select id="checkStationExistUser" parameterType="Long" resultType="int">
+		select count(1) from sys_user where delete_flag = 0 and ent_id = #{id}
+	</select>
+
+    <!-- 根据企业ID获取企业信息 -->
+    <select id="selectSysCommonEnterpriseById" parameterType="Long" resultMap="SysCommonEnterpriseResult">
+        <include refid="selectSysCommonEnterpriseVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSysCommonEnterpriseByEntSn" parameterType="String" resultMap="SysCommonEnterpriseResult">
+        <include refid="selectSysCommonEnterpriseVo"/>
+        where ent_sn = #{entSn}
+        limit 1
+    </select>
+
+    <select id="selectSysCommonEnterpriseByCreditCode" parameterType="String" resultMap="SysCommonEnterpriseResult">
+        <include refid="selectSysCommonEnterpriseVo"/>
+        where credit_code = #{creditCode} and delete_flag = 0
+        limit 1
+    </select>
+
+    <insert id="insertSysCommonEnterprise" parameterType="SysCommonEnterprise" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_common_enterprise
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entName != null">ent_name,</if>
+            <if test="entSn != null">ent_sn,</if>
+            <if test="entType != null">ent_type,</if>
+            <if test="entLogo != null">ent_logo,</if>
+            <if test="entIntro != null">ent_intro,</if>
+            <if test="creditCode != null">credit_code,</if>
+            <if test="legalPerson != null">legal_person,</if>
+            <if test="linkName != null">link_name,</if>
+            <if test="linkMobile != null">link_mobile,</if>
+            <if test="linkAddress != null">link_address,</if>
+            <if test="email != null">email,</if>
+            <if test="businessScope != null">business_scope,</if>
+            <if test="registeredCapital != null">registered_capital,</if>
+            <if test="foundDate != null">found_date,</if>
+            <if test="openStartDate != null">open_start_date,</if>
+            <if test="openEndDate != null">open_end_date,</if>
+            <if test="address != null">address,</if>
+            <if test="regOffice != null">reg_office,</if>
+            <if test="issueDate != null">Issue_date,</if>
+            <if test="logicCode != null">logic_code,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entName != null">#{entName},</if>
+            <if test="entSn != null">#{entSn},</if>
+            <if test="entType != null">#{entType},</if>
+            <if test="entLogo != null">#{entLogo},</if>
+            <if test="entIntro != null">#{entIntro},</if>
+            <if test="creditCode != null">#{creditCode},</if>
+            <if test="legalPerson != null">#{legalPerson},</if>
+            <if test="linkName != null">#{linkName},</if>
+            <if test="linkMobile != null">#{linkMobile},</if>
+            <if test="linkAddress != null">#{linkAddress},</if>
+            <if test="email != null">#{email},</if>
+            <if test="businessScope != null">#{businessScope},</if>
+            <if test="registeredCapital != null">#{registeredCapital},</if>
+            <if test="foundDate != null">#{foundDate},</if>
+            <if test="openStartDate != null">#{openStartDate},</if>
+            <if test="openEndDate != null">#{openEndDate},</if>
+            <if test="address != null">#{address},</if>
+            <if test="regOffice != null">#{regOffice},</if>
+            <if test="issueDate != null">#{issueDate},</if>
+            <if test="logicCode != null">#{logicCode},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysCommonEnterprise" parameterType="SysCommonEnterprise">
+        update sys_common_enterprise
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entName != null">ent_name = #{entName},</if>
+            <if test="entSn != null">ent_sn = #{entSn},</if>
+            <if test="entType != null">ent_type = #{entType},</if>
+            <if test="entLogo != null">ent_logo = #{entLogo},</if>
+            <if test="entIntro != null">ent_intro = #{entIntro},</if>
+            <if test="creditCode != null">credit_code = #{creditCode},</if>
+            <if test="legalPerson != null">legal_person = #{legalPerson},</if>
+            <if test="linkName != null">link_name = #{linkName},</if>
+            <if test="linkMobile != null">link_mobile = #{linkMobile},</if>
+            <if test="linkAddress != null">link_address = #{linkAddress},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="businessScope != null">business_scope = #{businessScope},</if>
+            <if test="registeredCapital != null">registered_capital = #{registeredCapital},</if>
+            <if test="foundDate != null">found_date = #{foundDate},</if>
+            <if test="openStartDate != null">open_start_date = #{openStartDate},</if>
+            <if test="openEndDate != null">open_end_date = #{openEndDate},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="regOffice != null">reg_office = #{regOffice},</if>
+            <if test="issueDate != null">Issue_date = #{issueDate},</if>
+            <if test="logicCode != null">logic_code = #{logicCode},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysCommonEnterpriseById" parameterType="Long">
+        delete from sys_common_enterprise where id = #{id}
+    </delete>
+
+    <delete id="deleteSysCommonEnterpriseByIds" parameterType="String">
+        delete from sys_common_enterprise where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

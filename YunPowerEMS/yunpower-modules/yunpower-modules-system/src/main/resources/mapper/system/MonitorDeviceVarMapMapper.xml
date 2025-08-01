@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.MonitorDeviceVarMapMapper">
+    
+    <resultMap type="com.yunpower.system.domain.MonitorDeviceVarMap" id="MonitorDeviceVarMapResult">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="parentName"    column="parent_name"    />
+        <result property="indexName"    column="index_name"    />
+        <result property="indexSn"    column="index_sn"    />
+        <result property="unit"    column="unit"    />
+        <result property="varType"    column="var_type"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectMonitorDeviceVarMapVo">
+        select id, parent_id, parent_name, index_name, index_sn, unit, var_type, order_num, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from monitor_device_var_map
+    </sql>
+
+    <select id="selectMonitorDeviceVarMapList" parameterType="MonitorDeviceVarMap" resultMap="MonitorDeviceVarMapResult">
+        <include refid="selectMonitorDeviceVarMapVo"/>
+        where delete_flag = 0
+        <if test="parentId != null "> and parent_id = #{parentId}</if>
+        <if test="parentName != null  and parentName != ''"> and parent_name like concat('%', #{parentName}, '%')</if>
+        <if test="indexName != null  and indexName != ''"> and index_name like concat('%', #{indexName}, '%')</if>
+        <if test="indexSn != null  and indexSn != ''"> and index_sn = #{indexSn}</if>
+        <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+        <if test="varType != null"> and var_type = #{varType}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        order by parent_id, order_num
+    </select>
+    
+    <select id="selectMonitorDeviceVarMapById" parameterType="Long" resultMap="MonitorDeviceVarMapResult">
+        <include refid="selectMonitorDeviceVarMapVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectMonitorDeviceVarMapByIndexSn" parameterType="String" resultMap="MonitorDeviceVarMapResult">
+        <include refid="selectMonitorDeviceVarMapVo"/>
+        where delete_flag = 0 and index_sn = #{indexSn}
+    </select>
+        
+    <insert id="insertMonitorDeviceVarMap" parameterType="MonitorDeviceVarMap" useGeneratedKeys="true" keyProperty="id">
+        insert into monitor_device_var_map
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="parentName != null">parent_name,</if>
+            <if test="indexName != null">index_name,</if>
+            <if test="indexSn != null">index_sn,</if>
+            <if test="unit != null">unit,</if>
+            <if test="varType != null">var_type,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="parentName != null">#{parentName},</if>
+            <if test="indexName != null">#{indexName},</if>
+            <if test="indexSn != null">#{indexSn},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="varType != null">#{varType},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMonitorDeviceVarMap" parameterType="MonitorDeviceVarMap">
+        update monitor_device_var_map
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="parentName != null">parent_name = #{parentName},</if>
+            <if test="indexName != null">index_name = #{indexName},</if>
+            <if test="indexSn != null">index_sn = #{indexSn},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="varType != null">var_type = #{varType},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMonitorDeviceVarMapById" parameterType="Long">
+        update monitor_device_var_map set delete_flag = 1 where id = #{id}
+    </delete>
+
+    <!-- 物理删除 -->
+    <delete id="deleteMonitorDeviceVarMapByIdPhysical" parameterType="Long">
+        delete from monitor_device_var_map where id = #{id}
+    </delete>
+
+    <delete id="deleteMonitorDeviceVarMapByIds" parameterType="String">
+        delete from monitor_device_var_map where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 是否含有子索引 -->
+    <select id="hasChildrenById" parameterType="Long" resultType="int">
+        select count(1) from monitor_device_var_map where delete_flag = 0 and parent_id = #{id} limit 1
+    </select>
+
+    <!-- 校验索引编码是否唯一 -->
+    <select id="checkIndexSnUnique" parameterType="String" resultType="int">
+        select count(1) from monitor_device_var_map where delete_flag = 0 and index_sn = #{indexSn} limit 1
+    </select>
+</mapper>

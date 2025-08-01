@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.collect.storage.mapper.SysCommonCreateMapper">
+    
+    <resultMap type="com.yunpower.collect.storage.domain.SysCommonCreate" id="SysCommonCreateResult">
+        <result property="createTable"    column="create_table"    />
+        <result property="createType"    column="create_type"    />
+    </resultMap>
+
+    <sql id="selectSysCommonCreateVo">
+        select create_table, create_type from sys_common_create
+    </sql>
+
+    <select id="selectSysCommonCreateList" parameterType="com.yunpower.collect.storage.domain.SysCommonCreate" resultMap="SysCommonCreateResult">
+        <include refid="selectSysCommonCreateVo"/>
+        <where>
+            <if test="createTable != null  and createTable != ''"> and create_table = #{createTable}</if>
+            <if test="createType != null "> and create_type = #{createType}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysCommonCreateByCreateTable" parameterType="String" resultMap="SysCommonCreateResult">
+        <include refid="selectSysCommonCreateVo"/>
+        where create_table = #{createTable}
+    </select>
+        
+    <insert id="insertSysCommonCreate" parameterType="com.yunpower.collect.storage.domain.SysCommonCreate">
+        insert into sys_common_create
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createTable != null">create_table,</if>
+            <if test="createType != null">create_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createTable != null">#{createTable},</if>
+            <if test="createType != null">#{createType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysCommonCreate" parameterType="com.yunpower.collect.storage.domain.SysCommonCreate">
+        update sys_common_create
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createType != null">create_type = #{createType},</if>
+        </trim>
+        where create_table = #{createTable}
+    </update>
+
+    <delete id="deleteSysCommonCreateByCreateTable" parameterType="String">
+        delete from sys_common_create where create_table = #{createTable}
+    </delete>
+
+    <delete id="deleteSysCommonCreateByCreateTables" parameterType="String">
+        delete from sys_common_create where create_table in 
+        <foreach item="createTable" collection="array" open="(" separator="," close=")">
+            #{createTable}
+        </foreach>
+    </delete>
+</mapper>

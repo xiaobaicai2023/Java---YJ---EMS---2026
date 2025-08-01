@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.yunpower</groupId>
+        <artifactId>yunpower-ems</artifactId>
+        <version>3.6.4</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>yunpower-common-log</module>
+        <module>yunpower-common-core</module>
+        <module>yunpower-common-redis</module>
+        <module>yunpower-common-seata</module>
+        <module>yunpower-common-swagger</module>
+        <module>yunpower-common-security</module>
+        <module>yunpower-common-sensitive</module>
+        <module>yunpower-common-datascope</module>
+        <module>yunpower-common-datasource</module>
+    </modules>
+
+    <artifactId>yunpower-common</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        yunpower-common通用模块
+    </description>
+
+</project>

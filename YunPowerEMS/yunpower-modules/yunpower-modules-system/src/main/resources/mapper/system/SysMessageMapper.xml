@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysMessageMapper">
+    
+    <resultMap type="com.yunpower.system.domain.SysMessage" id="SysMessageResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="remark"    column="remark"    />
+        <result property="mobile"    column="mobile"    />
+        <result property="templateType"    column="template_type"    />
+        <result property="topic"    column="topic"    />
+        <result property="code"    column="code"    />
+        <result property="effectMinute"    column="effect_minute"    />
+        <result property="returnResult"    column="return_result"    />
+        <result property="smsChannel"    column="sms_channel"    />
+        <result property="templateId"    column="template_id"    />
+        <result property="sendBy"    column="send_by"    />
+        <result property="sendTime"    column="send_time"    />
+        <result property="sendStatus"    column="send_status"    />
+        <result property="sendContent"    column="send_content"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectSysMessageVo">
+        select id, ent_id, dept_id, user_name, remark, mobile, template_type, topic, code, effect_minute, return_result, sms_channel, template_id, send_by, send_time, send_status, send_content, create_by, create_time, update_by, update_time, stop_flag, delete_flag from sys_message
+    </sql>
+
+    <select id="selectSysMessageList" parameterType="SysMessage" resultMap="SysMessageResult">
+        <include refid="selectSysMessageVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+        <if test="mobile != null  and mobile != ''"> and mobile = #{mobile}</if>
+        <if test="templateType != null "> and template_type = #{templateType}</if>
+        <if test="topic != null  and topic != ''"> and topic = #{topic}</if>
+        <if test="code != null  and code != ''"> and code = #{code}</if>
+        <if test="effectMinute != null "> and effect_minute = #{effectMinute}</if>
+        <if test="returnResult != null  and returnResult != ''"> and return_result = #{returnResult}</if>
+        <if test="smsChannel != null "> and sms_channel = #{smsChannel}</if>
+        <if test="templateId != null "> and template_id = #{templateId}</if>
+        <if test="sendBy != null  and sendBy != ''"> and send_by = #{sendBy}</if>
+        <if test="sendTime != null "> and send_time = #{sendTime}</if>
+        <if test="sendStatus != null "> and send_status = #{sendStatus}</if>
+        <if test="sendContent != null  and sendContent != ''"> and send_content = #{sendContent}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(send_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(send_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+    </select>
+    
+    <select id="selectSysMessageById" parameterType="Long" resultMap="SysMessageResult">
+        <include refid="selectSysMessageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysMessage" parameterType="SysMessage" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="remark != null">remark,</if>
+            <if test="mobile != null">mobile,</if>
+            <if test="templateType != null">template_type,</if>
+            <if test="topic != null">topic,</if>
+            <if test="code != null">code,</if>
+            <if test="effectMinute != null">effect_minute,</if>
+            <if test="returnResult != null">return_result,</if>
+            <if test="smsChannel != null">sms_channel,</if>
+            <if test="templateId != null">template_id,</if>
+            <if test="sendBy != null">send_by,</if>
+            <if test="sendTime != null">send_time,</if>
+            <if test="sendStatus != null">send_status,</if>
+            <if test="sendContent != null">send_content,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="mobile != null">#{mobile},</if>
+            <if test="templateType != null">#{templateType},</if>
+            <if test="topic != null">#{topic},</if>
+            <if test="code != null">#{code},</if>
+            <if test="effectMinute != null">#{effectMinute},</if>
+            <if test="returnResult != null">#{returnResult},</if>
+            <if test="smsChannel != null">#{smsChannel},</if>
+            <if test="templateId != null">#{templateId},</if>
+            <if test="sendBy != null">#{sendBy},</if>
+            <if test="sendTime != null">#{sendTime},</if>
+            <if test="sendStatus != null">#{sendStatus},</if>
+            <if test="sendContent != null">#{sendContent},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysMessage" parameterType="SysMessage">
+        update sys_message s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="mobile != null">mobile = #{mobile},</if>
+            <if test="templateType != null">template_type = #{templateType},</if>
+            <if test="topic != null">topic = #{topic},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="effectMinute != null">effect_minute = #{effectMinute},</if>
+            <if test="returnResult != null">return_result = #{returnResult},</if>
+            <if test="smsChannel != null">sms_channel = #{smsChannel},</if>
+            <if test="templateId != null">template_id = #{templateId},</if>
+            <if test="sendBy != null">send_by = #{sendBy},</if>
+            <if test="sendTime != null">send_time = #{sendTime},</if>
+            <if test="sendStatus != null">send_status = #{sendStatus},</if>
+            <if test="sendContent != null">send_content = #{sendContent},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteSysMessageById" parameterType="Long">
+        delete from sys_message where id = #{id}
+    </delete>
+
+    <delete id="deleteSysMessageByIds" parameterType="String">
+        delete from sys_message where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 清空消息信息 -->
+    <update id="cleanMessage">
+        truncate table sys_message
+    </update>
+</mapper>

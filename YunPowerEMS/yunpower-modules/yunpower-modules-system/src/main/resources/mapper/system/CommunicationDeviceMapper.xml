@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.CommunicationDeviceMapper">
+    
+    <resultMap type="com.yunpower.system.domain.CommunicationDevice" id="CommunicationDeviceResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="stationType"    column="station_type"    />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceSn"    column="device_sn"    />
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelSn"    column="channel_sn"    />
+        <result property="connectModel"    column="connect_model"    />
+        <result property="timeout"    column="timeout"    />
+        <result property="onlineTime"    column="online_time"    />
+        <result property="offlineTime"    column="offline_time"    />
+        <result property="isActive"    column="is_active"    />
+        <result property="activeUpdateTime"    column="active_update_time"    />
+        <result property="connectAlarm"    column="connect_alarm"    />
+        <result property="sbdz"    column="sbdz"    />
+        <result property="csyyLength"    column="csyy_length"    />
+        <result property="ggdz"    column="ggdz"    />
+        <result property="ggdzLength"    column="ggdz_length"    />
+        <result property="infoLength"    column="info_length"    />
+        <result property="timeoutT0"    column="timeout_t0"    />
+        <result property="timeoutT1"    column="timeout_t1"    />
+        <result property="timeoutT2"    column="timeout_t2"    />
+        <result property="timeoutT3"    column="timeout_t3"    />
+        <result property="assCallCycle"    column="ass_call_cycle"    />
+        <result property="elcCallCycle"    column="elc_call_cycle"    />
+        <result property="dataArea" column="data_area" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.DevicesDataAreaTypeHandler" />
+        <result property="proType"    column="pro_type"    />
+        <result property="proFactory"    column="pro_factory"    />
+        <result property="proVer"    column="pro_ver"    />
+        <result property="proSn"    column="pro_sn"    />
+        <result property="proModel"    column="pro_model"    />
+        <result property="cardOperator"    column="card_operator"    />
+        <result property="cardNo"    column="card_no"    />
+        <result property="cardIp"    column="card_ip"    />
+        <result property="cardFlow"    column="card_flow"    />
+        <result property="cardPostage"    column="card_postage"    />
+        <result property="cardExpireDate"    column="card_expire_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectCommunicationDeviceVo">
+        select id, ent_id, dept_id, station_type, device_name, device_sn, channel_id, channel_sn, connect_model, timeout, online_time, offline_time, is_active, active_update_time, connect_alarm, sbdz, csyy_length, ggdz, ggdz_length, info_length, timeout_t0, timeout_t1, timeout_t2, timeout_t3, ass_call_cycle, elc_call_cycle, data_area, pro_type, pro_factory, pro_ver, pro_sn, pro_model, card_operator, card_no, card_ip, card_flow, card_postage, card_expire_date, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from communication_device
+    </sql>
+
+    <select id="selectCommunicationDeviceList" parameterType="CommunicationDevice" resultMap="CommunicationDeviceResult">
+        <include refid="selectCommunicationDeviceVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="deviceName != null  and deviceName != ''"> and device_name like concat('%', #{deviceName}, '%')</if>
+        <if test="deviceSn != null  and deviceSn != ''"> and device_sn = #{deviceSn}</if>
+        <if test="channelId != null "> and channel_id = #{channelId}</if>
+        <if test="channelSn != null  and channelSn != ''"> and channel_sn = #{channelSn}</if>
+        <if test="connectModel != null  and connectModel != ''"> and connect_model = #{connectModel}</if>
+        <if test="connectAlarm != null "> and connect_alarm = #{connectAlarm}</if>
+        <if test="dataArea != null  and dataArea != ''"> and data_area = #{dataArea}</if>
+        <if test="proType != null "> and pro_type = #{proType}</if>
+        <if test="proFactory != null "> and pro_factory = #{proFactory}</if>
+        <if test="proVer != null  and proVer != ''"> and pro_ver = #{proVer}</if>
+        <if test="proSn != null  and proSn != ''"> and pro_sn = #{proSn}</if>
+        <if test="proModel != null  and proModel != ''"> and pro_model = #{proModel}</if>
+        <if test="cardOperator != null "> and card_operator = #{cardOperator}</if>
+        <if test="cardNo != null  and cardNo != ''"> and card_no = #{cardNo}</if>
+        <if test="cardIp != null  and cardIp != ''"> and card_ip = #{cardIp}</if>
+        <if test="cardFlow != null "> and card_flow = #{cardFlow}</if>
+        <if test="cardPostage != null "> and card_postage = #{cardPostage}</if>
+        <if test="cardExpireDate != null "> and card_expire_date = #{cardExpireDate}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+    </select>
+    
+    <select id="selectCommunicationDeviceById" parameterType="Long" resultMap="CommunicationDeviceResult">
+        <include refid="selectCommunicationDeviceVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCommunicationDeviceBySn" parameterType="String" resultMap="CommunicationDeviceResult">
+        <include refid="selectCommunicationDeviceVo"/>
+        where device_sn = #{deviceSn}
+    </select>
+
+    <insert id="insertCommunicationDevice" parameterType="CommunicationDevice" useGeneratedKeys="true" keyProperty="id">
+        insert into communication_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="deviceName != null">device_name,</if>
+            <if test="deviceSn != null">device_sn,</if>
+            <if test="channelId != null">channel_id,</if>
+            <if test="channelSn != null">channel_sn,</if>
+            <if test="connectModel != null">connect_model,</if>
+            <if test="timeout != null">timeout,</if>
+            <if test="onlineTime != null">online_time,</if>
+            <if test="offlineTime != null">offline_time,</if>
+            <if test="isActive != null">is_active,</if>
+            <if test="activeUpdateTime != null">active_update_time,</if>
+            <if test="connectAlarm != null">connect_alarm,</if>
+            <if test="sbdz != null">sbdz,</if>
+            <if test="csyyLength != null">csyy_length,</if>
+            <if test="ggdz != null">ggdz,</if>
+            <if test="ggdzLength != null">ggdz_length,</if>
+            <if test="infoLength != null">info_length,</if>
+            <if test="timeoutT0 != null">timeout_t0,</if>
+            <if test="timeoutT1 != null">timeout_t1,</if>
+            <if test="timeoutT2 != null">timeout_t2,</if>
+            <if test="timeoutT3 != null">timeout_t3,</if>
+            <if test="assCallCycle != null">ass_call_cycle,</if>
+            <if test="elcCallCycle != null">elc_call_cycle,</if>
+            <if test="dataArea != null">data_area,</if>
+            <if test="proType != null">pro_type,</if>
+            <if test="proFactory != null">pro_factory,</if>
+            <if test="proVer != null">pro_ver,</if>
+            <if test="proSn != null">pro_sn,</if>
+            <if test="proModel != null">pro_model,</if>
+            <if test="cardOperator != null">card_operator,</if>
+            <if test="cardNo != null">card_no,</if>
+            <if test="cardIp != null">card_ip,</if>
+            <if test="cardFlow != null">card_flow,</if>
+            <if test="cardPostage != null">card_postage,</if>
+            <if test="cardExpireDate != null">card_expire_date,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="deviceSn != null">#{deviceSn},</if>
+            <if test="channelId != null">#{channelId},</if>
+            <if test="channelSn != null">#{channelSn},</if>
+            <if test="connectModel != null">#{connectModel},</if>
+            <if test="timeout != null">#{timeout},</if>
+            <if test="onlineTime != null">#{onlineTime},</if>
+            <if test="offlineTime != null">#{offlineTime},</if>
+            <if test="isActive != null">#{isActive},</if>
+            <if test="activeUpdateTime != null">#{activeUpdateTime},</if>
+            <if test="connectAlarm != null">#{connectAlarm},</if>
+            <if test="sbdz != null">#{sbdz},</if>
+            <if test="csyyLength != null">#{csyyLength},</if>
+            <if test="ggdz != null">#{ggdz},</if>
+            <if test="ggdzLength != null">#{ggdzLength},</if>
+            <if test="infoLength != null">#{infoLength},</if>
+            <if test="timeoutT0 != null">#{timeoutT0},</if>
+            <if test="timeoutT1 != null">#{timeoutT1},</if>
+            <if test="timeoutT2 != null">#{timeoutT2},</if>
+            <if test="timeoutT3 != null">#{timeoutT3},</if>
+            <if test="assCallCycle != null">#{assCallCycle},</if>
+            <if test="elcCallCycle != null">#{elcCallCycle},</if>
+            <if test="dataArea != null">#{dataArea, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.DevicesDataAreaTypeHandler},</if>
+            <if test="proType != null">#{proType},</if>
+            <if test="proFactory != null">#{proFactory},</if>
+            <if test="proVer != null">#{proVer},</if>
+            <if test="proSn != null">#{proSn},</if>
+            <if test="proModel != null">#{proModel},</if>
+            <if test="cardOperator != null">#{cardOperator},</if>
+            <if test="cardNo != null">#{cardNo},</if>
+            <if test="cardIp != null">#{cardIp},</if>
+            <if test="cardFlow != null">#{cardFlow},</if>
+            <if test="cardPostage != null">#{cardPostage},</if>
+            <if test="cardExpireDate != null">#{cardExpireDate},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCommunicationDevice" parameterType="CommunicationDevice">
+        update communication_device s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="deviceSn != null">device_sn = #{deviceSn},</if>
+            <if test="channelId != null">channel_id = #{channelId},</if>
+            <if test="channelSn != null">channel_sn = #{channelSn},</if>
+            <if test="connectModel != null">connect_model = #{connectModel},</if>
+            <if test="timeout != null">timeout = #{timeout},</if>
+            <if test="onlineTime != null">online_time = #{onlineTime},</if>
+            <if test="offlineTime != null">offline_time = #{offlineTime},</if>
+            <if test="isActive != null">is_active = #{isActive},</if>
+            <if test="activeUpdateTime != null">active_update_time = #{activeUpdateTime},</if>
+            <if test="connectAlarm != null">connect_alarm = #{connectAlarm},</if>
+            <if test="sbdz != null">sbdz = #{sbdz},</if>
+            <if test="csyyLength != null">csyy_length = #{csyyLength},</if>
+            <if test="ggdz != null">ggdz = #{ggdz},</if>
+            <if test="ggdzLength != null">ggdz_length = #{ggdzLength},</if>
+            <if test="infoLength != null">info_length = #{infoLength},</if>
+            <if test="timeoutT0 != null">timeout_t0 = #{timeoutT0},</if>
+            <if test="timeoutT1 != null">timeout_t1 = #{timeoutT1},</if>
+            <if test="timeoutT2 != null">timeout_t2 = #{timeoutT2},</if>
+            <if test="timeoutT3 != null">timeout_t3 = #{timeoutT3},</if>
+            <if test="assCallCycle != null">ass_call_cycle = #{assCallCycle},</if>
+            <if test="elcCallCycle != null">elc_call_cycle = #{elcCallCycle},</if>
+            <if test="dataArea != null">data_area = #{dataArea, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.DevicesDataAreaTypeHandler},</if>
+            <if test="proType != null">pro_type = #{proType},</if>
+            <if test="proFactory != null">pro_factory = #{proFactory},</if>
+            <if test="proVer != null">pro_ver = #{proVer},</if>
+            <if test="proSn != null">pro_sn = #{proSn},</if>
+            <if test="proModel != null">pro_model = #{proModel},</if>
+            <if test="cardOperator != null">card_operator = #{cardOperator},</if>
+            <if test="cardNo != null">card_no = #{cardNo},</if>
+            <if test="cardIp != null">card_ip = #{cardIp},</if>
+            <if test="cardFlow != null">card_flow = #{cardFlow},</if>
+            <if test="cardPostage != null">card_postage = #{cardPostage},</if>
+            <if test="cardExpireDate != null">card_expire_date = #{cardExpireDate},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <!-- 查询该[通讯设备]下是否有[用电设备] -->
+    <select id="hasChildrenById" parameterType="Long" resultType="int">
+        select count(1) from monitor_device where delete_flag = 0 and com_device_id = #{id} limit 1
+    </select>
+
+    <!-- 备份一下，使用下面的方法
+    <delete id="deleteCommunicationDeviceById" parameterType="Long">
+        delete from communication_device where id = #{id}
+    </delete> -->
+
+    <!-- 逻辑删除 -->
+    <delete id="deleteCommunicationDeviceById" parameterType="Long">
+        update communication_device set delete_flag = 1 where id = #{id}
+    </delete>
+
+    <delete id="deleteCommunicationDeviceByIds" parameterType="String">
+        delete from communication_device where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="statusAllByDeptId" parameterType="Long" resultType="int">
+        select count(1) from communication_device where dept_id = #{deptId} and is_active = 0 and stop_flag = 0 and delete_flag = 0
+    </select>
+</mapper>

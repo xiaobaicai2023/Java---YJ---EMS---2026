@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.SysCommonMenuMapper">
+
+	<resultMap type="com.yunpower.system.domain.SysCommonMenu" id="SysCommonMenuResult">
+		<id     property="id"         		column="id"        />
+		<result property="menuModel"    	column="menu_model"    />
+		<result property="menuName"    		column="menu_name"    />
+		<result property="parentId"    		column="parent_id"    />
+		<result property="parentName"     	column="parent_name"    />
+		<result property="menuType"    		column="menu_type"    />
+		<result property="path"    			column="path"    />
+		<result property="requestUrl"    	column="request_url"    />
+		<result property="requestQuery"    	column="request_query"    />
+		<result property="permissionSign"   column="permission_sign"    />
+		<result property="openType"    		column="open_type"    />
+		<result property="isCache"        	column="is_cache"       />
+		<result property="icon"    			column="icon"    />
+		<result property="visible"    		column="visible"    />
+		<result property="orderNum"    		column="order_num"    />
+		<result property="isAdminVisit"     column="is_admin_visit"    />
+		<result property="remark"    		column="remark"    />
+		<result property="createBy"    		column="create_by"    />
+		<result property="createTime"    	column="create_time"    />
+		<result property="updateBy"    		column="update_by"    />
+		<result property="updateTime"    	column="update_time"    />
+		<result property="stopFlag"    		column="stop_flag"    />
+		<result property="deleteFlag"    	column="delete_flag"    />
+	</resultMap>
+
+	<sql id="selectMenuVo">
+        select id, menu_model, menu_name, parent_id, menu_type, path, request_url, request_query, permission_sign, open_type, is_cache, icon, visible, order_num, is_admin_visit, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from sys_common_menu
+    </sql>
+
+	<!-- 查询系统菜单列表 -->
+    <select id="selectMenuList" parameterType="SysCommonMenu" resultMap="SysCommonMenuResult">
+		<include refid="selectMenuVo"/>
+		where delete_flag = 0
+		<if test="menuModel != null and menuModel != ''">
+			AND menu_model = #{menuModel}
+		</if>
+		<if test="menuName != null and menuName != ''">
+			AND menu_name like concat('%', #{menuName}, '%')
+		</if>
+		<if test="visible != null and visible != ''">
+			AND visible = #{visible}
+		</if>
+		<if test="isAdminVisit != null and isAdminVisit != ''">
+			AND is_admin_visit = #{isAdminVisit}
+		</if>
+		<if test="stopFlag != null and stopFlag != ''">
+			AND stop_flag = #{stopFlag}
+		</if>
+		order by parent_id, order_num
+	</select>
+
+	<!-- 查询【企业专属】菜单列表 -->
+	<select id="selectEnterpriseMenuList" parameterType="Long" resultMap="SysCommonMenuResult">
+		select m.id, menu_model, menu_name, parent_id, menu_type, path, request_url, request_query, permission_sign, open_type, is_cache, icon, visible, order_num, is_admin_visit, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag
+        from sys_common_menu m
+        join sys_enterprise_menu em on em.ent_id = #{entId} and em.menu_id = m.id
+	</select>
+
+	<!-- 根据用户ID查询菜单 -->
+	<select id="selectMenuTreeAll" parameterType="Integer" resultMap="SysCommonMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.request_url, m.request_query, m.visible, m.stop_flag, ifnull(m.permission_sign,'') as permission_sign, m.open_type, m.is_cache, m.menu_type, m.icon, m.order_num, m.is_admin_visit, m.create_time
+		from sys_common_menu m
+		where m.menu_type in ('M', 'C') and m.stop_flag = 0 and m.delete_flag = 0
+		<if test="menuModel != null and menuModel != ''">
+			AND m.menu_model = #{menuModel}
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<!-- 根据用户查询系统菜单列表 -->
+	<select id="selectMenuListByUserId" parameterType="SysCommonMenu" resultMap="SysCommonMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.request_url, m.request_query, m.visible, m.stop_flag, ifnull(m.permission_sign,'') as permission_sign, m.open_type, m.is_cache, m.menu_type, m.icon, m.order_num, m.is_admin_visit, m.create_time
+		from sys_common_menu m
+		left join sys_role_menu rm on m.id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		left join sys_role ro on ur.role_id = ro.id
+		where m.delete_flag = 0 and ur.user_id = #{params.userId}
+		<if test="menuModel != null and menuModel != ''">
+			AND m.menu_model = #{menuModel}
+		</if>
+		<if test="menuName != null and menuName != ''">
+            AND m.menu_name like concat('%', #{menuName}, '%')
+		</if>
+		<if test="visible != null and visible != ''">
+            AND m.visible = #{visible}
+		</if>
+		<if test="stopFlag != null and stopFlag != ''">
+            AND m.stop_flag = #{stopFlag}
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<!-- 根据用户查询【企业专属】菜单列表 保留 -->
+	<select id="selectEnterprisesMenuListByUserId" parameterType="SysCommonMenu" resultMap="SysCommonMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.request_url, m.request_query, m.visible, m.stop_flag, ifnull(m.permission_sign,'') as permission_sign, m.open_type, m.is_cache, m.menu_type, m.icon, m.order_num, m.is_admin_visit, m.create_time
+		from sys_common_menu m
+		join sys_enterprise_menu em on em.ent_id = #{params.entId} and em.menu_id = m.id
+		left join sys_role_menu rm on m.id = rm.menu_id
+		left join sys_user_role ur on rm.role_id = ur.role_id
+		left join sys_role ro on ur.role_id = ro.id
+		where ur.user_id = #{params.userId}
+		<if test="menuModel != null and menuModel != ''">
+			AND m.menu_model = #{menuModel}
+		</if>
+		<if test="menuName != null and menuName != ''">
+			AND m.menu_name like concat('%', #{menuName}, '%')
+		</if>
+		<if test="visible != null and visible != ''">
+			AND m.visible = #{visible}
+		</if>
+		<if test="stopFlag != null and stopFlag != ''">
+			AND m.stop_flag = #{stopFlag}
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<!-- 根据用户ID查询菜单 -->
+    <select id="selectMenuTreeByUserId" resultMap="SysCommonMenuResult">
+		select distinct m.id, m.parent_id, m.menu_name, m.path, m.request_url, m.request_query, m.visible, m.stop_flag, ifnull(m.permission_sign,'') as permission_sign, m.open_type, m.is_cache, m.menu_type, m.icon, m.order_num, m.is_admin_visit, m.create_time
+		from sys_common_menu m
+			 left join sys_role_menu rm on m.id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+			 left join sys_role ro on ur.role_id = ro.id
+			 left join sys_user u on ur.user_id = u.id
+		where u.id = #{userId} and m.menu_type in ('M', 'C') and m.stop_flag = 0 and m.delete_flag = 0 and ro.stop_flag = 0
+		<if test="menuModel != null and menuModel != ''">
+			AND m.menu_model = #{menuModel}
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<!-- 根据用户ID查询已选择的模块 -->
+	<select id="selectMenuModelByUserId" resultType="Integer">
+		select distinct m.menu_model
+		from sys_common_menu m
+            left join sys_role_menu rm on m.id = rm.menu_id
+			left join sys_user_role ur on rm.role_id = ur.role_id
+        where m.delete_flag = 0 and ur.user_id = #{userId}
+	</select>
+
+	<!-- 根据角色ID查询菜单树信息 -->
+	<select id="selectMenuListByRoleId" resultType="Long">
+		select m.id
+		from sys_common_menu m
+            left join sys_role_menu rm on m.id = rm.menu_id
+        where m.delete_flag = 0 and rm.role_id = #{roleId}
+        <!-- 父子联动的情况，如果不排队根ID，那么就会全选 -->
+		<if test="menuCheckStrictly">
+		  and m.id not in (select m.parent_id from sys_common_menu m inner join sys_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<!-- 根据角色ID查询【企业专属】菜单树信息 保留 -->
+	<select id="selectEnterprisesMenuListByRoleId" resultType="Long">
+		select m.id
+		from sys_common_menu m
+		join sys_enterprise_menu em on em.ent_id = #{entId} and em.menu_id = m.id
+		left join sys_role_menu rm on m.id = rm.menu_id
+		where rm.role_id = #{roleId}
+		<if test="menuCheckStrictly">
+			and m.id not in (select m.parent_id from sys_common_menu m inner join sys_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})
+		</if>
+		order by m.parent_id, m.order_num
+	</select>
+
+	<!-- 根据用户所有权限 -->
+	<select id="selectMenuPerms" resultType="String">
+		select distinct m.permission_sign
+		from sys_common_menu m
+			 left join sys_role_menu rm on m.id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+		where m.delete_flag = 0
+	</select>
+
+	<!-- 根据用户ID查询权限 -->
+	<select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
+		select distinct m.permission_sign
+		from sys_common_menu m
+			 left join sys_role_menu rm on m.id = rm.menu_id
+			 left join sys_user_role ur on rm.role_id = ur.role_id
+			 left join sys_role r on r.id = ur.role_id
+		where m.stop_flag = 0 and m.delete_flag = 0 and r.stop_flag = 0 and ur.user_id = #{userId}
+	</select>
+
+	<!-- 根据角色ID查询权限 -->
+	<select id="selectMenuPermsByRoleId" parameterType="Long" resultType="String">
+		select distinct m.permission_sign
+		from sys_common_menu m
+			 left join sys_role_menu rm on m.id = rm.menu_id
+		where m.stop_flag = 0 and m.delete_flag = 0 and rm.role_id = #{roleId}
+	</select>
+
+	<!-- 根据菜单ID查询信息 -->
+	<select id="selectMenuById" parameterType="Long" resultMap="SysCommonMenuResult">
+		<include refid="selectMenuVo"/>
+		where id = #{menuId}
+	</select>
+
+	<!-- 是否存在菜单子节点 -->
+	<select id="hasChildByMenuId" resultType="Integer">
+	    select count(1) from sys_common_menu where parent_id = #{menuId}
+	</select>
+
+	<!-- 校验菜单名称是否唯一 -->
+	<select id="checkMenuNameUnique" parameterType="SysCommonMenu" resultMap="SysCommonMenuResult">
+		<include refid="selectMenuVo"/>
+		where menu_name=#{menuName} and parent_id = #{parentId} limit 1
+	</select>
+
+	<insert id="insertMenu" parameterType="SysCommonMenu" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_common_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="menuModel != null">menu_model,</if>
+			<if test="menuName != null">menu_name,</if>
+			<if test="parentId != null">parent_id,</if>
+			<if test="menuType != null">menu_type,</if>
+			<if test="path != null">path,</if>
+			<if test="requestUrl != null">request_url,</if>
+			<if test="requestQuery != null">request_query,</if>
+			<if test="permissionSign != null">permission_sign,</if>
+			<if test="openType != null">open_type,</if>
+			<if test="isCache != null and isCache != ''">is_cache,</if>
+			<if test="icon != null">icon,</if>
+			<if test="visible != null">visible,</if>
+			<if test="orderNum != null">order_num,</if>
+			<if test="isAdminVisit != null">is_admin_visit,</if>
+			<if test="remark != null">remark,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+			<if test="stopFlag != null">stop_flag,</if>
+			<if test="deleteFlag != null">delete_flag,</if>
+			create_time
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="menuModel != null">#{menuModel},</if>
+			<if test="menuName != null">#{menuName},</if>
+			<if test="parentId != null">#{parentId},</if>
+			<if test="menuType != null">#{menuType},</if>
+			<if test="path != null">#{path},</if>
+			<if test="requestUrl != null">#{requestUrl},</if>
+			<if test="requestQuery != null">#{requestQuery},</if>
+			<if test="permissionSign != null">#{permissionSign},</if>
+			<if test="openType != null">#{openType},</if>
+			<if test="isCache != null and isCache != ''">#{isCache},</if>
+			<if test="icon != null">#{icon},</if>
+			<if test="visible != null">#{visible},</if>
+			<if test="orderNum != null">#{orderNum},</if>
+			<if test="isAdminVisit != null">#{isAdminVisit},</if>
+			<if test="remark != null">#{remark},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+			<if test="stopFlag != null">#{stopFlag},</if>
+			<if test="deleteFlag != null">#{deleteFlag},</if>
+			sysdate()
+		</trim>
+	</insert>
+
+	<update id="updateMenu" parameterType="SysCommonMenu">
+		update sys_common_menu
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="menuModel != null">menu_model = #{menuModel},</if>
+			<if test="menuName != null">menu_name = #{menuName},</if>
+			<if test="parentId != null">parent_id = #{parentId},</if>
+			<if test="menuType != null">menu_type = #{menuType},</if>
+			<if test="path != null">path = #{path},</if>
+			<if test="requestUrl != null">request_url = #{requestUrl},</if>
+			<if test="requestQuery != null">request_query = #{requestQuery},</if>
+			<if test="permissionSign != null">permission_sign = #{permissionSign},</if>
+			<if test="openType != null">open_type = #{openType},</if>
+			<if test="isCache != null and isCache != ''">is_cache = #{isCache},</if>
+			<if test="icon != null">icon = #{icon},</if>
+			<if test="visible != null">visible = #{visible},</if>
+			<if test="orderNum != null">order_num = #{orderNum},</if>
+			<if test="isAdminVisit != null">is_admin_visit = #{isAdminVisit},</if>
+			<if test="remark != null">remark = #{remark},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+			<if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+			update_time = sysdate()
+		</trim>
+		where id = #{id}
+	</update>
+
+	<delete id="deleteMenuById" parameterType="Long">
+	    delete from sys_common_menu where id = #{menuId}
+	</delete>
+
+</mapper> 

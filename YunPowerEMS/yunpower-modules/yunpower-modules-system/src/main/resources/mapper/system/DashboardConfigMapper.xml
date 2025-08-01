@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.DashboardConfigMapper">
+    
+    <resultMap type="com.yunpower.system.domain.DashboardConfig" id="DashboardConfigResult">
+        <result property="id"    column="id"    />
+        <result property="entId"    column="ent_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="pageName"    column="page_name"    />
+        <result property="pageKey"    column="page_key"    />
+        <result property="pageType"    column="page_type"    />
+        <result property="pageConfig"    column="page_config"    />
+        <result property="pageConfigPre"    column="page_config_pre"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="stopFlag"    column="stop_flag"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectDashboardConfigVo">
+        select id, ent_id, dept_id, page_name, page_key, page_type, page_config, page_config_pre, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from dashboard_config
+    </sql>
+
+    <select id="selectDashboardConfig" parameterType="DashboardConfig" resultMap="DashboardConfigResult">
+        <include refid="selectDashboardConfigVo"/>
+        <where>
+            <if test="entId != null "> and ent_id = #{entId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="pageName != null  and pageName != ''"> and page_name like concat('%', #{pageName}, '%')</if>
+            <if test="pageKey != null  and pageKey != ''"> and page_key = #{pageKey}</if>
+            <if test="pageType != null "> and page_type = #{pageType}</if>
+            <if test="pageConfig != null  and pageConfig != ''"> and page_config = #{pageConfig}</if>
+            <if test="pageConfigPre != null  and pageConfigPre != ''"> and page_config_pre = #{pageConfigPre}</if>
+            <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+        limit 1
+    </select>
+
+    <select id="selectDashboardConfigList" parameterType="DashboardConfig" resultMap="DashboardConfigResult">
+        <include refid="selectDashboardConfigVo"/>
+        <where>  
+            <if test="entId != null "> and ent_id = #{entId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="pageName != null  and pageName != ''"> and page_name like concat('%', #{pageName}, '%')</if>
+            <if test="pageKey != null  and pageKey != ''"> and page_key = #{pageKey}</if>
+            <if test="pageType != null "> and page_type = #{pageType}</if>
+            <if test="pageConfig != null  and pageConfig != ''"> and page_config = #{pageConfig}</if>
+            <if test="pageConfigPre != null  and pageConfigPre != ''"> and page_config_pre = #{pageConfigPre}</if>
+            <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectDashboardConfigById" parameterType="Long" resultMap="DashboardConfigResult">
+        <include refid="selectDashboardConfigVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDashboardConfigByPageKey" parameterType="String" resultMap="DashboardConfigResult">
+        <include refid="selectDashboardConfigVo"/>
+        where page_key = #{pageKey}
+    </select>
+        
+    <insert id="insertDashboardConfig" parameterType="DashboardConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into dashboard_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="pageName != null">page_name,</if>
+            <if test="pageKey != null">page_key,</if>
+            <if test="pageType != null">page_type,</if>
+            <if test="pageConfig != null">page_config,</if>
+            <if test="pageConfigPre != null">page_config_pre,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="pageName != null">#{pageName},</if>
+            <if test="pageKey != null">#{pageKey},</if>
+            <if test="pageType != null">#{pageType},</if>
+            <if test="pageConfig != null">#{pageConfig},</if>
+            <if test="pageConfigPre != null">#{pageConfigPre},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDashboardConfig" parameterType="DashboardConfig">
+        update dashboard_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="pageName != null">page_name = #{pageName},</if>
+            <if test="pageKey != null">page_key = #{pageKey},</if>
+            <if test="pageType != null">page_type = #{pageType},</if>
+            <if test="pageConfig != null">page_config = #{pageConfig},</if>
+            <if test="pageConfigPre != null">page_config_pre = #{pageConfigPre},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDashboardConfigById" parameterType="Long">
+        delete from dashboard_config where id = #{id}
+    </delete>
+
+    <delete id="deleteDashboardConfigByIds" parameterType="String">
+        delete from dashboard_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

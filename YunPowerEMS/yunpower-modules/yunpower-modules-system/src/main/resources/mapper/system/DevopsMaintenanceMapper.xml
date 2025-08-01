@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunpower.system.mapper.DevopsMaintenanceMapper">
+    
+    <resultMap type="com.yunpower.system.domain.DevopsMaintenance" id="DevopsMaintenanceResult">
+        <result property="id"               column="id"    />
+        <result property="entId"            column="ent_id"    />
+        <result property="deptId"           column="dept_id"    />
+        <result property="maintainTitle"    column="maintain_title"    />
+        <result property="stationType"      column="station_type"    />
+        <result property="stationId"        column="station_id"    />
+        <result property="deviceIdFor"      column="device_id_for" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="userNameFor"      column="user_name_for" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="maintainTime"     column="maintain_time"    />
+        <result property="maintainContent"  column="maintain_content"    />
+        <result property="maintainFiles"    column="maintain_files" jdbcType="JAVA_OBJECT" javaType="java.util.List" typeHandler="com.yunpower.system.domain.handler.JsonCommonTypeHandler" />
+        <result property="remark"           column="remark"    />
+        <result property="createBy"         column="create_by"    />
+        <result property="createTime"       column="create_time"    />
+        <result property="updateBy"         column="update_by"    />
+        <result property="updateTime"       column="update_time"    />
+        <result property="stopFlag"         column="stop_flag"    />
+        <result property="deleteFlag"       column="delete_flag"    />
+    </resultMap>
+
+    <sql id="selectDevopsMaintenanceVo">
+        select id, ent_id, dept_id, maintain_title, station_type, station_id, device_id_for, user_name_for, maintain_time, maintain_content, maintain_files, remark, create_by, create_time, update_by, update_time, stop_flag, delete_flag from devops_maintenance
+    </sql>
+
+    <select id="selectDevopsMaintenanceList" parameterType="DevopsMaintenance" resultMap="DevopsMaintenanceResult">
+        <include refid="selectDevopsMaintenanceVo"/>
+        where delete_flag = 0
+        <if test="entId != null "> and ent_id = #{entId}</if>
+        <if test="deptId != null "> and dept_id = #{deptId}</if>
+        <if test="maintainTitle != null  and maintainTitle != ''"> and maintain_title like concat('%', #{maintainTitle}, '%')</if>
+        <if test="stationType != null "> and station_type = #{stationType}</if>
+        <if test="stationId != null "> and station_id = #{stationId}</if>
+        <if test="maintainTime != null "> and maintain_time = #{maintainTime}</if>
+        <if test="maintainContent != null  and maintainContent != ''"> and maintain_content = #{maintainContent}</if>
+        <if test="stopFlag != null "> and stop_flag = #{stopFlag}</if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(maintain_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(maintain_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+    </select>
+    
+    <select id="selectDevopsMaintenanceById" parameterType="Long" resultMap="DevopsMaintenanceResult">
+        <include refid="selectDevopsMaintenanceVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDevopsMaintenance" parameterType="DevopsMaintenance" useGeneratedKeys="true" keyProperty="id">
+        insert into devops_maintenance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="entId != null">ent_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="maintainTitle != null">maintain_title,</if>
+            <if test="stationType != null">station_type,</if>
+            <if test="stationId != null">station_id,</if>
+            <if test="deviceIdFor != null">device_id_for,</if>
+            <if test="userNameFor != null">user_name_for,</if>
+            <if test="maintainTime != null">maintain_time,</if>
+            <if test="maintainContent != null">maintain_content,</if>
+            <if test="maintainFiles != null">maintain_files,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="stopFlag != null">stop_flag,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="entId != null">#{entId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="maintainTitle != null">#{maintainTitle},</if>
+            <if test="stationType != null">#{stationType},</if>
+            <if test="stationId != null">#{stationId},</if>
+            <if test="deviceIdFor != null">#{deviceIdFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="userNameFor != null">#{userNameFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="maintainTime != null">#{maintainTime},</if>
+            <if test="maintainContent != null">#{maintainContent},</if>
+            <if test="maintainFiles != null">#{maintainFiles, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="stopFlag != null">#{stopFlag},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDevopsMaintenance" parameterType="DevopsMaintenance">
+        update devops_maintenance s
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="entId != null">ent_id = #{entId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="maintainTitle != null">maintain_title = #{maintainTitle},</if>
+            <if test="stationType != null">station_type = #{stationType},</if>
+            <if test="stationId != null">station_id = #{stationId},</if>
+            <if test="deviceIdFor != null">device_id_for = #{deviceIdFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="userNameFor != null">user_name_for = #{userNameFor, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="maintainTime != null">maintain_time = #{maintainTime},</if>
+            <if test="maintainContent != null">maintain_content = #{maintainContent},</if>
+            <if test="maintainFiles != null">maintain_files = #{maintainFiles, jdbcType=JAVA_OBJECT, javaType=java.util.List, typeHandler=com.yunpower.system.domain.handler.JsonCommonTypeHandler},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="stopFlag != null">stop_flag = #{stopFlag},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+        </trim>
+        where
+        <!-- id 和 ids 二选一 -->
+        <if test="id != null">id = #{id}</if>
+        <if test="id == null">
+            id in
+            <foreach item="id" collection="params.ids" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+    </update>
+
+    <delete id="deleteDevopsMaintenanceById" parameterType="Long">
+        delete from devops_maintenance where id = #{id}
+    </delete>
+
+    <delete id="deleteDevopsMaintenanceByIds" parameterType="String">
+        delete from devops_maintenance where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,245 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  background-color: var(--color-bg-1);
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+body[arco-theme='dark'] {
+  --color-menu-light-bg: #141e28;
+}
+
+.echarts-tooltip-diy {
+  background: linear-gradient(304.17deg,
+    rgb(253 254 255 / 60%) -6.04%,
+  rgb(244 247 252 / 60%) 85.2%) !important;
+  border: none !important;
+
+  /* Note: backdrop-filter has minimal browser support */
+
+  border-radius: 6px !important;
+  backdrop-filter: blur(10px) !important;
+
+  .content-panel {
+    display: flex;
+    justify-content: space-between;
+    width: auto;
+    height: 32px;
+    margin-bottom: 4px;
+    padding: 0 9px;
+    line-height: 32px;
+    background: rgb(255 255 255 / 80%);
+    border-radius: 4px;
+    box-shadow: 6px 0 20px rgb(34 87 188 / 10%);
+  }
+
+  .tooltip-title {
+    margin: 0 0 10px;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .tooltip-title {
+    display: flex;
+    align-items: center;
+    color: #1d2129;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 15px;
+    text-align: right;
+  }
+
+  .tooltip-value {
+    display: flex;
+    align-items: center;
+    color: #1d2129;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 15px;
+    text-align: right;
+    margin-left: 20px;
+  }
+
+  .tooltip-item-icon {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    // margin-right: 8px;
+    border-radius: 50%;
+  }
+}
+
+.split-line {
+  border-color: rgb(var(--gray-2));
+}
+
+.arco-table-cell {
+  padding: 4px 16px !important;
+
+  .circle {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-right: 4px;
+    background-color: rgb(var(--blue-6));
+    border-radius: 50%;
+
+    &.pass {
+      background-color: rgb(var(--green-6));
+    }
+  }
+
+  .circle-device {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 4px;
+    background-color: rgb(var(--red-7));
+    border-radius: 50%;
+
+    &.pass {
+      background-color: rgb(var(--green-7));
+    }
+  }
+
+  .arco-table-td-content > .arco-btn.arco-btn-size-small {
+    height: 28px;
+    padding: 0 8px;
+    font-size: 14px;
+    border-radius: var(--border-radius-small);
+  }
+}
+
+
+.info-modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.arco-card {
+  .arco-card-header {
+    background-color: var(--color-fill-1);
+    padding: 4px 16px !important;
+  }
+}
+
+.arco-tree-select-popup .arco-tree-select-tree-wrapper {
+  max-height: 400px;
+}
+
+// 分隔符字体大小为16px
+.arco-divider-text {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+// ************************* 自定义class  start *************************
+.nickName {
+  &.isSupper {
+    color: rgb(var(--arcoblue-7));
+  }
+}
+
+.diagram-content {
+  .arco-card-body {
+    padding: 0;
+  }
+}
+
+.span-status {
+  .circle-device {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 4px;
+    background-color: rgb(var(--red-7));
+    border-radius: 50%;
+
+    &.pass {
+      background-color: rgb(var(--green-7));
+    }
+  }
+}
+
+//form-item前加星号
+
+.star-from-item {
+
+  :deep(.arco-form-item-label)::before {
+    content: '*';
+    color: red;
+    position: relative;
+    left: -2px;
+    top: 2px;
+    font-weight: bold;
+  }
+}
+
+.general-card {
+  border: none;
+  border-radius: 4px;
+
+  & > .arco-card-header {
+    height: auto;
+    padding: 20px;
+    border: none;
+  }
+
+  & > .arco-card-body {
+    padding: 0 20px 20px;
+  }
+}
+
+.general-card-grid {
+  border: none;
+  border-radius: 4px;
+
+  & > .arco-card-header {
+    height: auto;
+    padding: 20px;
+    border: none;
+  }
+
+  & > .arco-card-body {
+    padding: 10px;
+  }
+}
+
+.runtime-card {
+  border: none;
+  border-radius: 4px;
+
+  & > .arco-card-header {
+    height: auto;
+    padding: 10px;
+    border: none;
+  }
+
+  & > .arco-card-body {
+    padding: 10px;
+  }
+}
+
+.arco-spin {
+  .arco-spin-mask {
+    background: var(--color-bg-loading);
+    opacity: 0.5;
+  }
+}
+
+
+// ************************* 自定义class  end *************************
