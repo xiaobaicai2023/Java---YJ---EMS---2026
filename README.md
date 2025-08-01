@@ -23,8 +23,8 @@
 
 <div align="center">
     <p height="60px">
-    <a href='https://gitee.com/guangdong122/yun/stargazers'><img src='https://gitee.com/guangdong122/yun/badge/star.svg?theme=dark' alt='star'></img></a>
-    <a href='https://gitee.com/guangdong122/yun/members'><img src='https://gitee.com/guangdong122/yun/badge/fork.svg?theme=dark' alt='fork'></img></a>
+   <a href='https://gitee.com/guangdong122/energy-management/stargazers'><img src='https://gitee.com/guangdong122/energy-management/badge/star.svg?theme=dark' alt='star'></img></a>
+    <a href='https://gitee.com/guangdong122/energy-management/members'><img src='https://gitee.com/guangdong122/energy-management/badge/fork.svg?theme=dark' alt='fork'></img></a>
     </p>
 </div>
 
@@ -34,7 +34,7 @@
 
     适用于生产制造类企业、工厂、园区、写字楼等高能耗企业的能源管理场景，
     
-    是一套完整的全链路的能源数据采集、上传、存储、计算、分析、展示的EMS系统，
+    是一套完整的全链路的能源数据采集、上传、存储、计算、分析、展示的EMS系统
 
     支持高耗能企业，水、电、汽、热、油、空压机、中央空调、光伏逆变器、机房、楼层配电箱、电力等数据的采集和分析
 
@@ -124,7 +124,7 @@
 
    1、实时数据，上传至时序库或者redis数据库，以被实时调用；
 
-   2、业务数据，系统会自动计算，按照日月年的数据格式存放至业务库，以便系统进行调用，避免调用时临时计算降低效率.
+   2、业务数据，系统会自动计算，按照日月年的数据格式存放至业务库，以便系统进行调用，避免调用时临时计算降低效率。
 
 #### 八、EMS界面展示
  
@@ -369,7 +369,7 @@ bash startup.sh -m standalone
 
 #### 十六、关于我们
 
-    开源代码，仅供学习和研究使用，商用和商务合作请联系我们；
+    开源代码，仅供学习和研究使用，如需商务合作请联系我们；
 
  ` <div>
       <img src="/quan.png" alt="logo" >
@@ -387,7 +387,7 @@ bash startup.sh -m standalone
 
 #### 十八、其他
 
- 1、视频录制教程，正在更新中。。。。
+ 1、视频录制教程，正在更新中。。。。。
 
  2、每月会有持续的版本迭代和升级。。。
 
