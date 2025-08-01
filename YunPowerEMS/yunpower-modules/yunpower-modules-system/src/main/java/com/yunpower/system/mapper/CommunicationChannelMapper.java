@@ -45,22 +45,6 @@ public interface CommunicationChannelMapper
     public List<CommunicationChannel> selectCommunicationChannelList(CommunicationChannel communicationChannel);
 
     /**
-     * 新增通讯通道
-     *
-     * @param communicationChannel 通讯通道
-     * @return 结果
-     */
-    public int insertCommunicationChannel(CommunicationChannel communicationChannel);
-
-    /**
-     * 修改通讯通道
-     *
-     * @param communicationChannel 通讯通道
-     * @return 结果
-     */
-    public int updateCommunicationChannel(CommunicationChannel communicationChannel);
-
-    /**
      * 查询该[通道]下是否有[通讯设备]
      *
      * @param id 通讯通道ID
@@ -68,19 +52,4 @@ public interface CommunicationChannelMapper
      */
     public int hasChildrenById(Long id);
 
-    /**
-     * 删除通讯通道
-     *
-     * @param id 通讯通道主键
-     * @return 结果
-     */
-    public int deleteCommunicationChannelById(Long id);
-
-    /**
-     * 批量删除通讯通道
-     *
-     * @param ids 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int deleteCommunicationChannelByIds(Long[] ids);
 }

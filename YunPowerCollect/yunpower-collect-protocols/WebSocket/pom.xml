@@ -22,15 +22,5 @@
             <groupId>com.yunpower.collect</groupId>
             <artifactId>yunpower-common-core</artifactId>
         </dependency>
-                <dependency>
-            <groupId>com.yunpower.collect</groupId>
-            <artifactId>yunpower-common-redis</artifactId>
-        </dependency>
-        <dependency>
-        	<groupId>com.yunpower.collect</groupId>
-        	<artifactId>yunpower-collect-mq-publisher</artifactId>
-        	<version>1.0.0</version>
-        </dependency>
-
     </dependencies>
 </project>

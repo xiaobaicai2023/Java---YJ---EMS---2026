@@ -75,59 +75,6 @@ public class CommunicationChannelServiceImpl implements ICommunicationChannelSer
     }
 
     /**
-     * 新增通讯通道
-     *
-     * @param communicationChannel 通讯通道
-     * @return 结果
-     */
-    @Override
-    public int insertCommunicationChannel(CommunicationChannel communicationChannel) {
-        if (communicationChannel.getEntId() == null || communicationChannel.getEntId() <= 0) {
-            communicationChannel.setEntId(publicService.getCurrentEnterprise());
-        }
-        if (communicationChannel.getDeptId() == null || communicationChannel.getDeptId() <= 0) {
-            communicationChannel.setDeptId(publicService.getCurrentStation());
-        }
-        communicationChannel.setCreateBy(SecurityUtils.getNickName());
-        communicationChannel.setCreateTime(DateUtils.getNowDate());
-        if (communicationChannel.getStopFlag() == null) {
-            communicationChannel.setStopFlag(0);
-        }
-        communicationChannel.setDeleteFlag(0);
-        return communicationChannelMapper.insertCommunicationChannel(communicationChannel);
-    }
-
-    /**
-     * 修改通讯通道
-     *
-     * @param communicationChannel 通讯通道
-     * @return 结果
-     */
-    @Override
-    public int updateCommunicationChannel(CommunicationChannel communicationChannel) {
-        communicationChannel.setUpdateBy(SecurityUtils.getNickName());
-        communicationChannel.setUpdateTime(DateUtils.getNowDate());
-        return communicationChannelMapper.updateCommunicationChannel(communicationChannel);
-    }
-
-    /**
-     * 修改通讯通道状态
-     *
-     * @param id    通讯通道主键
-     * @param state 状态
-     * @return 结果
-     */
-    @Override
-    public int updateCommunicationChannelState(Long id, Integer state) {
-        CommunicationChannel communicationChannel = new CommunicationChannel();
-        communicationChannel.setId(id);
-        communicationChannel.setStopFlag(state);
-        communicationChannel.setUpdateBy(SecurityUtils.getNickName());
-        communicationChannel.setUpdateTime(DateUtils.getNowDate());
-        return communicationChannelMapper.updateCommunicationChannel(communicationChannel);
-    }
-
-    /**
      * 查询该[通道]下是否有[通讯设备]
      *
      * @param id 通讯通道ID
@@ -138,25 +85,4 @@ public class CommunicationChannelServiceImpl implements ICommunicationChannelSer
         return communicationChannelMapper.hasChildrenById(id) > 0;
     }
 
-    /**
-     * 批量删除通讯通道
-     *
-     * @param ids 需要删除的通讯通道主键
-     * @return 结果
-     */
-    @Override
-    public int deleteCommunicationChannelByIds(Long[] ids) {
-        return communicationChannelMapper.deleteCommunicationChannelByIds(ids);
-    }
-
-    /**
-     * 删除通讯通道信息
-     *
-     * @param id 通讯通道主键
-     * @return 结果
-     */
-    @Override
-    public int deleteCommunicationChannelById(Long id) {
-        return communicationChannelMapper.deleteCommunicationChannelById(id);
-    }
 }

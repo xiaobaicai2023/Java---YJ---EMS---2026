@@ -46,8 +46,7 @@ import CardOne from './components/card-one.vue'
 import CardFour from './components/card-four.vue'
 import {EnumChartType, getPageKey, getPageName} from "@/views/dashboard/preview/index";
 import {useRoute, useRouter} from "vue-router";
-import {getCardConfig, updateDashboardConfig} from "@/api/dashboard/api";
-import EditCard from "@/views/dashboard/preview/edit-card.vue";
+import {getCardConfig} from "@/api/dashboard/api";
 import {isArray} from "lodash";
 
 const props = defineProps({
@@ -114,7 +113,6 @@ const getLayout = async () => {
         pageType: 2,
         pageConfig: '[]'
       }
-      await updateDashboardConfig(layout.value);
       await getLayout();
     }
   } catch (e) {

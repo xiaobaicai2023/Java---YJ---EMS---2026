@@ -1,5 +1,7 @@
 package com.yunpower.collect.protocols.iec104;
 
+import com.yunpower.collect.protocols.iec104.handler.IDataHandler;
+import com.yunpower.collect.protocols.iec104.netty.IEC104ChannelInitializer;
 import com.yunpower.mq.publisher.service.PublisherService;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -44,6 +46,9 @@ public class IEC104Server implements SmartLifecycle {
     @Autowired
     private PublisherService publisherService;
 
+    //自定义处理类 和 配置类
+    @Autowired
+    private IDataHandler dataHandler;
 
     public IEC104Server() {
         this.executorService = Executors.newSingleThreadExecutor();
@@ -80,6 +85,7 @@ public class IEC104Server implements SmartLifecycle {
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .option(ChannelOption.SO_REUSEADDR, true)
                     .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new IEC104ChannelInitializer().setDataHandler(dataHandler))
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture future = bootstrap.bind(this.address, this.port).sync();

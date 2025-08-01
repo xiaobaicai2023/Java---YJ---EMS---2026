@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface RemoteAddressService {
 
     /**
-     * 根据给定的省、市、县ID获取对应的地址名称
+     * 根据给定的省、市、县ID获取对应的地址名称。
      *
      * @param provinceId 省份ID
      * @param cityId 城市ID

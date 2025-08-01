@@ -37,30 +37,3 @@ export function listChannelDeviceAll(params: any) {
 export function getChannelDevice(id: any) {
   return axios.get("/system/channel-device/" + id);
 }
-
-/**
- * 新增通讯设备
- * @param data 通讯设备对象
- * @returns 0失败 1成功
- */
-export function addChannelDevice(data: any) {
-  return axios.post("/system/channel-device", data);
-}
-
-/**
- * 修改通讯设备
- * @param data 通讯设备对象
- * @returns 0失败 1成功
- */
-export function updateChannelDevice(data: any) {
-  return axios.put("/system/channel-device", data);
-}
-
-/**
- * 删除通讯设备
- * @param id 通讯设备ID
- * @returns 0失败 1成功
- */
-export function delChannelDevice(id: any) {
-  return axios.delete("/system/channel-device/" + id);
-}

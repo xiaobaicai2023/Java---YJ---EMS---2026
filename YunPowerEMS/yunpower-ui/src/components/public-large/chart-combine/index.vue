@@ -21,9 +21,6 @@
         <div class="echart-wapper">
           <CutomChart ref="chartRef" v-if="!loading" :options="chartInfo.echartsOption"/>
         </div>
-        <div class="total-wapper" v-if="chartInfo.singleRightList?.length">
-          <category-total class="category-total" :data="chartInfo.singleRightList" :type="totalType"/>
-        </div>
       </template>
       <a-empty v-else/>
 
@@ -39,7 +36,6 @@ import useLoading from '@/hooks/loading';
 import {getChartInfo} from '@/api/dashboard/api';
 import {useIntervalFn} from '@vueuse/core';
 import {getTimeObject, handlePreConfigChart} from '@/utils/charts';
-import CategoryTotal from "@/views/bi/template/technology/components/category-total.vue";
 
 // 定义图表信息的接口
 interface IChartInfo {

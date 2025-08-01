@@ -2,6 +2,7 @@ package com.yunpower.collect.storage;
 
 import com.yunpower.collect.storage.algorithm.tool.AutoLoadingShardingTableExecutor;
 import com.yunpower.collect.storage.algorithm.tool.RefreshActualDataNodesAO;
+import com.yunpower.collect.storage.executor.CalculateMemoryVariablesExecutor;
 import com.yunpower.collect.storage.executor.CreateTableForDayExecutor;
 import com.yunpower.collect.storage.executor.CreateTableForMonthExecutor;
 import com.yunpower.collect.storage.service.*;
@@ -84,6 +85,9 @@ public class StorageService implements SmartLifecycle {
     private RefreshActualDataNodesAO refreshActualDataNodesAO;
 
     @Autowired
+    private IShardingCommonService shardingCommonService;
+
+    @Autowired
     private PublisherService publisherService;
 
     @Autowired
@@ -103,6 +107,8 @@ public class StorageService implements SmartLifecycle {
             createStorageTable();
             //加载 节点
             autoConfigShardingDateNodes();
+            //计算内存型变量
+            calculateMemoryVariables();
         } catch (Exception ex) {
             LOGGER.error("数据存储服务启动异常", ex);
         }
@@ -144,6 +150,7 @@ public class StorageService implements SmartLifecycle {
         StorageVariables.stationService = this.stationService;
         StorageVariables.redisService = this.redisService;
         StorageVariables.refreshActualDataNodesAO = this.refreshActualDataNodesAO;
+        StorageVariables.shardingCommonService = this.shardingCommonService;
         StorageVariables.publisherService = this.publisherService;
         StorageVariables.alarmTriggerConfigService = this.alarmTriggerConfigService;
         StorageVariables.alarmTriggerService = this.alarmTriggerService;
@@ -181,5 +188,11 @@ public class StorageService implements SmartLifecycle {
         ScheduledService.getInstance().scheduleWithFixedDelay(new AutoLoadingShardingTableExecutor(aliasName, refreshActualDataNodesAO, dbUrl, dbUser, dbPwd), 0, 1, TimeUnit.HOURS);
     }
 
-   
+    /**
+     * 计算内存型变量
+     * 5分钟执行一次
+     */
+    private void calculateMemoryVariables() {
+        ScheduledService.getInstance().scheduleAtFixedRate(new CalculateMemoryVariablesExecutor(), 1, 5, TimeUnit.MINUTES);
+    }
 }

@@ -36,16 +36,10 @@ public class DevopsOrderController extends BaseController {
 	private IMonitorDeviceService monitorDeviceService;
 
 	@Autowired
-	private IAlarmTriggerService alarmTriggerService;
-
-	@Autowired
 	private ISysDeptService deptService;
 
 	@Autowired
 	private IMonitorDeviceVarService monitorDeviceVarService;
-
-	@Autowired
-	private IAlarmTriggerCategoryService alarmTriggerCategoryService;
 
 	/**
 	 * 查询工单管理列表
@@ -76,24 +70,14 @@ public class DevopsOrderController extends BaseController {
 		}
 		item.setStationName(item.getStationName() + device.getDeviceName());
 
-		//事件名称
-		AlarmTrigger trigger = alarmTriggerService.selectAlarmTriggerById(item.getAlarmId());
-		if (trigger == null) {
-			return;
-		}
-
 		//变量名称
-		MonitorDeviceVar deviceVar = monitorDeviceVarService.selectMonitorDeviceVarById(trigger.getVarId());
+		MonitorDeviceVar deviceVar = monitorDeviceVarService.selectMonitorDeviceVarById(1000l);
 		if (deviceVar == null) {
 			return;
 		}
-		//报警类型-触发条件名称
-		AlarmTriggerCategory category = alarmTriggerCategoryService.selectAlarmTriggerCategoryById(trigger.getCategoryId());
-		if (category == null) {
-			return;
-		}
-		item.setAlarmName("[" + device.getDeviceName() + "，" + deviceVar.getVarName() + "]" + category.getTriggerName());
-		item.setAlarmContent(trigger.getTriggerContent());
+
+		item.setAlarmName("[" + device.getDeviceName() + "，" + deviceVar.getVarName() + "]");
+		item.setAlarmContent("报警事件描述");
 	}
 
 	/**

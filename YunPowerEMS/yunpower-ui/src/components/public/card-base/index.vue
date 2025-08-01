@@ -59,9 +59,6 @@
             </div>
           </div>
         </div>
-        <div class="total-wapper" v-if="chartInfo.singleRightList?.length">
-          <category-total class="category-total" :data="chartInfo.singleRightList" :type="totalType" />
-        </div>
       </div>
       <a-empty v-else />
     </a-card>
@@ -74,7 +71,6 @@ import useLoading from '@/hooks/loading';
 import {getChartInfo} from '@/api/dashboard/api';
 import {SocketData} from '@/api/websocketService';
 import {useIntervalFn} from '@vueuse/core';
-import CategoryTotal from '@/views/bi/template/technology/components/category-total.vue';
 import {getTimeObject} from '@/utils/charts';
 import {generateSimilarColor} from '@/utils/ruoyi';
 

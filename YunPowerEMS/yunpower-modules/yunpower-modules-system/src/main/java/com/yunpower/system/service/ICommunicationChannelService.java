@@ -44,31 +44,6 @@ public interface ICommunicationChannelService {
     public List<CommunicationChannel> selectCommunicationChannelList(CommunicationChannel communicationChannel);
 
     /**
-     * 新增通讯通道
-     *
-     * @param communicationChannel 通讯通道
-     * @return 结果
-     */
-    public int insertCommunicationChannel(CommunicationChannel communicationChannel);
-
-    /**
-     * 修改通讯通道
-     *
-     * @param communicationChannel 通讯通道
-     * @return 结果
-     */
-    public int updateCommunicationChannel(CommunicationChannel communicationChannel);
-
-    /**
-     * 修改通讯通道状态
-     *
-     * @param id    通讯通道主键
-     * @param state 状态
-     * @return 结果
-     */
-    public int updateCommunicationChannelState(Long id, Integer state);
-
-    /**
      * 查询该[通道]下是否有[通讯设备]
      *
      * @param id 通讯通道ID
@@ -76,19 +51,4 @@ public interface ICommunicationChannelService {
      */
     public boolean hasChildrenById(Long id);
 
-    /**
-     * 批量删除通讯通道
-     *
-     * @param ids 需要删除的通讯通道主键集合
-     * @return 结果
-     */
-    public int deleteCommunicationChannelByIds(Long[] ids);
-
-    /**
-     * 删除通讯通道信息
-     *
-     * @param id 通讯通道主键
-     * @return 结果
-     */
-    public int deleteCommunicationChannelById(Long id);
 }

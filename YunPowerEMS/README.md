@@ -24,7 +24,6 @@
 ~~~
 com.yunpower     
 ├── yunpower-ui                         // 前端UI [80]
-├── yunpower-diagram-ui                 // 接线图UI
 ├── yunpower-gateway                    // 网关模块 [8080]
 ├── yunpower-auth                       // 认证中心 [9200]
 ├── yunpower-api                        // 接口模块

@@ -54,29 +54,6 @@ public class CommunicationChannelController extends BaseController {
     private IPublicService publicService;
 
     /**
-     * 查询通讯通道列表
-     */
-    @ApiOperation("查询通讯通道列表")
-    @RequiresPermissions("system:channel:list")
-    @GetMapping("/list")
-    public TableDataInfo list(CommunicationChannel communicationChannel) {
-        startPage();
-
-        if(StringUtils.isNotBlank(communicationChannel.getRegistrationCode())){
-            communicationChannel.getParams().put("registrationCode",communicationChannel.getRegistrationCode());
-            communicationChannel.setRegistrationCode(null);
-        }
-        List<CommunicationChannel> list = communicationChannelService.selectCommunicationChannelList(communicationChannel);
-        for (CommunicationChannel item : list) {
-            SysDept dept = deptService.selectDeptById(item.getDeptId());
-            if (dept != null) {
-                item.setStationName(dept.getDeptName());
-            }
-        }
-        return getDataTable(list);
-    }
-
-    /**
      * 查询通讯通道列表（不分页）
      */
     @ApiOperation("查询通讯通道列表（不分页）")
@@ -85,19 +62,6 @@ public class CommunicationChannelController extends BaseController {
     public AjaxResult listAll(CommunicationChannel communicationChannel) {
         List<CommunicationChannel> list = communicationChannelService.selectCommunicationChannelList(communicationChannel);
         return success(list);
-    }
-
-    /**
-     * 导出通讯通道列表
-     */
-    @ApiOperation("导出通讯通道列表")
-    @RequiresPermissions("system:channel:export")
-    @Log(title = "通讯通道", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, CommunicationChannel communicationChannel) {
-        List<CommunicationChannel> list = communicationChannelService.selectCommunicationChannelList(communicationChannel);
-        ExcelUtil<CommunicationChannel> util = new ExcelUtil<CommunicationChannel>(CommunicationChannel.class);
-        util.exportExcel(response, list, "通讯通道数据");
     }
 
     /**
@@ -117,85 +81,5 @@ public class CommunicationChannelController extends BaseController {
             channel.setStationName(dept.getDeptName());
         }
         return success(channel);
-    }
-
-    /**
-     * 新增通讯通道
-     */
-    @ApiOperation("新增通讯通道")
-    @RequiresPermissions("system:channel:add")
-    @Log(title = "通讯通道", businessType = BusinessType.INSERT)
-    @PostMapping
-    public AjaxResult add(@RequestBody CommunicationChannel communicationChannel) {
-        //tcp的要通讯注册码
-        if (communicationChannel.getAccessType() == 1 && !communicationChannel.getRegistrationCode().startsWith("66")) {
-            return error("注册码必须以66开头");
-        }
-
-        //注册码不能重复
-        CommunicationChannel exit = communicationChannelService.selectCommunicationChannelByRegisterCode(communicationChannel.getRegistrationCode());
-        if (StringUtils.isNotNull(exit)) {
-            return error("注册码已存在");
-        }
-
-        //站点类型（获取当前站点的站点类型）
-        Long deptId = publicService.getCurrentStation();
-        SysStation station = stationService.selectSysStationByDeptId(deptId);
-        if (StringUtils.isNull(station)) {
-            return error("当前站点异常");
-        }
-        communicationChannel.setStationType(station.getStationType());
-        communicationChannel.setChannelSn(GenRandomUtils.GenRandom(8).toUpperCase());
-        communicationChannel.setCodeStart(0);
-        communicationChannel.setCodeLength(0);
-        communicationChannel.setIsActive(0);
-        return toAjax(communicationChannelService.insertCommunicationChannel(communicationChannel));
-    }
-
-    /**
-     * 修改通讯通道
-     */
-    @ApiOperation("修改通讯通道")
-    @RequiresPermissions("system:channel:edit")
-    @Log(title = "通讯通道", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@RequestBody CommunicationChannel communicationChannel) {
-        //tcp的要通讯注册码
-        if (communicationChannel.getAccessType() == 1 && !communicationChannel.getRegistrationCode().startsWith("66")) {
-            return error("注册码必须以66开头");
-        }
-
-        //注册码不能重复
-        CommunicationChannel exit = communicationChannelService.selectCommunicationChannelByRegisterCode(communicationChannel.getRegistrationCode());
-        if (StringUtils.isNotNull(exit) && !exit.getId().equals(communicationChannel.getId())) {
-            return error("注册码重复");
-        }
-
-        return toAjax(communicationChannelService.updateCommunicationChannel(communicationChannel));
-    }
-
-    /**
-     * 修改通讯通道状态
-     */
-    @ApiOperation("修改通讯通道状态")
-    @RequiresPermissions("system:channel:state")
-    @Log(title = "通讯通道", businessType = BusinessType.UPDATE)
-    @PutMapping("/changeStatus/{id}/{state}")
-    public AjaxResult changeStatus(@PathVariable Long id, @PathVariable Integer state) {
-        return toAjax(communicationChannelService.updateCommunicationChannelState(id, state));
-    }
-
-    /**
-     * 删除通讯通道
-     */
-    @ApiOperation("删除通讯通道")
-    @RequiresPermissions("system:channel:remove")
-    @Log(title = "通讯通道", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{id}")
-    public AjaxResult remove(@PathVariable Long id) {
-        if (communicationChannelService.hasChildrenById(id)) {
-            return warn("该通道下存在通讯设备，不允许删除");
-        }
-        return toAjax(communicationChannelService.deleteCommunicationChannelById(id));
     }
 }

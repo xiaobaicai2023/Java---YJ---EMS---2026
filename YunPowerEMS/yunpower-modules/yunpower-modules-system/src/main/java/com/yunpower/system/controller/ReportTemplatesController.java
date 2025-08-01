@@ -59,20 +59,6 @@ public class ReportTemplatesController extends BaseController
     }
 
     /**
-     * 导出报表模版列表
-     */
-    @ApiOperation("导出报表模版列表")
-    @RequiresPermissions("system:report-templates:export")
-    @Log(title = "报表模版", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    public void export(HttpServletResponse response, ReportTemplates reportTemplates)
-    {
-        List<ReportTemplates> list = reportTemplatesService.selectReportTemplatesList(reportTemplates);
-        ExcelUtil<ReportTemplates> util = new ExcelUtil<ReportTemplates>(ReportTemplates.class);
-        util.exportExcel(response, list, "报表模版数据");
-    }
-
-    /**
      * 获取报表模版详细信息
      */
     @ApiOperation("获取报表模版详细信息")
@@ -81,54 +67,6 @@ public class ReportTemplatesController extends BaseController
     public AjaxResult getInfo(@PathVariable("id") Long id)
     {
         return success(reportTemplatesService.selectReportTemplatesById(id));
-    }
-
-    /**
-     * 新增报表模版
-     */
-    @ApiOperation("新增报表模版")
-    @RequiresPermissions("system:report-templates:add")
-    @Log(title = "报表模版", businessType = BusinessType.INSERT)
-    @PostMapping
-    public AjaxResult add(@Validated @RequestBody ReportTemplates reportTemplates)
-    {
-        return toAjax(reportTemplatesService.insertReportTemplates(reportTemplates));
-    }
-
-    /**
-     * 修改报表模版
-     */
-    @ApiOperation("修改报表模版")
-    @RequiresPermissions("system:report-templates:edit")
-    @Log(title = "报表模版", businessType = BusinessType.UPDATE)
-    @PutMapping
-    public AjaxResult edit(@Validated @RequestBody ReportTemplates reportTemplates)
-    {
-        return toAjax(reportTemplatesService.updateReportTemplates(reportTemplates));
-    }
-
-    /**
-     * 修改报表模版状态
-     */
-    @ApiOperation("修改报表模版状态")
-    @RequiresPermissions("system:report-templates:state")
-    @Log(title = "报表模版", businessType = BusinessType.UPDATE)
-    @PutMapping("/changeStatus/{id}/{state}")
-    public AjaxResult changeStatus(@PathVariable Long id, @PathVariable Integer state)
-    {
-        return toAjax(reportTemplatesService.updateReportTemplatesState(id, state));
-    }
-
-    /**
-     * 删除报表模版
-     */
-    @ApiOperation("删除报表模版")
-    @RequiresPermissions("system:report-templates:remove")
-    @Log(title = "报表模版", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
-        return toAjax(reportTemplatesService.deleteReportTemplatesByIds(ids));
     }
 
     /**

@@ -26,30 +26,6 @@ const router = createRouter({
       },
     },
     {
-      path: "/bi",
-      name: "bi",
-      component: () => import("@/views/bi/index.vue"  ),
-      meta: {
-        requiresAuth: false,
-      }
-    },
-    {
-      path: "/biDetail",
-      name: "biDetail",
-      component: () => import("@/views/bi/template/technology/detail.vue"),
-      meta: {
-        requiresAuth: false,
-      },
-    },
-    {
-      path: "/biDetailDefault",
-      name: "biDetailDefault",
-      component: () => import("@/views/bi/template/default/detail.vue"),
-      meta: {
-        requiresAuth: false,
-      },
-    },
-    {
       path: "/webtopo/diagram/design/:projectId(\\d+)",
       name: "webtopoDiagramDesign",
       component: () => import("@/views/diagram/design/index.vue"),

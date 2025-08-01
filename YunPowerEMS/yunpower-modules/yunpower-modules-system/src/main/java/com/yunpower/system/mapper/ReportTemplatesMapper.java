@@ -33,35 +33,4 @@ public interface ReportTemplatesMapper
      */
     public List<ReportTemplates> selectReportTemplatesList(ReportTemplates reportTemplates);
 
-    /**
-     * 新增报表模版
-     * 
-     * @param reportTemplates 报表模版
-     * @return 结果
-     */
-    public int insertReportTemplates(ReportTemplates reportTemplates);
-
-    /**
-     * 修改报表模版
-     * 
-     * @param reportTemplates 报表模版
-     * @return 结果
-     */
-    public int updateReportTemplates(ReportTemplates reportTemplates);
-
-    /**
-     * 删除报表模版
-     * 
-     * @param id 报表模版主键
-     * @return 结果
-     */
-    public int deleteReportTemplatesById(Long id);
-
-    /**
-     * 批量删除报表模版
-     * 
-     * @param ids 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int deleteReportTemplatesByIds(Long[] ids);
 }

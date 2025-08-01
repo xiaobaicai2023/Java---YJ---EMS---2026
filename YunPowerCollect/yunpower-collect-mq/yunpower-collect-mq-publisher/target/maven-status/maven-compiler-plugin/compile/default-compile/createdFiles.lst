@@ -1,0 +1,3 @@
+com\yunpower\mq\publisher\config\MqConfirmConfig.class
+com\yunpower\mq\publisher\service\PublisherService.class
+com\yunpower\mq\publisher\config\MqConfirmConfig$1.class

@@ -1,6 +1,7 @@
 package com.yunpower.collect.storage.listener;
 
 import cn.hutool.core.date.DateUtil;
+import com.yunpower.collect.storage.service.StorageCommonService;
 import com.yunpower.common.core.constant.Constants;
 import com.yunpower.common.core.entity.amqp.DeviceStateMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +62,7 @@ public class RedisMessageListener extends KeyExpirationEventMessageListener {
 					.state(0)
 					.changeTime(DateUtil.now())
 					.build();
-			
+			StorageCommonService.changeState(stateMessage, false);
 		}
 	}
 }

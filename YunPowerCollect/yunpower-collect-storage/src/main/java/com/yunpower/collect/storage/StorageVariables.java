@@ -90,6 +90,9 @@ public class StorageVariables {
 	//动态刷新分库分表节点配置
 	public static RefreshActualDataNodesAO refreshActualDataNodesAO;
 
+	//分库分表服务
+	public static IShardingCommonService shardingCommonService;
+
 	//MQ服务
 	public static PublisherService publisherService;
 

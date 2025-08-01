@@ -23,4 +23,10 @@ public class HomeController {
 		return "send success";
 	}
 
+	@GetMapping("/test")
+	public Object test(String varSn) {
+		ShardingDay data = StorageVariables.shardingCommonService.selectLastDayValue24H(varSn);
+		System.out.println(data);
+		return data;
+	}
 }

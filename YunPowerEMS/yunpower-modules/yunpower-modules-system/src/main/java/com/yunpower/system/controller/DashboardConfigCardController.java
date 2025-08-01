@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * 仪表盘卡片配置
- * 
+ *
  * @author yunpower
  * @date 2024-06-05
  */
@@ -71,7 +71,6 @@ public class DashboardConfigCardController extends BaseController
         ExcelUtil<DashboardConfigCard> util = new ExcelUtil<DashboardConfigCard>(DashboardConfigCard.class);
         util.exportExcel(response, list, "仪表盘卡片配置数据");
     }
-
 
     /**
      * 获取仪表盘卡片配置详细信息-id
@@ -137,7 +136,7 @@ public class DashboardConfigCardController extends BaseController
     @ApiOperation("删除仪表盘卡片配置")
     @RequiresPermissions("system:card:remove")
     @Log(title = "仪表盘卡片配置", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(dashboardConfigCardService.deleteDashboardConfigCardByIds(ids));

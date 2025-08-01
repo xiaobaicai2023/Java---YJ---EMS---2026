@@ -18,13 +18,13 @@ public class PublisherService {
     private RabbitTemplate rabbitTemplate;
 
     // 默认交换机名称
-    private static final String EXCHANGE_NAME = "";
+    private static final String EXCHANGE_NAME = "yunpower.direct";
 
     // 默认队列名称
-    private static final String QUEUE_NAME = "";
+    private static final String QUEUE_NAME = "collect.queue";
 
     // 默认路由键
-    private static final String ROUTING_KEY = "";
+    private static final String ROUTING_KEY = "storage0";
 
     /**
      * 发送消息

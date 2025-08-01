@@ -67,35 +67,4 @@ public interface AlarmTriggerMapper {
      */
     public List<AlarmTrigger> selectDistinctDevice(AlarmTrigger alarmTrigger);
 
-    /**
-     * 新增报警管理
-     *
-     * @param alarmTrigger 报警管理
-     * @return 结果
-     */
-    public int insertAlarmTrigger(AlarmTrigger alarmTrigger);
-
-    /**
-     * 修改报警管理
-     *
-     * @param alarmTrigger 报警管理
-     * @return 结果
-     */
-    public int updateAlarmTrigger(AlarmTrigger alarmTrigger);
-
-    /**
-     * 删除报警管理
-     *
-     * @param id 报警管理主键
-     * @return 结果
-     */
-    public int deleteAlarmTriggerById(Long id);
-
-    /**
-     * 批量删除报警管理
-     *
-     * @param ids 需要删除的数据主键集合
-     * @return 结果
-     */
-    public int deleteAlarmTriggerByIds(Long[] ids);
 }

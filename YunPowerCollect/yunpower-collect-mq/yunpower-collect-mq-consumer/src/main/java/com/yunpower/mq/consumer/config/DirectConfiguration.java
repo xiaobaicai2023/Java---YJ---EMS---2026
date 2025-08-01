@@ -22,7 +22,7 @@ public class DirectConfiguration {
      */
     @Bean
     public DirectExchange directExchange() {
-        return new DirectExchange("");
+        return new DirectExchange("yunpower.direct");
     }
 
     /**
@@ -33,4 +33,31 @@ public class DirectConfiguration {
         return new Queue("queue.collect");
     }
 
+    /**
+     * 数据采集队列绑定交换机【存储】
+     */
+    @Bean
+    public Binding directQueueBindingStorage0(Queue directQueueCollect, DirectExchange directExchange) {
+        return BindingBuilder.bind(directQueueCollect).to(directExchange).with("storage0");
+    }
+
+    @Bean
+    public Binding directQueueBindingStorage1(Queue directQueueCollect, DirectExchange directExchange) {
+        return BindingBuilder.bind(directQueueCollect).to(directExchange).with("storage1");
+    }
+
+    @Bean
+    public Binding directQueueBindingStorage2(Queue directQueueCollect, DirectExchange directExchange) {
+        return BindingBuilder.bind(directQueueCollect).to(directExchange).with("storage2");
+    }
+
+    @Bean
+    public Binding directQueueBindingStorage3(Queue directQueueCollect, DirectExchange directExchange) {
+        return BindingBuilder.bind(directQueueCollect).to(directExchange).with("storage3");
+    }
+
+    @Bean
+    public Binding directQueueBindingStorage4(Queue directQueueCollect, DirectExchange directExchange) {
+        return BindingBuilder.bind(directQueueCollect).to(directExchange).with("storage4");
+    }
 }

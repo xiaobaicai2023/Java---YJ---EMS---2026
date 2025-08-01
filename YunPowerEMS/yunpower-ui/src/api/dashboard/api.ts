@@ -36,15 +36,6 @@ export function getConfigCard(data: any) {
 }
 
 /**
- * 保存卡片信息
- * @param data 查询参数
- * @returns 结果
- */
-export function updateConfigCard(data: any) {
-	return axios.put("/system/dashboard/card/config", data);
-}
-
-/**
  * 获取仪表盘配置详细信息
  * @param id
  */

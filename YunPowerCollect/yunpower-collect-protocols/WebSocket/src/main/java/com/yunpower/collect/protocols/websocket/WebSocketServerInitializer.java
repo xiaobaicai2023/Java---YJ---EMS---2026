@@ -29,6 +29,7 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
         pipeline.addLast(new IdleStateHandler(60, 60, 0, TimeUnit.SECONDS));
         pipeline.addLast(new WebSocketServerProtocolHandler("/ws", "WebSocket", true, 65536 * 10));
-
+        // 添加自定义的处理器
+        pipeline.addLast(new WebSocketChannelHandler());
     }
 }

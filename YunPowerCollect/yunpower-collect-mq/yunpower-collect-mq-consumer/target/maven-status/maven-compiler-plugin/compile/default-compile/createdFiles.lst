@@ -1,0 +1,4 @@
+com\yunpower\mq\consumer\service\SupplementConsumerListener.class
+com\yunpower\mq\consumer\service\CollectConsumerListener.class
+com\yunpower\mq\consumer\service\StateChangeConsumerListener.class
+com\yunpower\mq\consumer\config\DirectConfiguration.class

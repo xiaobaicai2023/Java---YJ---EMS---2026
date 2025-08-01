@@ -23,11 +23,6 @@ import java.util.*;
  */
 @Service
 public class SpecialDataProvideServiceImpl implements ISpecialDataProvideService {
-    @Autowired
-    private IAlarmTriggerService alarmTriggerService;
-
-    @Autowired
-    private IAlarmTriggerCategoryService alarmTriggerCategoryService;
 
     @Autowired
     private IDevopsOrderService devopsOrderService;
@@ -49,105 +44,6 @@ public class SpecialDataProvideServiceImpl implements ISpecialDataProvideService
 
     @Autowired
     private IPublicService publicService;
-
-    //region 获取报警列表
-
-    /**
-     * 获取报警列表
-     *
-     * @param headType   表头类型：1长表头 2短表头
-     * @param staticType 数据类型：记录状态
-     * @param deptId     站点ID
-     * @return 结果
-     */
-    @Override
-    public Object getAlarmTriggerList(Integer headType, Integer staticType, TimesVo timesVo, Long deptId) {
-        AlarmTrigger alarmTrigger = new AlarmTrigger();
-        alarmTrigger.setDeptId(deptId);
-        alarmTrigger.setParams(DateUtils.dateToParamForDayFormat(timesVo.getBeginTime(), timesVo.getEndTime()));
-        if (staticType != null) {
-            if (staticType == 0) {
-                //报警状态（0发生中 1延迟处理）
-                alarmTrigger.getParams().put("triggerStatus", Arrays.asList(0, 1));
-            } else {
-                alarmTrigger.setTriggerStatus(staticType);
-            }
-        }
-        alarmTrigger.getParams().put("limit", 10);
-        List<AlarmTrigger> alarmTriggerList = alarmTriggerService.selectAlarmTriggerList(alarmTrigger);
-
-        //region *** 组装表头 **
-        List<TableHeader> headerList = new ArrayList<>();
-        TableHeader dateHeader = new TableHeader("编号", "id", null);
-        headerList.add(dateHeader);
-        String titles = "时间,事件,站点,设备,类别,等级,状态,操作";
-        if (headType == 2) {
-            titles = "时间,事件,状态,操作";
-        }
-        packageHeader(headerList, titles);
-        //endregion
-
-        //region *** 组装表体 **
-        List<Map<String, Object>> tableData = new ArrayList<>();
-        for (AlarmTrigger item : alarmTriggerList) {
-            packageAlarmInfo(item);
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("id", item.getId());
-            map.put("时间", DateUtils.parseDateToStr(DateFormatEnum.YYYY_MM_DD_HH_MM_SS.getValue(), item.getHappenTime()));
-            map.put("事件", item.getTriggerContent());
-            map.put("状态", item.getTriggerStatusName());
-            map.put("操作", "处理");
-            if (headType == 1) {
-                map.put("站点", item.getStationName());
-                map.put("设备", item.getDeviceName() + " " + item.getVarName());
-                map.put("类别", item.getCategoryName());
-                map.put("等级", item.getTriggerLevelName());
-            }
-            tableData.add(map);
-        }
-        //endregion
-
-        return new TableResult(headerList, tableData);
-    }
-
-    private void packageAlarmInfo(AlarmTrigger item) {
-        //站点名称（部门名称）
-        SysDept dept = deptService.selectDeptById(item.getDeptId());
-        if (dept != null) {
-            item.setStationName(dept.getDeptName());
-        }
-
-        //设备名称
-        MonitorDevice device = monitorDevicerService.selectMonitorDeviceById(item.getDeviceId());
-        if (device != null) {
-            item.setDeviceName(device.getDeviceName());
-        }
-
-        //变量名称
-        MonitorDeviceVar deviceVar = monitorDeviceVarService.selectMonitorDeviceVarById(item.getVarId());
-        if (deviceVar != null) {
-            item.setVarName(deviceVar.getVarName());
-        }
-
-        //触发条件名称（报警类型）
-        AlarmTriggerCategory category = alarmTriggerCategoryService.selectAlarmTriggerCategoryById(item.getCategoryId());
-        if (category != null) {
-            item.setCategoryName(category.getTriggerName());
-        }
-
-        //事件名称
-        item.setTriggerName("[" + item.getDeviceName() + "，" + item.getVarName() + "]" + item.getCategoryName());
-
-        //报警等级
-        String levelName = dictDataService.selectDictLabel("sys_alaram_level", item.getTriggerLevel().toString());
-        item.setTriggerLevelName(levelName);
-
-        //报警状态
-        String statusName = dictDataService.selectDictLabel("sys_trigger_status", item.getTriggerStatus().toString());
-        item.setTriggerStatusName(statusName);
-    }
-    //endregion
 
     //region 获取工单列表
 
@@ -235,69 +131,6 @@ public class SpecialDataProvideServiceImpl implements ISpecialDataProvideService
             TableHeader dateHeader = new TableHeader(arr, arr, null);
             headerList.add(dateHeader);
         }
-    }
-    //endregion
-
-    //region 获取报警统计数据
-
-    /**
-     * 获取报警统计数据
-     *
-     * @param staticType 统计类型（报警：1按级别 2按类型 3按日期）
-     * @return 结果
-     */
-    @Override
-    public Object getAlarmTriggerStatic(Integer staticType, TimesVo timesVo, Long deptId) {
-        GenerateTimeUtils.packageTime(timesVo);
-
-        //按报警级别
-        if (staticType == 1) {
-            AlarmTrigger alarmTrigger = new AlarmTrigger();
-            alarmTrigger.setDeptId(deptId);
-            alarmTrigger.setParams(DateUtils.dateToParamForDayFormat(timesVo.getBeginTime(), timesVo.getEndTime()));
-            List<AlarmTrigger> list = alarmTriggerService.selectStatisticDataByAlarmLevel(alarmTrigger);
-
-            Map<String, Object> map = new HashMap<>();
-            for (AlarmTrigger item : list) {
-                String levelName = dictDataService.selectDictLabel("sys_alaram_level", item.getTriggerLevel().toString());
-                map.put(levelName, item.getStatisticValue());
-            }
-            return map;
-        }
-
-        //按报警类型
-        if (staticType == 2) {
-            AlarmTrigger alarmTrigger = new AlarmTrigger();
-            alarmTrigger.setDeptId(deptId);
-            alarmTrigger.setParams(DateUtils.dateToParamForDayFormat(timesVo.getBeginTime(), timesVo.getEndTime()));
-            List<AlarmTrigger> list = alarmTriggerService.selectStatisticDataByCategory(alarmTrigger);
-
-            Map<String, Object> map = new HashMap<>();
-            for (AlarmTrigger item : list) {
-                AlarmTriggerCategory category = alarmTriggerCategoryService.selectAlarmTriggerCategoryById(item.getCategoryId());
-                if (category != null) {
-                    map.put(category.getTriggerName(), item.getStatisticValue());
-                }
-            }
-            return map;
-        }
-
-        //按日期
-        if (staticType == 3) {
-            AlarmTrigger alarmTrigger = new AlarmTrigger();
-            alarmTrigger.setDateDim(timesVo.getDateDim());
-            alarmTrigger.setDeptId(deptId);
-            alarmTrigger.setParams(DateUtils.dateToParamForDayFormat(timesVo.getBeginTime(), timesVo.getEndTime()));
-            List<AlarmTrigger> list = alarmTriggerService.selectStatisticByDate(alarmTrigger);
-
-            Map<String, Object> map = new HashMap<>();
-            for (AlarmTrigger item : list) {
-                map.put(item.getFormattedDatetime(), item.getStatisticValue());
-            }
-            return map;
-        }
-
-        return null;
     }
     //endregion
 

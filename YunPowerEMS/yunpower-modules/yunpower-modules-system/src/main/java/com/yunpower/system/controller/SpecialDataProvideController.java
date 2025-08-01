@@ -62,12 +62,7 @@ public class SpecialDataProvideController extends BaseController {
             timesVo.setMonthTime(monthTime == null ? null : monthTime.toString());
             timesVo.setYearTime(yearTime == null ? null : yearTime.toString());
             GenerateTimeUtils.packageTime(timesVo);
-            if (_tableType == 1) {
-                return specialDataProvideService.getAlarmTriggerList(_headType, _staticType, timesVo, _deptId);
-            }
-            if (_tableType == 2) {
-                return specialDataProvideService.getDevopsOrderList(_headType, _staticType, timesVo, _deptId);
-            }
+            return specialDataProvideService.getDevopsOrderList(_headType, _staticType, timesVo, _deptId);
         }
 
         // 获取统计图表数据
@@ -81,12 +76,7 @@ public class SpecialDataProvideController extends BaseController {
             timesVo.setMonthTime(monthTime == null ? null : monthTime.toString());
             timesVo.setYearTime(yearTime == null ? null : yearTime.toString());
 
-            if (_tableType == 1) {
-                return specialDataProvideService.getAlarmTriggerStatic(_staticType, timesVo, _deptId);
-            }
-            if (_tableType == 2) {
-                return specialDataProvideService.getDevopsOrderStatic(_staticType, timesVo, _deptId);
-            }
+            return specialDataProvideService.getDevopsOrderStatic(_staticType, timesVo, _deptId);
         }
 
         return null;

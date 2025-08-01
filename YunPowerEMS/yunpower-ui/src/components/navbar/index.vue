@@ -514,9 +514,9 @@ const onSubscribe = () => {
 }
 
 const setPopoverVisible = () => {
-  const aaa: any = renderFatherMenu.value.find(item => selectCompany.value.stationType && item.props?.stationType == selectCompany.value.stationType); 
+  const aaa: any = renderFatherMenu.value.find(item => selectCompany.value.stationType && item.props?.stationType == selectCompany.value.stationType);
   router.replace({
-    path: `power/alarm/list`
+    path: `${aaa.path}/alarm/list`
   });
   const elementContainer: any = document.querySelector('.arco-notification-list');
   if (elementContainer) elementContainer.style.display = "none";

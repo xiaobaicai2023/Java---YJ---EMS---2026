@@ -67,61 +67,6 @@ public class CommunicationDeviceServiceImpl implements ICommunicationDeviceServi
     }
 
     /**
-     * 新增通讯设备
-     *
-     * @param communicationDevice 通讯设备
-     * @return 结果
-     */
-    @Override
-    public int insertCommunicationDevice(CommunicationDevice communicationDevice) {
-        if (communicationDevice.getEntId() == null || communicationDevice.getEntId() <= 0) {
-            communicationDevice.setEntId(publicService.getCurrentEnterprise());
-        }
-        if (communicationDevice.getDeptId() == null || communicationDevice.getDeptId() <= 0) {
-            communicationDevice.setDeptId(publicService.getCurrentStation());
-        }
-        communicationDevice.setCreateBy(SecurityUtils.getNickName());
-        communicationDevice.setCreateTime(DateUtils.getNowDate());
-        if (communicationDevice.getStopFlag() == null) {
-            communicationDevice.setStopFlag(0);
-        }
-        communicationDevice.setDeleteFlag(0);
-        return communicationDeviceMapper.insertCommunicationDevice(communicationDevice);
-    }
-
-    /**
-     * 修改通讯设备
-     *
-     * @param communicationDevice 通讯设备
-     * @return 结果
-     */
-    @Override
-    public int updateCommunicationDevice(CommunicationDevice communicationDevice) {
-        communicationDevice.setCreateBy(null);
-        communicationDevice.setCreateTime(null);
-        communicationDevice.setUpdateBy(SecurityUtils.getNickName());
-        communicationDevice.setUpdateTime(DateUtils.getNowDate());
-        return communicationDeviceMapper.updateCommunicationDevice(communicationDevice);
-    }
-
-    /**
-     * 修改通讯设备状态
-     *
-     * @param id    通讯设备主键
-     * @param state 状态
-     * @return 结果
-     */
-    @Override
-    @DataScope(deptAlias = "s")
-    public int updateCommunicationDeviceState(CommunicationDevice communicationDevice, Long id, Integer state) {
-        communicationDevice.setId(id);
-        communicationDevice.setStopFlag(state);
-        communicationDevice.setUpdateBy(SecurityUtils.getNickName());
-        communicationDevice.setUpdateTime(DateUtils.getNowDate());
-        return communicationDeviceMapper.updateCommunicationDevice(communicationDevice);
-    }
-
-    /**
      * 查询该[通讯设备]下是否有[用电设备]
      *
      * @param id 通讯设备ID
@@ -130,40 +75,6 @@ public class CommunicationDeviceServiceImpl implements ICommunicationDeviceServi
     @Override
     public boolean hasChildrenById(Long id) {
         return communicationDeviceMapper.hasChildrenById(id) > 0;
-    }
-
-    /**
-     * 批量删除通讯设备
-     *
-     * @param ids 需要删除的通讯设备主键
-     * @return 结果
-     */
-    @Override
-    @DataScope(deptAlias = "s")
-    public int deleteCommunicationDeviceByIds(CommunicationDevice communicationDevice, Long[] ids) {
-        Map<String, Object> params = communicationDevice.getParams();
-        if (params == null) {
-            params = new HashMap<>();
-        }
-        params.put("ids", ids);
-
-        communicationDevice.setParams(params);
-        communicationDevice.setDeleteFlag(1);
-        return communicationDeviceMapper.updateCommunicationDevice(communicationDevice);
-    }
-
-    /**
-     * 删除通讯设备信息
-     *
-     * @param id 通讯设备主键
-     * @return 结果
-     */
-    @Override
-    @DataScope(deptAlias = "s")
-    public int deleteCommunicationDeviceById(CommunicationDevice communicationDevice, Long id) {
-        communicationDevice.setId(id);
-        communicationDevice.setDeleteFlag(1);
-        return communicationDeviceMapper.updateCommunicationDevice(communicationDevice);
     }
 
     /**

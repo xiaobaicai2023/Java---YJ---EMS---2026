@@ -1,5 +1,6 @@
 package com.yunpower.collect.protocols.iec104;
 
+import com.yunpower.collect.protocols.iec104.constant.IEC104Constant;
 import com.yunpower.mq.publisher.service.PublisherService;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -78,7 +79,10 @@ public class IEC104Variables {
             send = (send == null ? 0 : send);
             send++;
             Short saveSend = send;
-           
+
+            if (send > IEC104Constant.SEND_MAX) {
+                saveSend = IEC104Constant.SEND_MIN;
+            }
             CHANNEL_READ_SEND.put(ctx.channel().id().asShortText(), saveSend);
             return send;
         }
