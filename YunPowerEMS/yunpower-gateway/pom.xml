@@ -11,7 +11,7 @@
     <artifactId>yunpower-gateway</artifactId>
 
     <description>
-        yunpower-gateway网关模块
+        yunpower-gateway网关模块，上游服务端
     </description>
 
     <dependencies>
