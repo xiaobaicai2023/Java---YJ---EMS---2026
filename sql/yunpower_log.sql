@@ -30,7 +30,7 @@ CREATE TABLE `sys_log_execute`  (
   `operate_type` int(11) NULL DEFAULT NULL COMMENT '操作类别（0其它 1后台用户 2手机端用户）',
   `operate_by` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '执行人员',
   `operate_result` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '执行结果',
-  `status` int(11) NULL DEFAULT NULL COMMENT '操作状态（0正常 1异常）',
+  `status` int(11) NULL DEFAULT NULL COMMENT '操作状态（0 正常 1 异常）',
   `execute_time` datetime NULL DEFAULT NULL COMMENT '执行时间',
   `cost_time` int(11) NULL DEFAULT NULL COMMENT '消耗时间（秒）',
   PRIMARY KEY (`id`) USING BTREE,
