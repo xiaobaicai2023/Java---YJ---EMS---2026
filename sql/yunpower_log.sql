@@ -43,6 +43,7 @@ CREATE TABLE `sys_log_execute`  (
 
 -- ----------------------------
 -- Table structure for sys_log_login
+-- able structure for sys_log_login
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_log_login`;
 CREATE TABLE `sys_log_login`  (
@@ -74,7 +75,7 @@ INSERT INTO `sys_log_login` VALUES (8, 'admin', '华安石化', '14.110.89.205',
 
 -- ----------------------------
 -- Table structure for sys_log_oper
--- ----------------------------
+-- -----------------------------
 DROP TABLE IF EXISTS `sys_log_oper`;
 CREATE TABLE `sys_log_oper`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号ID',
@@ -100,7 +101,7 @@ CREATE TABLE `sys_log_oper`  (
 
 -- ----------------------------
 -- Records of sys_log_oper
--- ----------------------------
+-- -----------------------------
 INSERT INTO `sys_log_oper` VALUES (1, '仪表盘配置', 2, 'com.yunpower.system.controller.DashboardConfigController.edit()', 'PUT', 1, 'admin', NULL, '/dashboard/config', '14.110.89.205', NULL, '{\"id\":0,\"pageConfig\":\"[]\",\"pageKey\":\"overview-energy-dashboard-0\",\"pageName\":\"综合看板\",\"pageType\":2,\"params\":{}}', NULL, 1, '站点异常，请重新选择', '2025-07-30 11:12:53', 128);
 INSERT INTO `sys_log_oper` VALUES (2, '菜单管理', 3, 'com.yunpower.system.controller.SysCommonMenuController.remove()', 'DELETE', 1, 'admin', NULL, '/menu/1389', '14.110.89.205', NULL, '{}', '{\"msg\":\"菜单已分配,不允许删除\",\"code\":601}', 0, NULL, '2025-07-30 11:28:18', 43);
 INSERT INTO `sys_log_oper` VALUES (3, '菜单管理', 3, 'com.yunpower.system.controller.SysCommonMenuController.remove()', 'DELETE', 1, 'admin', NULL, '/menu/1389', '14.110.89.205', NULL, '{}', '{\"msg\":\"菜单已分配,不允许删除\",\"code\":601}', 0, NULL, '2025-07-30 11:29:32', 9);
