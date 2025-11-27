@@ -202,7 +202,7 @@
 
 #### 九、数据看板
 
-    **【数据看板支持拖拉拽，选择展示方式，完全可视化配置】** 
+    **【数据看板支持拖拉拽，选择展示方式，完全可视化配置，支持日月年检索】** 
 
 ` <div>
       <img src="/test/201.png" alt="logo" >
@@ -221,11 +221,37 @@
    **【告别复杂报表，全部可以创建报表模板，关联数据，一键可视化配置】** 
 
 ` <div>
+      <img src="/test/0012.png" alt="logo" >
+   </div>`
+
+` <div>
       <img src="/test/012.png" alt="logo" >
    </div>`
+
 ` <div>
-      <img src="/test/013.png" alt="logo" >
+      <img src="/test/0013.png" alt="logo" >
    </div>`
+
+` <div>
+      <img src="/test/0014.png" alt="logo" >
+   </div>`
+
+` <div>
+      <img src="/test/0015.png" alt="logo" >
+   </div>`
+
+` <div>
+      <img src="/test/0016.png" alt="logo" >
+   </div>`
+
+` <div>
+      <img src="/test/0017.png" alt="logo" >
+   </div>`
+
+` <div>
+      <img src="/test/0018.png" alt="logo" >
+   </div>`
+
 
 #### 十一、智能运维
 
