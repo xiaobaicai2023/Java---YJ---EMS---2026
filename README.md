@@ -266,10 +266,10 @@
   ** [大屏支持可视化配置，创建卡片，编辑卡片信息，选择卡片位置，关联数据，即可完成大屏配置]** 
 
 ` <div>
-      <img src="/test/024.png" alt="logo" >
+      <img src="/test/dp01.png" alt="logo" >
    </div>`
 ` <div>
-      <img src="/test/028.png" alt="logo" >
+      <img src="/test/daping.png" alt="logo" >
    </div>`
 
 #### 十三、代码结构
