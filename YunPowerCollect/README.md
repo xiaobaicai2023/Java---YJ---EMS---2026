@@ -4,7 +4,8 @@
 
 ## 平台简介
 
-云捷EMS数据采集系统，接收通讯设备上传的数据，解析并保存到数据库，目前支持IEC104协议。
+云捷EMS数据采集系统，接收通讯设备上传的数据，解析并保存到数据库，目前支持IEC104协议，modbus协议，私有化天罡。
+转发支持MQTT和Websocket
 
 
 ## 框架说明
@@ -28,8 +29,8 @@ com.yunpower
 │  └─yunpower-collect-mq-producer // 消息生产者
 ├─yunpower-collect-protocols      // 协议相关
 │  ├─IEC104                     // 104协议 [2404]
-│  ├─Modbus
-│  ├─MQTT
+│  ├─Modbus                     // Modbus [2404]
+│  ├─MQTT                       //MQTT
 │  └─WebSocket                  // 提供实时数据
 ├─yunpower-collect-storage        // 数据存储
 ├─yunpower-common
@@ -40,7 +41,7 @@ com.yunpower
 
 ## 功能说明
 
-1. 协议解析	目前支持IEC104协议
+1. 协议解析	目前支持IEC104协议,Modbus [2404],MQTT
 2. 实时数据	采用 WebSocket
 3. 设备状态	WebSocket 配合 Redis 实现
 4. 报警功能	采用RabbitMQ
