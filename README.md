@@ -110,6 +110,41 @@
  </div>`
  
 
+#### 六、数据采集-IEC 104 协议
+
+    方式三  IEC 104 协议 ，设备直连
+
+    有的设备需要直连平台，IEC 104 协议 ，可以直接配置通道，上报数据
+
+  `<div>
+      <img src="/test/104-1.png" alt="logo"  weith="400px"  height = "400px" >
+   </div>
+
+ <div>
+      <img src="/test/104-2.png" alt="logo"  weith="400px"  height = "400px" >
+ </div>
+
+#### 六、数据采集-Modbus 协议
+
+    方式三  ModbusRTU 协议，设备直连
+
+    支持：ModbusRTU协议、ModbusTCP协议
+
+  `<div>
+      <img src="/test/mdb.png" alt="logo"  weith="400px"  height = "400px" >
+   </div>
+
+#### 六、数据采集- DLT645 协议
+
+    方式三  DLT645协议议，设备直连
+
+    支持：DLT645协议
+
+  `<div>
+      <img src="/test/645.png" alt="logo"  weith="400px"  height = "400px" >
+   </div>
+
+
 #### 六、硬件网关数据转发
 
 【配置路由】
