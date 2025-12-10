@@ -257,20 +257,23 @@
    </div>`
 
 
-#### 九、数据看板
+#### 九、数据看板-可视化组件配置
 
-    **【数据看板支持拖拉拽，选择展示方式，完全可视化配置，支持日月年检索】** 
+    **【数据看板支持可视化组件库配置，致辞拖拉拽，选择展示方式，完全可视化配置，支持日月年检索】** 
 
 ` <div>
-      <img src="/test/201.png" alt="logo" >
+      <img src="/test/pz7.png" alt="logo" >
    </div>`
+
 ` <div>
       <img src="/test/0002.png" alt="logo" >
    </div>`
 ` <div>
       <img src="/test/0003.png" alt="logo" >
    </div>`
-
+` <div>
+      <img src="/test/201.png" alt="logo" >
+   </div>`
   
 
 #### 十、智能报表
