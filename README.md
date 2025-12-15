@@ -500,3 +500,15 @@ bash startup.sh -m standalone
  2、每月会有持续的版本迭代和升级。。。
 
  3、碳足迹、碳交易和碳资产管理，正在同步升级开发中。。。
+
+
+` <div>
+      <img src="/quan.png" alt="logo" >
+   </div>`
+
+    
+
+
+
+
+
