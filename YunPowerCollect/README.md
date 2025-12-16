@@ -7,6 +7,7 @@
 云捷EMS数据采集系统，接收通讯设备上传的数据，解析并保存到数据库，目前支持IEC104协议，modbus协议，私有化天罡。
 转发支持MQTT和Websocket
 
+核心技术：Sharding刀片技术，分布式数据解决方案，支持海量并发
 
 ## 框架说明
 1. 框架采用Spring Boot、Spring Cloud & Alibaba</br>
