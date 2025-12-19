@@ -13,7 +13,7 @@ YJ-EMS 能源管理系统，开源能源管理系统，适用于企业能源监�
 2. 后端采用Spring Boot、Spring Cloud & Alibaba
 3. 注册中心、配置中心选型Nacos=2.2.2，权限认证使用Redis
 4. 流量控制框架选型Sentinel，分布式事务选型Seata
-5. 数据库采用MYSQL >= 5 .7, JDK1.8, Maven >= 3.0,数据库没有特殊限制，sharding分布式数据库解决方案支持任意数据库
+5. 数据库采用MYSQL >= 5 .7, JDK1.8 （8.0）, Maven >= 3.0,数据库没有特殊限制，sharding分布式数据库解决方案支持任意数据库
 6. 数据采用分布式数据库解决方案Sharding刀片技术
 
 
