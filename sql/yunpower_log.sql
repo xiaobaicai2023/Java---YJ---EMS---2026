@@ -4,7 +4,7 @@
  Source Server         : XMG-MySql
  Source Server Type    : MySQL
  Source Server Version : 50744 (5.7.44)
- Source Host           : 112.31.119.29:9299
+ Source Host           : 112.X.X.29:9299
  Source Schema         : yunpower_log
 
  Target Server Type    : MySQL
