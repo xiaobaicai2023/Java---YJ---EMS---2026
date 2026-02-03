@@ -11,7 +11,7 @@
 </div>
 <div align="center">
 
-  项目技术框架 RuoYi-Cloud 基础框架上开发而成
+  项目技术框架 RuoYi-Cloud 基础框架上开发而成‘
 
 </div>
 <div align="center">
